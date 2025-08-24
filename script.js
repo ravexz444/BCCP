@@ -154,7 +154,7 @@ function renderSkillSummary(allSkillsWithValues) {
         // Show total and breakdown (if multiple parts)
         const totalText = formatTotal(data.total, data.unit);
         if (data.parts.length > 1) {
-          li.innerHTML = `${skill} ${totalText}<br><span style="margin-left:1em">(${data.parts.join(", ")})</span>`;
+          li.innerHTML = `${skill} ${totalText} (${data.parts.join(", ")})</span>`;
         } else {
           li.textContent = `${skill} ${totalText}`;
         }

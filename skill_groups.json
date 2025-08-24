@@ -168,6 +168,7 @@
       "Stellar Voltage"
     ],
     "Heal": [
+      "Health",
       "Lifeleech",
       "Diableria",
       "Ancient Blood",
@@ -340,3 +341,4 @@
       "Coolness"
     ]
 }
+

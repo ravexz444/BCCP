@@ -305,3 +305,84 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function saveSetup(setupName) {
+  // Load existing setups
+  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+
+  // Collect current selections
+  const collections = [];
+  for (const code of Object.keys(collectionCodes)) {
+    const checkbox = document.getElementById("collection-" + code);
+    if (checkbox && checkbox.checked) {
+      collections.push(collectionCodes[code]);
+    }
+  }
+
+  const equipment = [];
+  equipmentTypes.forEach(type => {
+    if (type === "Accessory" || type === "Retainer") {
+      for (let i = 1; i <= 3; i++) {
+        const select = document.getElementById(`select-${type}-${i}`);
+        if (select && select.value) equipment.push(select.value);
+      }
+    } else {
+      const select = document.getElementById(`select-${type}`);
+      if (select && select.value) equipment.push(select.value);
+    }
+  });
+
+  // Add new setup
+  setups.push({ name: setupName, collections, equipment });
+
+  // Save back to localStorage
+  localStorage.setItem("savedSetups", JSON.stringify(setups));
+}
+
+function loadSetup(setupName) {
+  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+  const setup = setups.find(s => s.name === setupName);
+  if (!setup) return;
+
+  // Apply collections
+  document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
+    cb.checked = setup.collections.includes(collectionCodes[cb.id.replace("collection-", "")]);
+  });
+
+  // Apply equipment
+  equipmentTypes.forEach(type => {
+    if (type === "Accessory" || type === "Retainer") {
+      for (let i = 1; i <= 3; i++) {
+        const select = document.getElementById(`select-${type}-${i}`);
+        if (select) select.value = setup.equipment.find(e => e.includes(type)) || "";
+      }
+    } else {
+      const select = document.getElementById(`select-${type}`);
+      if (select) select.value = setup.equipment.find(e => e.includes(type)) || "";
+    }
+  });
+
+  updateSkills();
+}
+
+document.getElementById("saveSetupBtn").addEventListener("click", () => {
+  const name = document.getElementById("setupName").value.trim();
+  if (name) {
+    saveSetup(name);
+    refreshSavedSetups();
+  }
+});
+
+document.getElementById("loadSetupBtn").addEventListener("click", () => {
+  const select = document.getElementById("loadSetupSelect");
+  if (select.value) loadSetup(select.value);
+});
+
+function refreshSavedSetups() {
+  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+  const select = document.getElementById("loadSetupSelect");
+  select.innerHTML = setups.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
+}
+
+// Run on page load
+refreshSavedSetups();

@@ -1,0 +1,1190 @@
+{
+    "Crows Hill Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Necroward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 10,
+        "xp_fixed": 100,
+        "region": "R01",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in Crows Hill Cemetery.",
+        "source": "Drop",
+        "index": 1
+    },
+    "Crows Hill Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Necrobane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 11,
+        "xp_fixed": 101,
+        "region": "R01",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in Crows Hill Cemetery.",
+        "source": "Drop",
+        "index": 2
+    },
+    "Crows Hill Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Necroward",
+                "10%",
+                2.0
+            ]
+        ],
+        "xp": 12,
+        "xp_fixed": 102,
+        "region": "R01",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in Crows Hill Crypt.",
+        "source": "Drop",
+        "index": 3
+    },
+    "Crows Hill Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Summoning",
+                "2%",
+                0.0
+            ]
+        ],
+        "xp": 13,
+        "xp_fixed": 103,
+        "region": "R01",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in Crows Hill Cemetery.",
+        "source": "Drop",
+        "index": 4
+    },
+    "Crows Hill Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Nightward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 14,
+        "xp_fixed": 104,
+        "region": "R01",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Crows Hill Crypt.",
+        "source": "Drop",
+        "index": 5
+    },
+    "Dark Forest Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Wildward",
+                "10%",
+                1.0
+            ],
+            [
+                "Wolfward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 20,
+        "xp_fixed": 200,
+        "region": "R02",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Werewolf Thicket.",
+        "source": "Drop",
+        "index": 6
+    },
+    "Dark Forest Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Wolfbane",
+                "10%",
+                1.0
+            ],
+            [
+                "Wildbane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 21,
+        "xp_fixed": 201,
+        "region": "R02",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Werewolf Thicket.",
+        "source": "Drop",
+        "index": 7
+    },
+    "Dark Forest Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Wildward",
+                "10%",
+                1.0
+            ],
+            [
+                "Wolfward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 21,
+        "xp_fixed": 202,
+        "region": "R02",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Darkcrawler Cave.",
+        "source": "Drop",
+        "index": 8
+    },
+    "Dark Forest Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Summoning",
+                "2%",
+                0.0
+            ]
+        ],
+        "xp": 23,
+        "xp_fixed": 203,
+        "region": "R02",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Dark Forest.",
+        "source": "Drop",
+        "index": 9
+    },
+    "Dark Forest Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Attunement",
+                "2%",
+                1.0
+            ]
+        ],
+        "xp": 24,
+        "xp_fixed": 204,
+        "region": "R02",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Darkcrawler Cave.",
+        "source": "Drop",
+        "index": 10
+    },
+    "Underground Sewers Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Poisonward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 30,
+        "xp_fixed": 300,
+        "region": "R03",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Sludge Tunnels.",
+        "source": "Drop",
+        "index": 11
+    },
+    "Underground Sewers Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Terrorward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 31,
+        "xp_fixed": 301,
+        "region": "R03",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Sludge Tunnels.",
+        "source": "Drop",
+        "index": 12
+    },
+    "Underground Sewers Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Xenoward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 32,
+        "xp_fixed": 302,
+        "region": "R03",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies at the Crashed Spaceship.",
+        "source": "Drop",
+        "index": 13
+    },
+    "Underground Sewers Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Nerves of Steel",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 33,
+        "xp_fixed": 303,
+        "region": "R03",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Underground Sewers.",
+        "source": "Drop",
+        "index": 14
+    },
+    "Underground Sewers Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Bloodlust",
+                "5%",
+                0.0
+            ]
+        ],
+        "xp": 35,
+        "xp_fixed": 304,
+        "region": "R03",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses at the Crashed Spaceship in the Underground Sewers.",
+        "source": "Drop",
+        "index": 15
+    },
+    "Neo Kyoto Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Lifeward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 40,
+        "xp_fixed": 400,
+        "region": "R04",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Entertainment District.",
+        "source": "Drop",
+        "index": 16
+    },
+    "Neo Kyoto Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Lifebane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 41,
+        "xp_fixed": 401,
+        "region": "R04",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Entertainment District.",
+        "source": "Drop",
+        "index": 17
+    },
+    "Neo Kyoto Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Blur",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 42,
+        "xp_fixed": 402,
+        "region": "R04",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Phoenix Fist Dojo.",
+        "source": "Drop",
+        "index": 18
+    },
+    "Neo Kyoto Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "True Aim",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 43,
+        "xp_fixed": 403,
+        "region": "R04",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in Neo Kyoto.",
+        "source": "Drop",
+        "index": 19
+    },
+    "Neo Kyoto Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Manaward",
+                "10%",
+                1.9
+            ]
+        ],
+        "xp": 44,
+        "xp_fixed": 404,
+        "region": "R04",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Phoenix Fist Dojo.",
+        "source": "Drop",
+        "index": 20
+    },
+    "Abandoned Industrial Complex Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Terrorward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 50,
+        "xp_fixed": 500,
+        "region": "R05",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Warehouse.",
+        "source": "Drop",
+        "index": 21
+    },
+    "Abandoned Industrial Complex Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Terrorbane",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 51,
+        "xp_fixed": 501,
+        "region": "R05",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Warehouse.",
+        "source": "Drop",
+        "index": 22
+    },
+    "Abandoned Industrial Complex Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Poisonward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 52,
+        "xp_fixed": 502,
+        "region": "R05",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Secret Laboratory.",
+        "source": "Drop",
+        "index": 23
+    },
+    "Abandoned Industrial Complex Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Venomancy",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 53,
+        "xp_fixed": 503,
+        "region": "R05",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Abandoned Industrial Complex.",
+        "source": "Drop",
+        "index": 24
+    },
+    "Abandoned Industrial Complex Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Cloning",
+                "2%",
+                0.0
+            ]
+        ],
+        "xp": 54,
+        "xp_fixed": 504,
+        "region": "R05",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Secret Laboratory.",
+        "source": "Drop",
+        "index": 25
+    },
+    "Infernal Planes Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Demonward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 60,
+        "xp_fixed": 600,
+        "region": "R06",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Hellscape.",
+        "source": "Drop",
+        "index": 26
+    },
+    "Infernal Planes Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Fireward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 61,
+        "xp_fixed": 601,
+        "region": "R06",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Hellscape.",
+        "source": "Drop",
+        "index": 27
+    },
+    "Infernal Planes Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Demonbane",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 62,
+        "xp_fixed": 602,
+        "region": "R06",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Depths of Despair.",
+        "source": "Drop",
+        "index": 28
+    },
+    "Infernal Planes Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Pyromancy",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 63,
+        "xp_fixed": 603,
+        "region": "R06",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Infernal Planes.",
+        "source": "Drop",
+        "index": 29
+    },
+    "Infernal Planes Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Questing",
+                "3%",
+                0.0
+            ]
+        ],
+        "xp": 65,
+        "xp_fixed": 604,
+        "region": "R06",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Depths of Despair.",
+        "source": "Drop",
+        "index": 30
+    },
+    "Frostlands Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Iceward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 70,
+        "xp_fixed": 700,
+        "region": "R07",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Deathfrost Wastes.",
+        "source": "Drop",
+        "index": 31
+    },
+    "Frostlands Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Evade",
+                "3%",
+                0.03
+            ]
+        ],
+        "xp": 71,
+        "xp_fixed": 701,
+        "region": "R07",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Deathfrost Wastes.",
+        "source": "Drop",
+        "index": 32
+    },
+    "Frostlands Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Arsenal",
+                "1+",
+                0.0
+            ]
+        ],
+        "xp": 72,
+        "xp_fixed": 702,
+        "region": "R07",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Ice Cave.",
+        "source": "Drop",
+        "index": 33
+    },
+    "Frostlands Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "XP-losion",
+                "10%",
+                0.0
+            ]
+        ],
+        "xp": 73,
+        "xp_fixed": 703,
+        "region": "R07",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Deathfrost Wastes.",
+        "source": "Drop",
+        "index": 34
+    },
+    "Frostlands Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Cryomancy",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 73,
+        "xp_fixed": 704,
+        "region": "R07",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Ice Cave in the Frostlands.",
+        "source": "Drop",
+        "index": 35
+    },
+    "Dust Devil Desert Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Stormward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 80,
+        "xp_fixed": 800,
+        "region": "R08",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Dunes of Death.",
+        "source": "Drop",
+        "index": 36
+    },
+    "Dust Devil Desert Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Evade",
+                "1%",
+                0.01
+            ]
+        ],
+        "xp": 81,
+        "xp_fixed": 801,
+        "region": "R08",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Dunes of Death.",
+        "source": "Drop",
+        "index": 37
+    },
+    "Dust Devil Desert Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Xenoward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 82,
+        "xp_fixed": 802,
+        "region": "R08",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Wonderwall Oasis.",
+        "source": "Drop",
+        "index": 38
+    },
+    "Dust Devil Desert Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Xenobane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 83,
+        "xp_fixed": 803,
+        "region": "R08",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Dust Devil Desert.",
+        "source": "Drop",
+        "index": 39
+    },
+    "Dust Devil Desert Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Ancient Blood",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 84,
+        "xp_fixed": 804,
+        "region": "R08",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Wonderwall Oasis.",
+        "source": "Drop",
+        "index": 40
+    },
+    "Abyssal Depths Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Attunement",
+                "1%",
+                1.0
+            ]
+        ],
+        "xp": 90,
+        "xp_fixed": 900,
+        "region": "R09",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Coral Reef.",
+        "source": "Drop",
+        "index": 41
+    },
+    "Abyssal Depths Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Dispel",
+                "1%",
+                0.01
+            ]
+        ],
+        "xp": 91,
+        "xp_fixed": 901,
+        "region": "R09",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Coral Reef.",
+        "source": "Drop",
+        "index": 42
+    },
+    "Abyssal Depths Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Spiritward",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 92,
+        "xp_fixed": 902,
+        "region": "R09",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies at the Sunken Submarine.",
+        "source": "Drop",
+        "index": 43
+    },
+    "Abyssal Depths Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Summoning",
+                "2%",
+                0.0
+            ]
+        ],
+        "xp": 93,
+        "xp_fixed": 903,
+        "region": "R09",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Abyssal Depths.",
+        "source": "Drop",
+        "index": 44
+    },
+    "Abyssal Depths Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Wildbane",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 94,
+        "xp_fixed": 904,
+        "region": "R09",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Sunken Submarine.",
+        "source": "Drop",
+        "index": 45
+    },
+    "Vangoth Castle Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Bloodbane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 100,
+        "xp_fixed": 1000,
+        "region": "R10",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Great Hall.",
+        "source": "Drop",
+        "index": 46
+    },
+    "Vangoth Castle Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Bloodward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 101,
+        "xp_fixed": 1001,
+        "region": "R10",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Great Hall.",
+        "source": "Drop",
+        "index": 47
+    },
+    "Vangoth Castle Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Crit Chance",
+                "1%",
+                0.0
+            ]
+        ],
+        "xp": 102,
+        "xp_fixed": 1002,
+        "region": "R10",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Ballroom.",
+        "source": "Drop",
+        "index": 48
+    },
+    "Vangoth Castle Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Crit Chance",
+                "2%",
+                0.0
+            ]
+        ],
+        "xp": 103,
+        "xp_fixed": 1003,
+        "region": "R10",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Great Hall in Vangoth Castle.",
+        "source": "Drop",
+        "index": 49
+    },
+    "Vangoth Castle Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Necrosis",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 104,
+        "xp_fixed": 1004,
+        "region": "R10",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Ballroom in Vangoth Castle.",
+        "source": "Drop",
+        "index": 50
+    },
+    "Epic Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Loot Chance Modifier",
+                "20%",
+                0.0
+            ]
+        ],
+        "xp": 19,
+        "xp_fixed": 108,
+        "region": "R06",
+        "rarity": "Epic ",
+        "desc": "The trophies needed for this collection drop from epic enemies in Region 1-6.",
+        "source": "Drop",
+        "index": 51
+    },
+    "Epic Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Carnage",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 68,
+        "xp_fixed": 606,
+        "region": "R12",
+        "rarity": "Epic ",
+        "desc": "The trophies needed for this collection drop from epic enemies in Region 7-12.",
+        "source": "Drop",
+        "index": 52
+    },
+    "Squirrel Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Blood Craze",
+                "3%",
+                0.0
+            ]
+        ],
+        "xp": 19,
+        "xp_fixed": 109,
+        "region": "R06",
+        "rarity": "Epic ",
+        "desc": "The trophies needed for this collection drop from epic enemies in Region 1-6.",
+        "source": "Drop",
+        "index": 53
+    },
+    "Squirrel Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Temperance",
+                "-1",
+                0.0
+            ]
+        ],
+        "xp": 69,
+        "xp_fixed": 607,
+        "region": "R12",
+        "rarity": "Epic ",
+        "desc": "The trophies needed for this collection drop from epic enemies in Region 7-12.",
+        "source": "Drop",
+        "index": 54
+    },
+    "Pumpkin Fields Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Dispel",
+                "1%",
+                0.01
+            ]
+        ],
+        "xp": 15,
+        "xp_fixed": 105,
+        "region": "R01.3",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Pumpkin Fields.",
+        "source": "Drop",
+        "index": 55
+    },
+    "Pumpkin Fields Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Restless",
+                "3%",
+                1.0
+            ]
+        ],
+        "xp": 16,
+        "xp_fixed": 106,
+        "region": "R01.3",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Pumpkin Fields.",
+        "source": "Drop",
+        "index": 56
+    },
+    "Pumpkin Fields Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Restless",
+                "4%",
+                1.0
+            ]
+        ],
+        "xp": 17,
+        "xp_fixed": 107,
+        "region": "R01.3",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Pumpkin Fields.",
+        "source": "Drop",
+        "index": 57
+    },
+    "Haunted Winterland Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Ice Shield",
+                "10%",
+                0.3
+            ]
+        ],
+        "xp": 25,
+        "xp_fixed": 205,
+        "region": "R02.3",
+        "rarity": "Common",
+        "desc": "The trophies needed for this collection drop from common enemies in the Haunted Winterland.",
+        "source": "Drop",
+        "index": 58
+    },
+    "Haunted Winterland Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Restless",
+                "3%",
+                1.0
+            ]
+        ],
+        "xp": 26,
+        "xp_fixed": 206,
+        "region": "R02.3",
+        "rarity": "Uncommon",
+        "desc": "The trophies needed for this collection drop from uncommon and rare enemies in the Haunted Winterland.",
+        "source": "Drop",
+        "index": 59
+    },
+    "Haunted Winterland Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Coffin Capacity",
+                "1",
+                1.0
+            ]
+        ],
+        "xp": 27,
+        "xp_fixed": 207,
+        "region": "R02.3",
+        "rarity": "Rare",
+        "desc": "The trophies needed for this collection drop from bosses in the Haunted Winterland.",
+        "source": "Drop",
+        "index": 60
+    },
+    "Dark Dimension Collection I": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Eldritchward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 45,
+        "xp_fixed": 405,
+        "region": "RDD",
+        "rarity": "Event",
+        "desc": "The trophies needed for this collection drop from Dark Dimension bosses in Region 1-4.",
+        "source": "Drop",
+        "index": 61
+    },
+    "Dark Dimension Collection III": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Timewalker",
+                "15 -s",
+                0.0
+            ]
+        ],
+        "xp": 46,
+        "xp_fixed": 406,
+        "region": "RDD",
+        "rarity": "Event",
+        "desc": "The trophies needed for this collection drop from Dark Dimension bosses in Region 1-4.",
+        "source": "Drop",
+        "index": 62
+    },
+    "Dark Dimension Collection V": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Loot Chance Modifier",
+                "10%",
+                0.0
+            ]
+        ],
+        "xp": 47,
+        "xp_fixed": 407,
+        "region": "RDD",
+        "rarity": "Event",
+        "desc": "The trophies needed for this collection drop from Dark Dimension bosses in Region 1-4.",
+        "source": "Drop",
+        "index": 63
+    },
+    "Dark Dimension Collection II": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Eldritchbane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 85,
+        "xp_fixed": 805,
+        "region": "RDD",
+        "rarity": "Event",
+        "desc": "The trophies needed for this collection drop from Dark Dimension bosses in Region 5-8.",
+        "source": "Drop",
+        "index": 64
+    },
+    "Dark Dimension Collection IV": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Timewalker",
+                "15 -s",
+                0.0
+            ]
+        ],
+        "xp": 86,
+        "xp_fixed": 806,
+        "region": "RDD",
+        "rarity": "Event",
+        "desc": "The trophies needed for this collection drop from Dark Dimension bosses in Region 5-8.",
+        "source": "Drop",
+        "index": 65
+    },
+    "Dark Dimension Collection VI": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Whispers of Madness",
+                "5%",
+                1.0
+            ]
+        ],
+        "xp": 87,
+        "xp_fixed": 807,
+        "region": "RDD",
+        "rarity": "Event",
+        "desc": "The trophies needed for this collection drop from Dark Dimension bosses in Region 5-8.",
+        "source": "Drop",
+        "index": 66
+    },
+    "Archangel Coin Collection": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Health",
+                "13+",
+                0.0
+            ]
+        ],
+        "xp": 36,
+        "xp_fixed": 305,
+        "region": "RAA",
+        "rarity": "Event",
+        "desc": "The trophies needed for this Collection are dropped from Archangels in Regions 1-3.",
+        "source": "Drop",
+        "index": 67
+    },
+    "Archangel Key Collection": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Angelward",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 66,
+        "xp_fixed": 605,
+        "region": "RAA",
+        "rarity": "Event",
+        "desc": "The trophies needed for this Collection are dropped from Archangels in Regions 4-6.",
+        "source": "Drop",
+        "index": 68
+    },
+    "Archangel Feather Collection": {
+        "type": "Collection",
+        "skill": [
+            [
+                "Angelbane",
+                "10%",
+                1.0
+            ]
+        ],
+        "xp": 96,
+        "xp_fixed": 905,
+        "region": "RAA",
+        "rarity": "Event",
+        "desc": "The trophies needed for this Collection are dropped from Archangels in Regions 7-9.",
+        "source": "Drop",
+        "index": 69
+    }
+}

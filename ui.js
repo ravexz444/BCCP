@@ -305,6 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Save Setup
   const saveBtn = document.getElementById("saveSetupBtn");
   if (saveBtn) {
     saveBtn.addEventListener("click", () => {
@@ -316,6 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Load Setup
   const loadBtn = document.getElementById("loadSetupBtn");
   if (loadBtn) {
     loadBtn.addEventListener("click", () => {
@@ -325,6 +327,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   refreshSavedSetups();
+
+  // Delete Setup
+  const deleteBtn = document.getElementById("deleteSetupBtn");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", () => {
+      const select = document.getElementById("loadSetupSelect");
+      const setupName = select.value;
+  
+      if (!setupName) {
+        alert("Please select a setup to delete.");
+        return;
+      }
+  
+      if (!confirm(`Delete setup "${setupName}"?`)) return;
+  
+      let setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+      setups = setups.filter(s => s.name !== setupName);
+      localStorage.setItem("savedSetups", JSON.stringify(setups));
+  
+      // Refresh dropdown after deletion
+      refreshSavedSetups();
   
 });
 

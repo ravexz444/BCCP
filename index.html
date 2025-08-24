@@ -8,47 +8,90 @@
 
 	<div id="equipment-selectors"></div>
 
+	<h2>Chosen Setup Skills</h2>
+	<div id="skills-output"></div>
+
 	<script>
-	// List of equipment types you want dropdowns for
 	const equipmentTypes = [
 		"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
 		"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
 	];
 
-	// Load equipment_list.json
+	let equipmentData = {};
+
+	function createDropdown(type, index = null) {
+		const label = document.createElement("label");
+		label.textContent = index ? `${type} ${index}: ` : `${type}: `;
+
+		const select = document.createElement("select");
+		select.id = index ? `select-${type}-${index}` : `select-${type}`;
+
+		const defaultOption = document.createElement("option");
+		defaultOption.value = "";
+		defaultOption.textContent = "-- Select " + type + " --";
+		select.appendChild(defaultOption);
+
+		for (const [name, info] of Object.entries(equipmentData)) {
+			if (info.type === type) {
+				const option = document.createElement("option");
+				option.value = name;
+				option.textContent = name;
+				select.appendChild(option);
+			}
+		}
+
+		// When user picks something, update skills
+		select.addEventListener("change", updateSkills);
+
+		const container = document.getElementById("equipment-selectors");
+		container.appendChild(label);
+		container.appendChild(select);
+		container.appendChild(document.createElement("br"));
+	}
+
+	// Update skills output
+	function updateSkills() {
+		const outputDiv = document.getElementById("skills-output");
+		outputDiv.innerHTML = "";
+
+		let chosenItems = [];
+
+		equipmentTypes.forEach(type => {
+			if (type === "Accessory" || type === "Retainer") {
+				for (let i = 1; i <= 3; i++) {
+					const select = document.getElementById(`select-${type}-${i}`);
+					if (select && select.value) chosenItems.push(select.value);
+				}
+			} else {
+				const select = document.getElementById(`select-${type}`);
+				if (select && select.value) chosenItems.push(select.value);
+			}
+		});
+
+		// Display all skills from chosen items
+		chosenItems.forEach(itemName => {
+			const info = equipmentData[itemName];
+			if (info && info.skill) {
+				const itemDiv = document.createElement("div");
+				itemDiv.innerHTML = `<b>${itemName}</b><br>` +
+					info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
+				outputDiv.appendChild(itemDiv);
+				outputDiv.appendChild(document.createElement("br"));
+			}
+		});
+	}
+
+	// Load equipment JSON
 	fetch("equipment_list.json")
 		.then(response => response.json())
 		.then(data => {
-			const container = document.getElementById("equipment-selectors");
-
+			equipmentData = data;
 			equipmentTypes.forEach(type => {
-				// Create label
-				const label = document.createElement("label");
-				label.textContent = type + ": ";
-				container.appendChild(label);
-
-				// Create dropdown
-				const select = document.createElement("select");
-				select.id = "select-" + type;
-
-				// Default option
-				const defaultOption = document.createElement("option");
-				defaultOption.value = "";
-				defaultOption.textContent = "-- Select " + type + " --";
-				select.appendChild(defaultOption);
-
-				// Populate dropdown with equipment of this type
-				for (const [name, info] of Object.entries(data)) {
-					if (info.type === type) {
-						const option = document.createElement("option");
-						option.value = name;
-						option.textContent = name;
-						select.appendChild(option);
-					}
+				if (type === "Accessory" || type === "Retainer") {
+					for (let i = 1; i <= 3; i++) createDropdown(type, i);
+				} else {
+					createDropdown(type);
 				}
-
-				container.appendChild(select);
-				container.appendChild(document.createElement("br"));
 			});
 		});
 	</script>

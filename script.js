@@ -60,6 +60,16 @@ function createCollectionCheckboxes() {
   }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+	document.getElementById("checkAllBtn").addEventListener("click", () => {
+		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = true);
+	});
+
+	document.getElementById("uncheckAllBtn").addEventListener("click", () => {
+		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = false);
+	});
+});
+
 // ---- parsing helpers ----
 function parseSkillValue(raw) {
   // Accept numbers as-is

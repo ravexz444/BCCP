@@ -236,10 +236,12 @@ async function loadAllData() {
 
 	document.getElementById("checkAllBtn").addEventListener("click", () => {
 		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = true);
+		updateSkills(); // refresh summary
 	});
 	
 	document.getElementById("uncheckAllBtn").addEventListener("click", () => {
 		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = false);
+		updateSkills(); // refresh summary
 	});
 
 	// Start data loading after DOM is ready

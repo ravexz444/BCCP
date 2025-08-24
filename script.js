@@ -50,7 +50,7 @@ function createCollectionCheckboxes() {
 
 		const label = document.createElement("label");
 		label.htmlFor = "collection-" + code;
-		label.textContent = `${code} – ${fullName}`;
+		label.textContent = `${code}`;
 
 		div.appendChild(checkbox);
 		div.appendChild(label);

@@ -395,6 +395,12 @@ function loadSetup(setupName) {
   updateSkills();
 }
 
+function deleteSetup(setupName) {
+  let setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+  setups = setups.filter(s => s.name !== setupName);
+  localStorage.setItem("savedSetups", JSON.stringify(setups));
+}
+
 function refreshSavedSetups() {
   const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
   const select = document.getElementById("loadSetupSelect");

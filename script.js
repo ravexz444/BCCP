@@ -140,11 +140,7 @@ function summarizeSkills(allSkillsWithValues) {
 function renderSkillSummary(allSkillsWithValues) {
   const categoryMap = summarizeSkills(allSkillsWithValues);
   const container = document.getElementById("skills-summary");
-  container.innerHTML = ""; // IMPORTANT: if your HTML already has <h2>Skill Summary</h2>, don't add another here
-
-  // If you don't have a header in HTML, uncomment these two lines:
-  // const header = document.createElement("h2");
-  // header.textContent = "Skill Summary"; container.appendChild(header);
+  container.innerHTML = ""; 
 
   for (const [category, skills] of Object.entries(categoryMap)) {
     const h3 = document.createElement("h3");

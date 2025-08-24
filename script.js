@@ -59,6 +59,55 @@ function createCollectionCheckboxes() {
 	}
 }
 
+function updateSkills() {
+	const outputDiv = document.getElementById("skills-output");
+	outputDiv.innerHTML = "";
+
+	let chosenItems = [];
+
+	// Equipment + Retainers
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) {
+				const select = document.getElementById(`select-${type}-${i}`);
+				if (select && select.value) chosenItems.push(select.value);
+			}
+		} else {
+			const select = document.getElementById(`select-${type}`);
+			if (select && select.value) chosenItems.push(select.value);
+		}
+	});
+
+	// Collections (use codes, map to full names)
+	for (const code of Object.keys(collectionCodes)) {
+		const checkbox = document.getElementById("collection-" + code);
+		if (checkbox && checkbox.checked) {
+			const fullName = collectionCodes[code];
+			chosenItems.push(fullName);
+		}
+	}
+
+	// Collect skills for summary
+	let allSkillsWithValues = [];
+	chosenItems.forEach(itemName => {
+		let info = equipmentData[itemName] || collectionData[itemName];
+		if (info && info.skill) {
+			// Per-item output
+			const itemDiv = document.createElement("div");
+			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
+				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
+			outputDiv.appendChild(itemDiv);
+			outputDiv.appendChild(document.createElement("br"));
+	
+			// Collect name + value for summary
+			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
+		}
+	});
+	
+	// Render grouped summary with totals
+	renderSkillSummary(allSkillsWithValues);
+}
+
 function summarizeSkills(allSkillsWithValues) {
 	let categoryMap = {};
 
@@ -145,55 +194,6 @@ for (let [category, skills] of Object.entries(categoryMap)) {
 			console.log(`  ${skill} ${data.total}`);
 		}
 	}
-}
-
-function updateSkills() {
-	const outputDiv = document.getElementById("skills-output");
-	outputDiv.innerHTML = "";
-
-	let chosenItems = [];
-
-	// Equipment + Retainers
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const select = document.getElementById(`select-${type}-${i}`);
-				if (select && select.value) chosenItems.push(select.value);
-			}
-		} else {
-			const select = document.getElementById(`select-${type}`);
-			if (select && select.value) chosenItems.push(select.value);
-		}
-	});
-
-	// Collections (use codes, map to full names)
-	for (const code of Object.keys(collectionCodes)) {
-		const checkbox = document.getElementById("collection-" + code);
-		if (checkbox && checkbox.checked) {
-			const fullName = collectionCodes[code];
-			chosenItems.push(fullName);
-		}
-	}
-
-	// Collect skills for summary
-	let allSkillsWithValues = [];
-	chosenItems.forEach(itemName => {
-		let info = equipmentData[itemName] || collectionData[itemName];
-		if (info && info.skill) {
-			// Per-item output
-			const itemDiv = document.createElement("div");
-			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
-				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
-			outputDiv.appendChild(itemDiv);
-			outputDiv.appendChild(document.createElement("br"));
-	
-			// Collect name + value for summary
-			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
-		}
-	});
-	
-	// Render grouped summary with totals
-	renderSkillSummary(allSkillsWithValues);
 }
 
 async function loadAllData() {

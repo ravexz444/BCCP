@@ -6,6 +6,7 @@ const equipmentTypes = [
 let equipmentData = {};
 let collectionData = {};
 let collectionCodes = {}; // shortCode → fullName mapping
+let skillGroups = {};
 
 function createDropdown(type, index = null) {
 	const label = document.createElement("label");
@@ -100,15 +101,17 @@ function updateSkills() {
 }
 
 async function loadAllData() {
-	const [equip, coll, codes] = await Promise.all([
+	const [equip, coll, codes, skill_group] = await Promise.all([
 		fetch("equipment_list.json").then(r => r.json()),
 		fetch("collection_list.json").then(r => r.json()),
-		fetch("collection_codes.json").then(r => r.json())
+		fetch("collection_codes.json").then(r => r.json()),
+		fetch("skill_groups.json").then(r => r.json())
 	]);
 
 	equipmentData = equip;
 	collectionData = coll;
 	collectionCodes = codes;
+	skillGroups = skill_group;
 
 	// Build UI
 	equipmentTypes.forEach(type => {

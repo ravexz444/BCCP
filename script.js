@@ -60,16 +60,6 @@ function createCollectionCheckboxes() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById("checkAllBtn").addEventListener("click", () => {
-		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = true);
-	});
-
-	document.getElementById("uncheckAllBtn").addEventListener("click", () => {
-		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = false);
-	});
-});
-
 // ---- parsing helpers ----
 function parseSkillValue(raw) {
   // Accept numbers as-is
@@ -229,30 +219,41 @@ function updateSkills() {
 
 // ---- data loading ----
 async function loadAllData() {
-  const [equip, coll, codes, groups, combinables] = await Promise.all([
-    fetch("equipment_list.json").then(r => r.json()),
-    fetch("collection_list.json").then(r => r.json()),
-    fetch("collection_codes.json").then(r => r.json()),
-    fetch("skill_groups.json").then(r => r.json()),   // your revised format: { "Weapon Attack": [...], ... }
-    fetch("combinable_skills.json").then(r => r.json())
-  ]);
+	const [equip, coll, codes, groups, combinables] = await Promise.all([
+		fetch("equipment_list.json").then(r => r.json()),
+		fetch("collection_list.json").then(r => r.json()),
+		fetch("collection_codes.json").then(r => r.json()),
+		fetch("skill_groups.json").then(r => r.json()),
+		fetch("combinable_skills.json").then(r => r.json())
+	]);
 
-  equipmentData = equip;
-  collectionData = coll;
-  collectionCodes = codes;
-  skillGroups = groups; // already the dictionary
-  combinableSkills = new Set(combinables);
+	equipmentData = equip;
+	collectionData = coll;
+	collectionCodes = codes;
+	skillGroups = groups;
+	combinableSkills = new Set(combinables);
 
-  // Build UI
-  equipmentTypes.forEach(type => {
-    if (type === "Accessory" || type === "Retainer") {
-      for (let i = 1; i <= 3; i++) createDropdown(type, i);
-    } else {
-      createDropdown(type);
-    }
-  });
-  createCollectionCheckboxes();
+	// Build UI
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) createDropdown(type, i);
+		} else {
+			createDropdown(type);
+		}
+	});
+	createCollectionCheckboxes();
 }
 
-// run on page load
-loadAllData();
+// Attach button listeners *after DOM is ready*
+document.addEventListener("DOMContentLoaded", () => {
+	document.getElementById("checkAllBtn").addEventListener("click", () => {
+		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = true);
+	});
+
+	document.getElementById("uncheckAllBtn").addEventListener("click", () => {
+		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = false);
+	});
+
+	// Start data loading after DOM is ready
+	loadAllData();
+});

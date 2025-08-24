@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Collect chosen equipment (including multiple slots)
+      // Collect chosen equipment
       const equipment = [];
       equipmentTypes.forEach(type => {
         if (type === "Accessory" || type === "Retainer") {
@@ -278,8 +278,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const setup = { collections, equipment };
       localStorage.setItem("playerSetup", JSON.stringify(setup));
 
-      // Redirect
+      // Redirect to battle
       window.location.href = "battle.html";
+    });
+  }
+
+  // Check all collections
+  const checkAllBtn = document.getElementById("checkAllCollections");
+  if (checkAllBtn) {
+    checkAllBtn.addEventListener("click", () => {
+      document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
+        cb.checked = true;
+      });
+      updateSkills();
+    });
+  }
+
+  // Uncheck all collections
+  const uncheckAllBtn = document.getElementById("uncheckAllCollections");
+  if (uncheckAllBtn) {
+    uncheckAllBtn.addEventListener("click", () => {
+      document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
+        cb.checked = false;
+      });
+      updateSkills();
     });
   }
 });

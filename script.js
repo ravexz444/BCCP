@@ -234,12 +234,10 @@ async function loadAllData() {
 	createCollectionCheckboxes();
 }
 
-// Attach button listeners *after DOM is ready*
-document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("checkAllBtn").addEventListener("click", () => {
 		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = true);
 	});
-
+	
 	document.getElementById("uncheckAllBtn").addEventListener("click", () => {
 		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = false);
 	});

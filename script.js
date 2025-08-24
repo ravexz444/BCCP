@@ -39,25 +39,25 @@ function createDropdown(type, index = null) {
 }
 
 function createCollectionCheckboxes() {
-	const container = document.getElementById("collectionCheckboxes");
-	container.innerHTML = ""; // clear first
-	
-	Object.keys(collectionCodes).forEach(code => {
-		const checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		checkbox.className = "collection-box";
-		checkbox.value = code;
-		checkbox.id = "collection-" + code;
-		checkbox.addEventListener("change", updateSkills); // 🔑 attach listener
+  const container = document.getElementById("collection-selectors");
 
-		const label = document.createElement("label");
-		label.htmlFor = "collection-" + code;
-		label.textContent = code; // short name
+  for (const code of Object.keys(collectionCodes)) {
+    const div = document.createElement("div");
 
-		container.appendChild(checkbox);
-		container.appendChild(label);
-		container.appendChild(document.createElement("br"));
-	});
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = "collection-" + code; // use short code
+    checkbox.value = code;
+    checkbox.addEventListener("change", updateSkills);
+
+    const label = document.createElement("label");
+    label.htmlFor = "collection-" + code;
+    label.textContent = `${code}`;
+
+    div.appendChild(checkbox);
+    div.appendChild(label);
+    container.appendChild(div);
+  }
 }
 
 // ---- parsing helpers ----
@@ -140,7 +140,11 @@ function summarizeSkills(allSkillsWithValues) {
 function renderSkillSummary(allSkillsWithValues) {
   const categoryMap = summarizeSkills(allSkillsWithValues);
   const container = document.getElementById("skills-summary");
-  container.innerHTML = ""; 
+  container.innerHTML = ""; // IMPORTANT: if your HTML already has <h2>Skill Summary</h2>, don't add another here
+
+  // If you don't have a header in HTML, uncomment these two lines:
+  // const header = document.createElement("h2");
+  // header.textContent = "Skill Summary"; container.appendChild(header);
 
   for (const [category, skills] of Object.entries(categoryMap)) {
     const h3 = document.createElement("h3");
@@ -219,41 +223,30 @@ function updateSkills() {
 
 // ---- data loading ----
 async function loadAllData() {
-	const [equip, coll, codes, groups, combinables] = await Promise.all([
-		fetch("equipment_list.json").then(r => r.json()),
-		fetch("collection_list.json").then(r => r.json()),
-		fetch("collection_codes.json").then(r => r.json()),
-		fetch("skill_groups.json").then(r => r.json()),
-		fetch("combinable_skills.json").then(r => r.json())
-	]);
+  const [equip, coll, codes, groups, combinables] = await Promise.all([
+    fetch("equipment_list.json").then(r => r.json()),
+    fetch("collection_list.json").then(r => r.json()),
+    fetch("collection_codes.json").then(r => r.json()),
+    fetch("skill_groups.json").then(r => r.json()),   // your revised format: { "Weapon Attack": [...], ... }
+    fetch("combinable_skills.json").then(r => r.json())
+  ]);
 
-	equipmentData = equip;
-	collectionData = coll;
-	collectionCodes = codes;
-	skillGroups = groups;
-	combinableSkills = new Set(combinables);
+  equipmentData = equip;
+  collectionData = coll;
+  collectionCodes = codes;
+  skillGroups = groups; // already the dictionary
+  combinableSkills = new Set(combinables);
 
-	// Build UI
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) createDropdown(type, i);
-		} else {
-			createDropdown(type);
-		}
-	});
-	createCollectionCheckboxes();
+  // Build UI
+  equipmentTypes.forEach(type => {
+    if (type === "Accessory" || type === "Retainer") {
+      for (let i = 1; i <= 3; i++) createDropdown(type, i);
+    } else {
+      createDropdown(type);
+    }
+  });
+  createCollectionCheckboxes();
 }
 
-	document.getElementById("checkAllBtn").addEventListener("click", () => {
-		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = true);
-		updateSkills(); // refresh summary
-	});
-	
-	document.getElementById("uncheckAllBtn").addEventListener("click", () => {
-		document.querySelectorAll(".collection-box").forEach(cb => cb.checked = false);
-		updateSkills(); // refresh summary
-	});
-
-	// Start data loading after DOM is ready
-	loadAllData();
-});
+// run on page load
+loadAllData();

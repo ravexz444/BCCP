@@ -428,6 +428,10 @@ function refreshSavedSetups() {
   const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
   const select = document.getElementById("loadSetupSelect");
   select.innerHTML = setups.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
+
+  if (setups.length > 0) {
+    select.value = setups[0].name; // auto-select first
+  }
 }
 
 // Run on page load

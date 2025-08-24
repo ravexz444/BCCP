@@ -41,13 +41,23 @@ function createDropdown(type, index = null) {
 function createCollectionCheckboxes() {
 	const container = document.getElementById("collectionCheckboxes");
 	container.innerHTML = ""; // clear first
+	
+	Object.keys(collectionCodes).forEach(code => {
+		const checkbox = document.createElement("input");
+		checkbox.type = "checkbox";
+		checkbox.className = "collection-box";
+		checkbox.value = code;
+		checkbox.id = "collection-" + code;
+		checkbox.addEventListener("change", updateSkills); // 🔑 attach listener
 
-	for (const code of Object.keys(collectionCodes)) {
 		const label = document.createElement("label");
-		label.innerHTML = `<input type="checkbox" class="collection-box" value="${code}"> ${code}`;
+		label.htmlFor = "collection-" + code;
+		label.textContent = code; // short name
+
+		container.appendChild(checkbox);
 		container.appendChild(label);
 		container.appendChild(document.createElement("br"));
-	}
+	});
 }
 
 // ---- parsing helpers ----

@@ -348,8 +348,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // Refresh dropdown after deletion
       refreshSavedSetups();
-  
-});
+    });
+}
 
 function saveSetup(setupName) {
   const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");

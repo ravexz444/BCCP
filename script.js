@@ -101,7 +101,7 @@ function updateSkills() {
 }
 
 async function loadAllData() {
-	const [equip, coll, codes, skill_group] = await Promise.all([
+	const [equip, coll, codes, skgroup] = await Promise.all([
 		fetch("equipment_list.json").then(r => r.json()),
 		fetch("collection_list.json").then(r => r.json()),
 		fetch("collection_codes.json").then(r => r.json()),
@@ -111,7 +111,7 @@ async function loadAllData() {
 	equipmentData = equip;
 	collectionData = coll;
 	collectionCodes = codes;
-	skillGroups = skill_group;
+	skillGroups = skgroup;
 
 	// Build UI
 	equipmentTypes.forEach(type => {

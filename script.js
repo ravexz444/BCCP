@@ -87,17 +87,68 @@ function updateSkills() {
 		}
 	}
 
-	// Display skills
+	// Display per-item skills + collect all skills
+	let allSkills = [];
 	chosenItems.forEach(itemName => {
 		let info = equipmentData[itemName] || collectionData[itemName];
 		if (info && info.skill) {
+			// Per-item output
 			const itemDiv = document.createElement("div");
 			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
 				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
 			outputDiv.appendChild(itemDiv);
 			outputDiv.appendChild(document.createElement("br"));
+
+			// Collect just the skill names for summary
+			info.skill.forEach(s => allSkills.push(s[0]));
 		}
 	});
+
+	// Render grouped summary
+	renderSkillSummary(allSkills);
+}
+
+function summarizeSkills(allSkills) {
+	let groupedSummary = {};
+
+	allSkills.forEach(skill => {
+		for (const [groupName, groupSkills] of Object.entries(skillGroups)) {
+			if (groupSkills.includes(skill)) {
+				if (!groupedSummary[groupName]) groupedSummary[groupName] = [];
+				groupedSummary[groupName].push(skill);
+				return;
+			}
+		}
+		// if no match
+		if (!groupedSummary["Other"]) groupedSummary["Other"] = [];
+		groupedSummary["Other"].push(skill);
+	});
+
+	return groupedSummary;
+}
+
+function renderSkillSummary(allSkills) {
+	const grouped = summarizeSkills(allSkills);
+	const container = document.getElementById("skills-summary");
+	container.innerHTML = "";
+
+	const header = document.createElement("h2");
+	header.textContent = "Skill Summary";
+	container.appendChild(header);
+
+	for (const [groupName, skills] of Object.entries(grouped)) {
+		const h3 = document.createElement("h3");
+		h3.textContent = groupName;
+		container.appendChild(h3);
+
+		const ul = document.createElement("ul");
+		skills.forEach(skill => {
+			const li = document.createElement("li");
+			li.textContent = skill;
+			ul.appendChild(li);
+		});
+		container.appendChild(ul);
+	}
 }
 
 async function loadAllData() {

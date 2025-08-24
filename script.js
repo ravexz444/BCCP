@@ -39,25 +39,15 @@ function createDropdown(type, index = null) {
 }
 
 function createCollectionCheckboxes() {
-  const container = document.getElementById("collection-selectors");
+	const container = document.getElementById("collectionCheckboxes");
+	container.innerHTML = ""; // clear first
 
-  for (const code of Object.keys(collectionCodes)) {
-    const div = document.createElement("div");
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = "collection-" + code; // use short code
-    checkbox.value = code;
-    checkbox.addEventListener("change", updateSkills);
-
-    const label = document.createElement("label");
-    label.htmlFor = "collection-" + code;
-    label.textContent = `${code}`;
-
-    div.appendChild(checkbox);
-    div.appendChild(label);
-    container.appendChild(div);
-  }
+	for (const code of Object.keys(collectionCodes)) {
+		const label = document.createElement("label");
+		label.innerHTML = `<input type="checkbox" class="collection-box" value="${code}"> ${code}`;
+		container.appendChild(label);
+		container.appendChild(document.createElement("br"));
+	}
 }
 
 // ---- parsing helpers ----

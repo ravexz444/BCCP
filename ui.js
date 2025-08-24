@@ -304,4 +304,136 @@ document.addEventListener("DOMContentLoaded", () => {
       updateSkills();
     });
   }
+
+  // Save Setup
+  const saveBtn = document.getElementById("saveSetupBtn");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      const name = document.getElementById("setupName").value.trim();
+      if (name) {
+        saveSetup(name);
+        refreshSavedSetups();
+      }
+    });
+  }
+
+  // Load Setup
+  const loadBtn = document.getElementById("loadSetupBtn");
+  if (loadBtn) {
+    loadBtn.addEventListener("click", () => {
+      const select = document.getElementById("loadSetupSelect");
+      if (select.value) loadSetup(select.value);
+    });
+  }
+
+  refreshSavedSetups();
+
+  // Delete Setup
+  const deleteBtn = document.getElementById("deleteSetupBtn");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", () => {
+      const select = document.getElementById("loadSetupSelect");
+      const setupName = select.value;
+  
+      if (!setupName) {
+        alert("Please select a setup to delete.");
+        return;
+      }
+  
+      if (!confirm(`Delete setup "${setupName}"?`)) return;
+  
+      let setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+      setups = setups.filter(s => s.name !== setupName);
+      localStorage.setItem("savedSetups", JSON.stringify(setups));
+  
+      // Refresh dropdown after deletion
+      refreshSavedSetups();
+    });
+  }
 });
+  
+function saveSetup(setupName) {
+  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+
+  // Remove old with same name
+  const filtered = setups.filter(s => s.name !== setupName);
+
+  // Collect new selections
+  const collections = [];
+  for (const code of Object.keys(collectionCodes)) {
+    const checkbox = document.getElementById("collection-" + code);
+    if (checkbox && checkbox.checked) {
+      collections.push(collectionCodes[code]);
+    }
+  }
+
+  const equipment = [];
+  equipmentTypes.forEach(type => {
+    if (type === "Accessory" || type === "Retainer") {
+      for (let i = 1; i <= 3; i++) {
+        const select = document.getElementById(`select-${type}-${i}`);
+        if (select && select.value) equipment.push(select.value);
+      }
+    } else {
+      const select = document.getElementById(`select-${type}`);
+      if (select && select.value) equipment.push(select.value);
+    }
+  });
+
+  filtered.push({ name: setupName, collections, equipment });
+
+  localStorage.setItem("savedSetups", JSON.stringify(filtered));
+}
+
+function loadSetup(setupName) {
+  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+  const setup = setups.find(s => s.name === setupName);
+  if (!setup) return;
+
+  // Apply collections
+  document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
+    cb.checked = setup.collections.includes(collectionCodes[cb.id.replace("collection-", "")]);
+  });
+
+  // Apply equipment
+  equipmentTypes.forEach(type => {
+    if (type === "Accessory" || type === "Retainer") {
+      for (let i = 1; i <= 3; i++) {
+        const select = document.getElementById(`select-${type}-${i}`);
+        if (select) {
+          const matched = setup.equipment.find(e => Array.from(select.options).some(opt => opt.value === e));
+          if (matched) select.value = matched;
+          else select.value = "";
+        }
+      }
+    } else {
+      const select = document.getElementById(`select-${type}`);
+      if (select) {
+        const matched = setup.equipment.find(e => Array.from(select.options).some(opt => opt.value === e));
+        if (matched) select.value = matched;
+        else select.value = "";
+      }
+    }
+  });
+
+  updateSkills();
+}
+
+function deleteSetup(setupName) {
+  let setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+  setups = setups.filter(s => s.name !== setupName);
+  localStorage.setItem("savedSetups", JSON.stringify(setups));
+}
+
+function refreshSavedSetups() {
+  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+  const select = document.getElementById("loadSetupSelect");
+  select.innerHTML = setups.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
+
+  if (setups.length > 0) {
+    select.value = setups[0].name; // auto-select first
+  }
+}
+
+// Run on page load
+refreshSavedSetups();

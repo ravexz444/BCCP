@@ -1,10 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Battle Simulator</title>
+	<title>Bloodlore Chronicles Combat Prediction</title>
 </head>
 <body>
-    <h1>Welcome to My Battle Simulator</h1>
-    <button onclick="alert('Simulation started!')">Run Simulation</button>
+	<h1>Bloodlore Chronicles Combat Prediction</h1>
+
+	<div id="equipment-selectors"></div>
+
+	<script>
+	// List of equipment types you want dropdowns for
+	const equipmentTypes = [
+		"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
+		"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
+	];
+
+	// Load equipment_list.json
+	fetch("equipment_list.json")
+		.then(response => response.json())
+		.then(data => {
+			const container = document.getElementById("equipment-selectors");
+
+			equipmentTypes.forEach(type => {
+				// Create label
+				const label = document.createElement("label");
+				label.textContent = type + ": ";
+				container.appendChild(label);
+
+				// Create dropdown
+				const select = document.createElement("select");
+				select.id = "select-" + type;
+
+				// Default option
+				const defaultOption = document.createElement("option");
+				defaultOption.value = "";
+				defaultOption.textContent = "-- Select " + type + " --";
+				select.appendChild(defaultOption);
+
+				// Populate dropdown with equipment of this type
+				for (const [name, info] of Object.entries(data)) {
+					if (info.type === type) {
+						const option = document.createElement("option");
+						option.value = name;
+						option.textContent = name;
+						select.appendChild(option);
+					}
+				}
+
+				container.appendChild(select);
+				container.appendChild(document.createElement("br"));
+			});
+		});
+	</script>
 </body>
 </html>

@@ -45,5 +45,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     <ul>${skills.map(s => `<li>${s[0]} (${s[1]})</li>`).join("")}</ul>
   `;
 
-  // now you can start battle logic using `skills`
+  // Load enemies_list.json
+  const res = await fetch("enemies_list.json");
+  const enemies = await res.json();
+  const enemyNames = Object.keys(enemies);
+
+  const container = document.getElementById("enemySelectors");
+
+  // Create 10 dropdowns
+  for (let i = 0; i < 10; i++) {
+    const select = document.createElement("select");
+    select.id = `enemySelect${i}`;
+    select.innerHTML = `
+      <option value="">-- Select Enemy ${i + 1} --</option>
+      ${enemyNames.map(name => `<option value="${name}">${name}</option>`).join("")}
+    `;
+    container.appendChild(select);
+    container.appendChild(document.createElement("br"));
+  }
+
+  // Example: get selected enemies when needed
+  document.getElementById("battle-log").insertAdjacentHTML("beforebegin", `
+    <button id="checkEnemiesBtn">Check Selected Enemies</button>
+  `);
+
+  document.getElementById("checkEnemiesBtn").addEventListener("click", () => {
+    let chosen = [];
+    for (let i = 0; i < 10; i++) {
+      const val = document.getElementById(`enemySelect${i}`).value;
+      if (val) chosen.push(val);
+    }
+    console.log("Selected enemies:", chosen);
+    alert("You chose: " + chosen.join(", "));
+  });
 });

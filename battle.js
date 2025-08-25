@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// Create 10 dropdowns for enemy selection
 	function createEnemySelectors(enemyNames) {
-		const container = document.getElementById("enemy-selectors");
+		const container = document.getElementById("enemySelectors");
 		for (let i = 0; i < 10; i++) {
 			const select = document.createElement("select");
 			select.id = `enemy${i + 1}`;

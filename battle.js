@@ -45,37 +45,55 @@ document.addEventListener("DOMContentLoaded", async () => {
     <ul>${skills.map(s => `<li>${s[0]} (${s[1]})</li>`).join("")}</ul>
   `;
 
-  // Load enemies_list.json
-  const res = await fetch("enemies_list.json");
-  const enemies = await res.json();
-  const enemyNames = Object.keys(enemies);
+	// Load enemy list
+	let enemiesData = {};
+	fetch("enemies_list.json")
+		.then(res => res.json())
+		.then(data => {
+			enemiesData = data;
+			createEnemySelectors(Object.keys(data));
+		});
 
-  const container = document.getElementById("enemySelectors");
+	// Create 10 dropdowns for enemy selection
+	function createEnemySelectors(enemyNames) {
+		const container = document.getElementById("enemy-selectors");
+		for (let i = 0; i < 10; i++) {
+			const select = document.createElement("select");
+			select.id = `enemy${i + 1}`;
+			select.innerHTML = `<option value="">-- Select Enemy --</option>`;
+			enemyNames.forEach(name => {
+				const opt = document.createElement("option");
+				opt.value = name;
+				opt.textContent = name;
+				select.appendChild(opt);
+			});
+			container.appendChild(select);
+			container.appendChild(document.createElement("br"));
+		}
+	}
 
-  // Create 10 dropdowns
-  for (let i = 0; i < 10; i++) {
-    const select = document.createElement("select");
-    select.id = `enemySelect${i}`;
-    select.innerHTML = `
-      <option value="">-- Select Enemy ${i + 1} --</option>
-      ${enemyNames.map(name => `<option value="${name}">${name}</option>`).join("")}
-    `;
-    container.appendChild(select);
-    container.appendChild(document.createElement("br"));
-  }
+	// Handle Battle Button
+	document.getElementById("battleBtn").addEventListener("click", () => {
+		const logDiv = document.getElementById("battle-log");
+		logDiv.innerHTML = "<h2>Battle Setup</h2>";
 
-  // Example: get selected enemies when needed
-  document.getElementById("battle-log").insertAdjacentHTML("beforebegin", `
-    <button id="checkEnemiesBtn">Check Selected Enemies</button>
-  `);
-
-  document.getElementById("checkEnemiesBtn").addEventListener("click", () => {
-    let chosen = [];
-    for (let i = 0; i < 10; i++) {
-      const val = document.getElementById(`enemySelect${i}`).value;
-      if (val) chosen.push(val);
-    }
-    console.log("Selected enemies:", chosen);
-    alert("You chose: " + chosen.join(", "));
-  });
+		for (let i = 0; i < 10; i++) {
+			const enemyName = document.getElementById(`enemy${i + 1}`).value;
+			if (enemyName && enemiesData[enemyName]) {
+				const e = enemiesData[enemyName];
+				logDiv.innerHTML += `
+					<div style="border:1px solid #ccc; margin:5px; padding:5px;">
+						<h3>${enemyName}</h3>
+						<p><b>Race:</b> ${e.race}</p>
+						<p><b>Max HP:</b> ${e.maxhp}</p>
+						<p><b>Retainers:</b> ${[e.ret1, e.ret2, e.ret3].filter(r => r).join(", ") || "None"}</p>
+						<p><b>Skills:</b></p>
+						<ul>
+							${e.skill.map(s => `<li>${s[0]} (${s[1]}) [Prob: ${s[2]}]</li>`).join("")}
+						</ul>
+					</div>
+				`;
+			}
+		}
+	});
 });

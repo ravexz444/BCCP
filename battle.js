@@ -13,6 +13,33 @@ async function loadData() {
   collectionCodes = codes;
 }
 
+async function loadEnemyData(enemyName) {
+  const response = await fetch("enemies_list.json");
+  const enemies = await response.json();
+  const enemy = enemies[enemyName]; // <-- direct lookup by name
+
+  if (enemy) {
+    console.log("Enemy loaded:", enemy);
+
+    // Show in battle log
+    const battleLog = document.getElementById("battle-log");
+    battleLog.innerHTML += `
+      <div class="enemy-block">
+        <h3>${enemyName}</h3>
+        <p><b>Race:</b> ${enemy.race}</p>
+        <p><b>HP:</b> ${enemy.maxhp}</p>
+        <p><b>Retainers:</b> ${[enemy.ret1, enemy.ret2, enemy.ret3].filter(Boolean).join(", ") || "None"}</p>
+        <p><b>Skills:</b></p>
+        <ul>
+          ${enemy.skill.map(s => `<li>${s[0]} (${s[1]}) [Prob: ${s[2]}]</li>`).join("")}
+        </ul>
+      </div>
+    `;
+  }
+
+  return enemy;
+}
+
 function getSkillsForSetup(setup) {
   let skills = [];
 

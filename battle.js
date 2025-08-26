@@ -135,42 +135,68 @@ function removeSkillsFromRetainer(side, retainer) {
   }
 }
 
+const playerWeaponSkills = getWeaponSkills(playerSkills);
+const enemyWeaponSkills = getWeaponSkills(enemySkills);
+
+console.log("Player Wpn Skills:", playerWeaponSkills);
+console.log("Enemy Wpn Skills:", enemyWeaponSkills);
+
 // ------------------ Battle Simulation ------------------
 function simulateBattle(enemy, playerSkills, enemyName, simCount) {
-  let wins = 0;
+	let wins = 0;
 
-  for (let sim = 0; sim < simCount; sim++) {
-    let playerHP = 100; // TODO: link to setup
-    let enemyHP = enemy.maxhp;
-    let turn = 0;
+	for (let sim = 0; sim < simCount; sim++) {
+		let playerHP = 100; // TODO: from setup
+		let enemyHP = enemy.maxhp;
 
-    while (playerHP > 0 && enemyHP > 0) {
-      if (turn % 2 === 0) {
-        // Player turn
-        const skill = playerSkills[Math.floor(Math.random() * playerSkills.length)];
-        if (skill) {
-          // For now: fake damage since dictionary doesn’t have numbers
-          const dmg = randomInRange(4, 8);
-          enemyHP -= dmg;
-          if (sim === 0) logBattle(`Player uses ${skill.name} (${skill.type}), hits ${dmg}, Enemy HP: ${enemyHP}`);
-        }
-      } else {
-        // Enemy turn
-        const skill = pickSkill(enemy.skill);
-        if (skill) {
-          let dmgRange = skill[1].split("-").map(Number);
-          let dmg = randomInRange(dmgRange[0], dmgRange[1]);
-          playerHP -= dmg;
-          if (sim === 0) logBattle(`${enemyName} uses ${skill[0]}, hits ${dmg}, Player HP: ${playerHP}`);
-        }
-      }
-      turn++;
-    }
+		// --- Round 0 setup (beginning skills) ---
+		const playerWpn = getWeaponSkills(playerSkills); // type "Wpn", "RWpn"
+		const enemyWpn = getWeaponSkills(enemy.skills);
 
-    if (playerHP > 0) wins++;
-  }
+		if (sim === 0) {
+			logBattle(`Round 0 setup: Player(${playerWpn.length}) vs Enemy(${enemyWpn.length})`);
+		}
 
-  return { wins, total: simCount };
+		// --- Rounds 1 to 5 ---
+		for (let round = 1; round <= 5; round++) {
+			if (playerHP <= 0 || enemyHP <= 0) break;
+
+			if (sim === 0) logBattle(`--- Round ${round} ---`);
+
+			// Priority order (basic skeleton)
+			// Atk 1st prio
+			enemyHP = applySkills(playerWpn, enemyHP, "Player", sim);
+
+			// Def 1st prio (placeholder)
+			playerHP = applySkills([], playerHP, "EnemyDef", sim);
+
+			// Atk 2nd prio
+			playerHP = applySkills(enemyWpn, playerHP, enemyName, sim);
+
+			// Def 2nd prio (placeholder)
+			enemyHP = applySkills([], enemyHP, "PlayerDef", sim);
+
+			// Atk 3rd prio (not used yet)
+			// Def 3rd prio (not used yet)
+
+			if (playerHP <= 0 || enemyHP <= 0) break;
+		}
+
+		if (playerHP > 0 && enemyHP <= 0) wins++;
+	}
+
+	return { wins, total: simCount };
+}
+
+// Apply weapon skills (simplified for now)
+function applySkills(skills, targetHP, owner, sim) {
+	for (let skill of skills) {
+		// TODO: lookup actual damage values from dictionary
+		const dmg = randomInRange(4, 8);
+		targetHP -= dmg;
+		if (sim === 0) logBattle(`${owner} uses ${skill[0]} (${skill[1]}), hits ${dmg}, Target HP: ${targetHP}`);
+	}
+	return targetHP;
 }
 
 // ------------------ Main ------------------

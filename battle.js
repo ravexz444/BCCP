@@ -51,7 +51,7 @@ async function loadAllData() {
 // ------------------ List of Functions ------------------
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {
-	const container = document.getElementById("enemySelectors");
+	const container = document.getElementById("manualEnemySelector");
 	container.innerHTML = ""; // clear old if reload
 
 	// Heading - Manual
@@ -88,14 +88,15 @@ function buildEnemySelectors() {
 
 	// Label - Type
 	const typeLabel = document.createElement("label");
-	typeLabel.htmlFor = "batchEnemyType";
+	typeLabel.htmlFor = "batchEnemyGroup";
 	typeLabel.textContent = "Type: ";
 	batchDiv.appendChild(typeLabel);
 
 	// Enemy type select
 	const typeSelect = document.createElement("select");
-	typeSelect.id = "batchEnemyType";
+	typeSelect.id = "batchEnemyGroup";
 	typeSelect.innerHTML = `
+ 		<option value="">-- Select Enemy Group --</option>
 		<option value="nonBoss">Non-Boss</option>
 		<option value="boss">Boss</option>
 		<option value="all">All</option>
@@ -114,6 +115,13 @@ function buildEnemySelectors() {
 	// Region select
 	const regionSelect = document.createElement("select");
 	regionSelect.id = "batchEnemyRegion";
+
+	// First blank option
+	const blankOpt = document.createElement("option");
+	blankOpt.value = "";
+	blankOpt.textContent = "-- Select Enemy Region --";
+	regionSelect.appendChild(blankOpt);
+	
 	Object.keys(grimoire).forEach(region => {
 		const opt = document.createElement("option");
 		opt.value = region;

@@ -7,12 +7,16 @@
 </head>
 <body>
   <div id="enemySelectors">
-  <h2>Select Enemies (up to 10)</h2>
+    <h2>Select Enemies (up to 10)</h2>
   </div>
 
+  <label for="simulations">Number of simulations:</label>
+  <input type="number" id="simulations" value="100" min="1" max="10000">
+
+  <br><br>
   <button id="battleBtn">Battle</button>
   
   <h1>Battle Page</h1>
-  <div id="battle-log"></div>
+  <div id="battle-log" style="white-space: pre-line; border:1px solid #ccc; padding:10px; max-height:300px; overflow-y:auto;"></div>
 </body>
 </html>

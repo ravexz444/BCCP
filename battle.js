@@ -1191,7 +1191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
 	const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
 
-	const logDiv = document.getElementById("battle-log");
+	const logDiv = document.getElementById("setup-log");
 	logDiv.innerHTML = `
 		<h2>Your Setup</h2>
 		<p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>

@@ -5,6 +5,8 @@ let enemiesData = {};
 let retainersData = {};
 let excludedSkills = [];
 let skillsDictionary = {};
+let playerRetainers = [];  // active retainers
+let enemyRetainers = [];
 
 const MAX_LOG_LINES = 200;
 let SIMULATIONS = 100;
@@ -103,6 +105,34 @@ function pickSkill(skillList) {
   const candidates = skillList.filter(s => Math.random() < (s[2] ?? 1.0)); 
   if (candidates.length === 0) return null;
   return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+// ------------------ Add or Remove Retainers ------------------
+function summonRetainer(side, retainer) {
+  if (side === "player" && playerRetainers.length < 4) {
+    playerRetainers.push(retainer);
+    addSkillsFromRetainer("player", retainer);
+  } else if (side === "enemy" && enemyRetainers.length < 4) {
+    enemyRetainers.push(retainer);
+    addSkillsFromRetainer("enemy", retainer);
+  }
+}
+
+function addSkillsFromRetainer(side, retainer) {
+  // retainer.skills is assumed to be an array
+  if (side === "player") {
+    playerSkills.push(...retainer.skills);
+  } else {
+    enemySkills.push(...retainer.skills);
+  }
+}
+
+function removeSkillsFromRetainer(side, retainer) {
+  if (side === "player") {
+    playerSkills = playerSkills.filter(s => !retainer.skills.includes(s));
+  } else {
+    enemySkills = enemySkills.filter(s => !retainer.skills.includes(s));
+  }
 }
 
 // ------------------ Battle Simulation ------------------

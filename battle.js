@@ -1209,6 +1209,66 @@ function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
 	logDiv.innerText = summary.join("\n");
 }
 
+// ------------------ Enemy Selector Storage ------------------
+function saveBattle(name) {
+	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]")
+		.filter(b => b.name !== name);
+
+	const selectors = document.querySelectorAll(".enemy-select");
+	const manualEnemies = Array.from(selectors)
+		.map(sel => sel.value)
+		.filter(v => v !== "");
+
+	const batchType = document.getElementById("batchEnemyType").value;
+	const batchRegion = document.getElementById("batchEnemyRegion").value;
+
+	const n = parseInt(document.getElementById("simulations").value, 10) || 1;
+
+	battles.push({
+		name,
+		manualEnemies,
+		batchType,
+		batchRegion,
+		simulations: n
+	});
+
+	localStorage.setItem("savedBattles", JSON.stringify(battles));
+	refreshSavedBattles();
+}
+
+function loadBattle(name) {
+	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]");
+	const battle = battles.find(b => b.name === name);
+	if (!battle) return;
+
+	// Manual enemies
+	const selectors = document.querySelectorAll(".enemy-select");
+	selectors.forEach((sel, i) => {
+		sel.value = battle.manualEnemies[i] || "";
+	});
+
+	// Batch selection
+	document.getElementById("batchEnemyType").value = battle.batchType;
+	document.getElementById("batchEnemyRegion").value = battle.batchRegion;
+
+	// Number of simulations
+	document.getElementById("simulations").value = battle.simulations;
+}
+
+function deleteBattle(name) {
+	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]")
+		.filter(b => b.name !== name);
+	localStorage.setItem("savedBattles", JSON.stringify(battles));
+	refreshSavedBattles();
+}
+
+function refreshSavedBattles() {
+	const select = document.getElementById("loadBattleSelect");
+	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]");
+	select.innerHTML = battles.map(b => `<option value="${b.name}">${b.name}</option>`).join("");
+	if (battles.length > 0) select.value = battles[0].name;
+}
+
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
 	await loadAllData();
@@ -1225,6 +1285,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
 	`;
 
+	document.getElementById("saveBattleBtn").addEventListener("click", () => {
+		const name = document.getElementById("battleName").value.trim();
+		if (name) saveBattle(name);
+	});
+	
+	document.getElementById("loadBattleBtn").addEventListener("click", () => {
+		const sel = document.getElementById("loadBattleSelect");
+		if (sel.value) loadBattle(sel.value);
+	});
+	
+	document.getElementById("deleteBattleBtn").addEventListener("click", () => {
+		const sel = document.getElementById("loadBattleSelect");
+		if (!sel.value) return alert("Select a saved battle first.");
+		if (!confirm(`Delete saved battle "${sel.value}"?`)) return;
+		deleteBattle(sel.value);
+	});
+	
+	refreshSavedBattles();
+	
 	document.getElementById("battleBtn").addEventListener("click", () => {
 		const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 

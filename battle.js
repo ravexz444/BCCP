@@ -115,40 +115,50 @@ function simulateBattle(enemy, playerSkills, enemyName) {
 
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadData();
+	await loadData();
 
-  const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
-  const playerSkills = getSkillsForSetup(setup);
+	const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
+	const playerSkills = getSkillsForSetup(setup);
 
-  const logDiv = document.getElementById("battle-log");
-  logDiv.innerHTML = `
-    <h2>Your Setup</h2>
-    <p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
-    <p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
-    <h3>Skills:</h3>
-    <ul>${playerSkills.map(s => `<li>${s[0]} (${s[1]})</li>`).join("")}</ul>
-  `;
+	const logDiv = document.getElementById("battle-log");
+	logDiv.innerHTML = `
+		<h2>Your Setup</h2>
+		<p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
+		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
+		<h3>Skills:</h3>
+		<ul>${playerSkills.map(s => `<li>${s[0]} (${s[1]})</li>`).join("")}</ul>
+	`;
 
-  await loadEnemies();
+	await loadEnemies();
 
-  document.getElementById("battleBtn").addEventListener("click", () => {
-    logDiv.innerText = ""; // reset
-    const results = [];
+	document.getElementById("battleBtn").addEventListener("click", () => {
+		const simulationCount = parseInt(document.getElementById("simulations").value, 10) || 100;
 
-    for (let i = 0; i < 10; i++) {
-      const enemyName = document.getElementById(`enemy${i + 1}`).value;
-      if (!enemyName) continue;
+		const selectors = document.querySelectorAll(".enemy-select");
+		const selectedEnemies = Array.from(selectors)
+			.map(sel => sel.value)
+			.filter(v => v !== "");
 
-      const enemy = enemiesData[enemyName];
-      if (!enemy) continue;
+		if (selectedEnemies.length === 0) {
+			alert("Please select at least one enemy.");
+			return;
+		}
 
-      logBattle(`--- Battle vs ${enemyName} ---`);
-      const { wins, total } = simulateBattle(enemy, playerSkills, enemyName);
-      const winrate = (wins / total * 100).toFixed(1);
-      results.push(`${enemyName}: ${wins}/${total} (${winrate}%)`);
-    }
+		logDiv.innerText = ""; // reset
+		const results = [];
 
-    logBattle("\n--- Results ---");
-    results.forEach(r => logBattle(r));
-  });
+		for (const enemyName of selectedEnemies) {
+			const enemy = enemiesData[enemyName];
+			if (!enemy) continue;
+
+			logBattle(`--- Battle vs ${enemyName} ---`);
+			const { wins, total } = simulateBattle(enemy, playerSkills, enemyName, simulationCount);
+			const winrate = (wins / total * 100).toFixed(1);
+			results.push(`${enemyName}: ${wins}/${total} (${winrate}%)`);
+		}
+
+		logBattle("\n--- Results ---");
+		results.forEach(r => logBattle(r));
+	});
 });
+

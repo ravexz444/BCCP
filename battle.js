@@ -1296,6 +1296,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 		</ul>
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
 		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
+  
+  		<h3>Skills:</h3>
+		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
 	`;
 
 	// Button to go back to index.html

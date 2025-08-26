@@ -208,16 +208,16 @@ function saveSetup(name) {
 		if (cb && cb.checked) collections.push(collectionCodes[code]);
 	}
 
-	const equipment = [];
+	const equipment = {};
 	equipmentTypes.forEach(type => {
 		if (type === "Accessory" || type === "Retainer") {
 			for (let i = 1; i <= 3; i++) {
 				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel && sel.value) equipment.push(sel.value);
+				if (sel && sel.value) equipment[`${type}-${i}`] = sel.value;
 			}
 		} else {
 			const sel = document.getElementById(`select-${type}`);
-			if (sel && sel.value) equipment.push(sel.value);
+			if (sel && sel.value) equipment[type] = sel.value;
 		}
 	});
 
@@ -239,17 +239,11 @@ function loadSetup(name) {
 		if (type === "Accessory" || type === "Retainer") {
 			for (let i = 1; i <= 3; i++) {
 				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel) {
-					const matched = setup.equipment.find(e => Array.from(sel.options).some(o => o.value === e));
-					sel.value = matched || "";
-				}
+				if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
 			}
 		} else {
 			const sel = document.getElementById(`select-${type}`);
-			if (sel) {
-				const matched = setup.equipment.find(e => Array.from(sel.options).some(o => o.value === e));
-				sel.value = matched || "";
-			}
+			if (sel) sel.value = setup.equipment[type] || "";
 		}
 	});
 

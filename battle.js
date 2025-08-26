@@ -54,6 +54,11 @@ function buildEnemySelectors() {
 	const container = document.getElementById("enemySelectors");
 	container.innerHTML = ""; // clear old if reload
 
+	// --- Manual selector heading ---
+	const manualHeading = document.createElement("h3");
+	manualHeading.textContent = "Manual Selector";
+	container.appendChild(manualHeading);
+	
 	// --- Manual 10 selects ---
 	for (let i = 0; i < 10; i++) {
 		const select = document.createElement("select");
@@ -72,6 +77,11 @@ function buildEnemySelectors() {
 		container.appendChild(document.createElement("br"));
 	}
 
+	// --- Batch selector heading ---
+	const batchHeading = document.createElement("h3");
+	batchHeading.textContent = "Batch Selector";
+	container.appendChild(batchHeading);
+	
 	// --- Batch selector ---
 	const batchDiv = document.createElement("div");
 	batchDiv.id = "batchEnemySelector";

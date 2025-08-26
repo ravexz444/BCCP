@@ -30,114 +30,31 @@ async function loadData() {
 }
 
 // Search skill for all equipments and collections
-function getSkillsForSetup(setup, userCollection = []) {
-	let skillsList = [];
+function init_setup(setup) {
+	let player_skills = [];
 
 	// Equipment skills
-	for (let equip of setup) {
-		if (equip && equipmentData[equip]) {
+	for (let equip of setup.equipment || []) {
+		if (equipmentData[equip]) {
 			for (let skill of equipmentData[equip].skills) {
-				skillsList.push([skill[0], skill[1], skill[2]]);
+				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}
 	}
 
 	// Collection skills
-	for (let coll of userCollection) {
+	for (let coll of setup.collections || []) {
 		if (collectionData[coll]) {
 			for (let skill of collectionData[coll].skills) {
-				skillsList.push([skill[0], skill[1], skill[2]]);
+				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}
 	}
 
-	return skillsList;
-}
+	// Retainers
+	let player_rets = setup.retainers || [];
 
-function init_setup(coin, bait, hex, weapon, chest, head, hands, feet, power, emblem, coffin, acc1, acc2, acc3, mount, collection) {
-    //
-    // Original Player Equipment's Place
-    //
-
-    // Initialize the all_skills list
-    let player_skills = []; // Allow duplicate of skills
-    // player_skills = [["Apocalypse", "3", 1]]; // Testing Purpose
-
-    // List of player-equipped items
-    let player_equipment = [coin, bait, hex, weapon, chest, head, hands, feet, power, emblem, coffin, acc1, acc2, acc3, mount];
-
-    // Check equipment database
-    for (let name of player_equipment) {
-        if (name !== "" && !(name in equipment_list)) {
-            console.error(`Error: Equipment ${name} not found in database!`);
-            throw new Error("Invalid equipment");
-        }
-    }
-
-    // Check collection database
-    for (let col_id of collection) {
-        if (col_id !== "") {
-            let col_name = collection_names[col_id] || "";
-            if (!(col_name in collection_list)) {
-                console.error(`Error: Collection ${col_name} not found in database!`);
-                throw new Error("Invalid collection");
-            }
-        }
-    }
-
-    // Get skills from equipment_list
-    for (let eq of player_equipment) {
-        if (eq in equipment_list) {
-            player_skills.push(...equipment_list[eq]["skill"]);
-        }
-    }
-
-    // Get skills from collection_list
-    for (let col_id of collection) {
-        let col_name = collection_names[col_id] || "";
-        if (col_name in collection_list) {
-            player_skills.push(...collection_list[col_name]["skill"]);
-        }
-    }
-
-    return player_skills;
-}
-
-function init_setup(setup) {
-	// setup = { coin, bait, hex, weapon, chest, head, hands, feet, power, emblem, coffin, acc1, acc2, acc3, mount, collection }
-
-	let skills = [];
-
-	// Collect all skills from the setup
-	Object.values(setup).forEach(item => {
-		if (item && item.skills) {
-			item.skills.forEach(skill => {
-				// tuple-like object { name, value, prob }
-				skills.push({
-					name: skill.name,
-					value: skill.value,
-					prob: skill.prob
-				});
-			});
-		}
-	});
-	
-    // Get skills from equipment_list
-    for (let eq of player_equipment) {
-        if (eq in equipment_list) {
-            player_skills.push(...equipment_list[eq]["skill"]);
-        }
-    }
-
-    // Get skills from collection_list
-    for (let col_id of collection) {
-        let col_name = collection_names[col_id] || "";
-        if (col_name in collection_list) {
-            player_skills.push(...collection_list[col_name]["skill"]);
-        }
-    }
-
-    return player_skills;
+	return { player_skills, player_rets };
 }
 
 // Parse skills' value

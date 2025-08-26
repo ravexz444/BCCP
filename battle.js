@@ -1,3 +1,13 @@
+let equipmentData = {}; 
+let collectionData = {}; 
+let collectionCodes = {}; 
+let enemiesData = {}; 
+let retainersData = {}; 
+let excludedSkills = []; 
+let skillsDictionary = {}; 
+let playerRetainers = []; // active retainers 
+let enemyRetainers = [];
+
 const MAX_LOG_LINES = 500;
 const player = "player";
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];

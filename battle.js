@@ -54,6 +54,55 @@ function getSkillsForSetup(setup, userCollection = []) {
 	return skillsList;
 }
 
+function init_setup(coin, bait, hex, weapon, chest, head, hands, feet, power, emblem, coffin, acc1, acc2, acc3, mount, collection) {
+    //
+    // Original Player Equipment's Place
+    //
+
+    // Initialize the all_skills list
+    let player_skills = []; // Allow duplicate of skills
+    // player_skills = [["Apocalypse", "3", 1]]; // Testing Purpose
+
+    // List of player-equipped items
+    let player_equipment = [coin, bait, hex, weapon, chest, head, hands, feet, power, emblem, coffin, acc1, acc2, acc3, mount];
+
+    // Check equipment database
+    for (let name of player_equipment) {
+        if (name !== "" && !(name in equipment_list)) {
+            console.error(`Error: Equipment ${name} not found in database!`);
+            throw new Error("Invalid equipment");
+        }
+    }
+
+    // Check collection database
+    for (let col_id of collection) {
+        if (col_id !== "") {
+            let col_name = collection_names[col_id] || "";
+            if (!(col_name in collection_list)) {
+                console.error(`Error: Collection ${col_name} not found in database!`);
+                throw new Error("Invalid collection");
+            }
+        }
+    }
+
+    // Get skills from equipment_list
+    for (let eq of player_equipment) {
+        if (eq in equipment_list) {
+            player_skills.push(...equipment_list[eq]["skill"]);
+        }
+    }
+
+    // Get skills from collection_list
+    for (let col_id of collection) {
+        let col_name = collection_names[col_id] || "";
+        if (col_name in collection_list) {
+            player_skills.push(...collection_list[col_name]["skill"]);
+        }
+    }
+
+    return player_skills;
+}
+
 // Parse skills' value
 function parse_value(value) {
     try {
@@ -1154,9 +1203,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!enemy) continue;
 
       logBattle(`--- Battle vs ${enemyName} ---`);
-      const { wins, total } = simulateBattle(enemy, playerSkills, enemyName, simulationCount);
-      const winrate = (wins / total * 100).toFixed(1);
-      results.push(`${enemyName}: ${wins}/${total} (${winrate}%)`);
+	  const { wins, draws, losses, total } = runSimulations(enemyName, playerSkills, ret1, ret2, ret3, simulationCount);
+	  const winrate = (wins / total * 100).toFixed(1);
+	  const drawrate = (draws / total * 100).toFixed(1);
+	  const lossrate = (losses / total * 100).toFixed(1);
+	  results.push(`${enemyName}: ${wins}/${total} Wins (${winrate}%), ${draws} Draws (${drawrate}%), ${losses} Losses (${lossrate}%)`);
     }
 
     logBattle("\n--- Results ---");

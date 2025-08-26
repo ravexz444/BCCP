@@ -1294,16 +1294,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 		<h3>Setup</h3>
 		<p><b>Equipment:</b></p>
 		<ul>
-			${Object.entries(setup)
-				.filter(([k]) => !["collections", "retainers"].includes(k))
-				.map(([k, v]) => `<li>${k}: ${v || "None"}</li>`)
+			${Object.entries(setup.equipment || {})
+				.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`)
 				.join("")}
 		</ul>
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
 		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
-
-		<h3>Skills:</h3>
-		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
 	`;
 
 	// Button to go back to index.html

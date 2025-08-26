@@ -1,6 +1,6 @@
 const equipmentTypes = [
 	"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
-	"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
+	"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer", "Heart"
 ];
 
 let equipmentData = {};

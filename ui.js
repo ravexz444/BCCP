@@ -331,13 +331,17 @@ function importFromBattle() {
 
 	// Restore retainers
 	if (setup.retainers) {
-		let retIndex = 1;
-		setup.retainers.forEach(ret => {
-			const sel = document.getElementById(`select-Retainer-${retIndex}`);
-			if (sel) sel.value = ret;
-			retIndex++;
-		});
+		for (let i = 1; i <= 3; i++) {
+			const sel = document.getElementById(`select-Retainer-${i}`);
+			if (!sel) continue;
+			if (setup.retainers[i - 1]) {
+				sel.value = setup.retainers[i - 1];
+			} else {
+				sel.value = ""; // clear if not saved
+			}
+		}
 	}
+	
 }
 
 // ---------------------- DATA LOADING ----------------------

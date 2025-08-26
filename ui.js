@@ -317,18 +317,23 @@ function importFromBattle() {
 	if (setup.equipment) {
 		let accIndex = 1;
 		setup.equipment.forEach(eq => {
-			const type = findEquipmentType(eq);
+			if (!eq) return; // skip empty slots
+			const type = equipment_list[eq]?.type; // read directly from equipment_list
+			if (!type) return; // safeguard if not found
+	
 			if (type === "Accessory") {
+				// Fill accessories sequentially
 				const sel = document.getElementById(`select-Accessory-${accIndex}`);
 				if (sel) sel.value = eq;
 				accIndex++;
 			} else {
+				// Normal types (Weapon, Head, Chest, etc.)
 				const sel = document.getElementById(`select-${type}`);
 				if (sel) sel.value = eq;
 			}
 		});
 	}
-
+	
 	// Restore retainers
 	if (setup.retainers) {
 		for (let i = 1; i <= 3; i++) {

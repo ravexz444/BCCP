@@ -273,32 +273,27 @@ function exportToBattle() {
 		if (cb && cb.checked) collections.push(collectionCodes[code]);
 	}
 
-	const equipment = [];
-	const retainers = [];
+	const equipment = {};
 	equipmentTypes.forEach(type => {
-		if (type === "Accessory") {
+		if (type === "Accessory" || type === "Retainer") {
 			for (let i = 1; i <= 3; i++) {
 				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel && sel.value) equipment.push(sel.value);
-			}
-		} else if (type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel && sel.value) retainers.push(sel.value);
+				equipment[`${type}-${i}`] = sel?.value || "";
 			}
 		} else {
 			const sel = document.getElementById(`select-${type}`);
-			if (sel && sel.value) equipment.push(sel.value);
+			equipment[type] = sel?.value || "";
 		}
 	});
 
-	localStorage.setItem("activeSetup", JSON.stringify({ collections, retainers, equipment }));
+	// Save the whole active setup
+	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
 	window.location.href = "battle.html";
 }
 
 // Battle -> Index
 function importFromBattle() {
-	const savedActiveSetup = localStorage.getItem("activeSetup"); // use the same key you stored
+	const savedActiveSetup = localStorage.getItem("activeSetup");
 	if (!savedActiveSetup) return;
 
 	const setup = JSON.parse(savedActiveSetup);
@@ -307,46 +302,24 @@ function importFromBattle() {
 	if (setup.collections) {
 		for (const code of Object.keys(collectionCodes)) {
 			const cb = document.getElementById("collection-" + code);
-			if (cb && setup.collections.includes(collectionCodes[code])) {
-				cb.checked = true;
-			}
+			if (cb) cb.checked = setup.collections.includes(collectionCodes[code]);
 		}
 	}
 
 	// Restore equipment
 	if (setup.equipment) {
-		let accIndex = 1;
-		setup.equipment.forEach(eq => {
-			if (!eq) return; // skip empty slots
-			const type = equipment_list[eq]?.type; // read directly from equipment_list
-			if (!type) return; // safeguard if not found
-	
-			if (type === "Accessory") {
-				// Fill accessories sequentially
-				const sel = document.getElementById(`select-Accessory-${accIndex}`);
-				if (sel) sel.value = eq;
-				accIndex++;
+		equipmentTypes.forEach(type => {
+			if (type === "Accessory" || type === "Retainer") {
+				for (let i = 1; i <= 3; i++) {
+					const sel = document.getElementById(`select-${type}-${i}`);
+					if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
+				}
 			} else {
-				// Normal types (Weapon, Head, Chest, etc.)
 				const sel = document.getElementById(`select-${type}`);
-				if (sel) sel.value = eq;
+				if (sel) sel.value = setup.equipment[type] || "";
 			}
 		});
 	}
-	
-	// Restore retainers
-	if (setup.retainers) {
-		for (let i = 1; i <= 3; i++) {
-			const sel = document.getElementById(`select-Retainer-${i}`);
-			if (!sel) continue;
-			if (setup.retainers[i - 1]) {
-				sel.value = setup.retainers[i - 1];
-			} else {
-				sel.value = ""; // clear if not saved
-			}
-		}
-	}
-	
 }
 
 // ---------------------- DATA LOADING ----------------------

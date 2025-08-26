@@ -22,7 +22,8 @@ async function loadAllData() {
 		excluded, 
 		dict, 
 		enemies, 
-		retainers
+		retainers,
+		grim
 	] = await Promise.all([
 		fetch("equipment_list.json").then(r => r.json()),
 		fetch("collection_list.json").then(r => r.json()),
@@ -30,7 +31,8 @@ async function loadAllData() {
 		fetch("excluded_skills.json").then(r => r.json()),
 		fetch("skills_dictionary.json").then(r => r.json()),
 		fetch("enemies_list.json").then(r => r.json()),
-		fetch("retainers_list.json").then(r => r.json())
+		fetch("retainers_list.json").then(r => r.json()),
+		fetch("grimoire.json").then(r => r.json())
 	]);
 
 	equipment_list = equip;
@@ -40,36 +42,89 @@ async function loadAllData() {
 	skills_dictionary = dict;
 	enemies_list = enemies;
 	retainers_list = retainers;
+	grimoire = grim;
 
 	// Build enemy selectors right after loading
 	buildEnemySelectors();
 }
 
 // ------------------ List of Functions ------------------
-// Prepare enemies list in droplist
+// === Prepare enemies list in droplist ===
 function buildEnemySelectors() {
 	const container = document.getElementById("enemySelectors");
 	container.innerHTML = ""; // clear old if reload
 
+	// --- Manual 10 selects ---
 	for (let i = 0; i < 10; i++) {
 		const select = document.createElement("select");
 		select.id = `enemy${i + 1}`;
 		select.classList.add("enemy-select");
 		select.innerHTML = `<option value="">-- Select Enemy --</option>`;
-		
+
 		Object.keys(enemiesData).forEach(name => {
 			const opt = document.createElement("option");
 			opt.value = name;
 			opt.textContent = name;
 			select.appendChild(opt);
 		});
-		
+
 		container.appendChild(select);
 		container.appendChild(document.createElement("br"));
 	}
+
+	// --- Batch selector ---
+	const batchDiv = document.createElement("div");
+	batchDiv.id = "batchEnemySelector";
+
+	// Enemy type select
+	const typeSelect = document.createElement("select");
+	typeSelect.id = "batchEnemyType";
+	typeSelect.innerHTML = `
+		<option value="nonBoss">Non-Boss</option>
+		<option value="boss">Boss</option>
+		<option value="all">All</option>
+	`;
+	batchDiv.appendChild(typeSelect);
+
+	// Region select
+	const regionSelect = document.createElement("select");
+	regionSelect.id = "batchEnemyRegion";
+	Object.keys(grimoire).forEach(region => {
+		const opt = document.createElement("option");
+		opt.value = region;
+		opt.textContent = region;
+		regionSelect.appendChild(opt);
+	});
+	batchDiv.appendChild(regionSelect);
+
+	container.appendChild(document.createElement("br"));
+	container.appendChild(batchDiv);
 }
 
-// Search skill for all equipments and collections
+// Boss counts
+const defaultBossCount = 6;
+const specialBossCounts = {
+	"RAA": 9,
+	"RDD": 8
+};
+
+// Get enemies for region
+function getEnemiesForRegion(region, type = "all") {
+	const enemies = grimoire[region] || [];
+	// Use special count if defined, else default
+	const bossCount = specialBossCounts[region] ?? defaultBossCount;
+
+	if (type === "nonBoss") {
+		if (bossCount >= enemies.length) return []; // all bosses, no non-bosses
+		return enemies.slice(0, enemies.length - bossCount);
+	} else if (type === "boss") {
+		return enemies.slice(enemies.length - bossCount);
+	}
+	// type === "all"
+	return enemies;
+}
+
+// === Search skill for all equipments and collections ===
 function init_setup(setup) {
 	let player_skills = [];
 
@@ -91,13 +146,16 @@ function init_setup(setup) {
 		}
 	}
 
-	// Retainers
-	let player_rets = setup.retainers || [];
+	// Retainers → separate variables
+	const rets = setup.retainers || [];
+	const ret1 = rets[0] || "";
+	const ret2 = rets[1] || "";
+	const ret3 = rets[2] || "";
 
-	return { player_skills, player_rets };
+	return { player_skills, ret1, ret2, ret3 };
 }
 
-// Parse skills' value
+// === Parse skills' value ===
 function parse_value(value) {
     try {
         if (typeof value === "number") {
@@ -141,7 +199,7 @@ function parse_value(value) {
     return 0; // Default return
 }
 
-// Add retainer's skill to user's skill
+// === Add retainer's skill to user's skill ===
 function check_skills_list(user_skills, user_rets) {
     // Start with player's main skills
     let user_skills_list = [...user_skills]; // Copy list
@@ -157,13 +215,13 @@ function check_skills_list(user_skills, user_rets) {
     return user_skills_list;
 }
 
-// Boosted proc due Attunement
+// === RNG check with Attunement ===
 function check_proc(base_chance, attunement) { 
     let modified_chance = Math.min(1, base_chance + attunement);
     return Math.random() < modified_chance;
 }
 
-// Calculate how many Evade, Flying, Dispel procs per Round
+// === Calculate how many Evade, Flying, Dispel procs per Round ===
 function calc_charges(skills_list, check_type, user_attunement) {  
     let calculated_charges = 0;
 
@@ -180,7 +238,7 @@ function calc_charges(skills_list, check_type, user_attunement) {
     return calculated_charges;
 }
 
-// Calculate damage based on elemental, racial, and general modifiers.
+// === Calculate damage based on elemental, racial, and general modifiers ===
 function dmg_calc(name, damage, skill_element,
                   user_atk_elem_mod, user_atk_race_mod, opp_def_elem_mod, opp_def_race_mod,
                   user_race, opp_race, opp, opp_hp) {
@@ -215,7 +273,7 @@ function dmg_calc(name, damage, skill_element,
 	return opp_hp; // Return updated opponent HP
 }
 
-// Calculate heal based on healing modifiers.
+// === Calculate heal based on healing modifiers ===
 function heal_calc(name, heal_amount,
                   user_heal_mod,
                   user, user_hp) {
@@ -241,6 +299,7 @@ function heal_calc(name, heal_amount,
 	return user_hp; // Return updated user HP
 }
 
+// === Applies start-of-battle effects ===
 function start_battle_effects(
 	user_skills_list,
 	user, user_hp, user_race, user_persistent_effects,
@@ -248,7 +307,6 @@ function start_battle_effects(
 	user_heal_mod, user_atk_elem_mod, user_def_elem_mod, user_atk_race_mod, user_def_race_mod, user_proc_set,
 	opp_heal_mod, opp_atk_elem_mod, opp_def_elem_mod, opp_atk_race_mod, opp_def_race_mod, opp_proc_set
 ) {
-	/** Applies start-of-battle effects. */
 
 	// ---- Bane ----
 	for (let [name, value, prob] of user_skills_list) {
@@ -352,6 +410,7 @@ function start_battle_effects(
 	];
 }
 
+// === Applies first-priority effects ===
 function first_prio_effects(
 	user_skills_list, opp_skills_list, opp_skills,
 	user, user_hp, user_race, user_rets, user_persistent_effects, user_attunement,
@@ -360,7 +419,6 @@ function first_prio_effects(
 	opp_heal_mod, opp_atk_elem_mod, opp_def_elem_mod, opp_atk_race_mod, opp_def_race_mod, opp_proc_set,
 	user_dispel_charges, opp_evade_charges, opp_flying_charges, stun_next_turn
 ) {
-	/** Applies first-priority effects. */
 
 	// ---- Curse ----
 	for (let [name, value, prob] of user_skills_list) {
@@ -486,6 +544,7 @@ function first_prio_effects(
 	];
 }
 
+// === Applies second-priority effects ===
 function second_prio_effects(
     user_skills_list,
     user, user_hp, user_race, user_rets, user_persistent_effects, user_attunement,
@@ -695,6 +754,7 @@ function second_prio_effects(
     ];
 }
 
+// === Applies third-priority effects ===
 function third_prio_effects(
     user_skills_list,
     user, user_hp, user_race, user_rets, user_persistent_effects, user_attunement,
@@ -785,8 +845,7 @@ function third_prio_effects(
     ];
 }
 
-// ------ Simulate a single battle -------
-
+// ------------------ Simulate Single Battle ------------------
 function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_ret3) {
     // Prepare for new battle
     let enemy_maxhp = (enemies_list[enemy] || {}).maxhp || 0;
@@ -1090,7 +1149,6 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 }
 
 // ------------------ Battle Summary ------------------
-
 // Running multiple simulations and tracking rounds
 function estimate_winrate(player_skills, ret1, ret2, ret3, n, region, grimoire) {
 	let summary = []; // Store summary lines here
@@ -1126,66 +1184,47 @@ function estimate_winrate(player_skills, ret1, ret2, ret3, n, region, grimoire) 
 	return;
 }
 
-// Identification of player setup
-let player_skills = init_setup(
-	coin, bait, hex, weapon, chest, head, hands, feet,
-	power, emblem, coffin, acc1, acc2, acc3, mount, collection
-);
-
-// Call with same args
-estimate_winrate(player_skills, ret1, ret2, ret3, n, region, grimoire);
-
-
-
-
-
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAllData();
 
   const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
-  const playerSkills = getSkillsForSetup(setup);
+  const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
 
   const logDiv = document.getElementById("battle-log");
   logDiv.innerHTML = `
     <h2>Your Setup</h2>
     <p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
     <p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
+	<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
     <h3>Skills:</h3>
     <ul>${playerSkills.map(s => `<li>${s.name} [${s.type}, ${s.element}${s.race ? ", vs " + s.race : ""}]</li>`).join("")}</ul>
   `;
 
-  await loadEnemies();
-
   document.getElementById("battleBtn").addEventListener("click", () => {
-    const simulationCount = parseInt(document.getElementById("simulations").value, 10) || 100;
+	const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 
-    const selectors = document.querySelectorAll(".enemy-select");
-    const selectedEnemies = Array.from(selectors)
-      .map(sel => sel.value)
-      .filter(v => v !== "");
+	// Manual 10 enemies
+	const selectors = document.querySelectorAll(".enemy-select");
+	const selectedEnemies = Array.from(selectors)
+		.map(sel => sel.value)
+		.filter(v => v !== "");
 
-    if (selectedEnemies.length === 0) {
-      alert("Please select at least one enemy.");
-      return;
-    }
+	// Batch-selected enemies
+	const batchType = document.getElementById("batchEnemyType").value;
+	const batchRegion = document.getElementById("batchEnemyRegion").value;
+	const batchEnemies = getEnemiesForRegion(batchRegion, batchType);
 
-    logDiv.innerText = ""; // reset
-    const results = [];
+	// Combine both lists (unique)
+	const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];
 
-    for (const enemyName of selectedEnemies) {
-      const enemy = enemiesData[enemyName];
-      if (!enemy) continue;
+	if (enemiesList.length === 0) {
+		alert("Please select at least one enemy.");
+		return;
+	}
 
-      logBattle(`--- Battle vs ${enemyName} ---`);
-	  const { wins, draws, losses, total } = runSimulations(enemyName, playerSkills, ret1, ret2, ret3, simulationCount);
-	  const winrate = (wins / total * 100).toFixed(1);
-	  const drawrate = (draws / total * 100).toFixed(1);
-	  const lossrate = (losses / total * 100).toFixed(1);
-	  results.push(`${enemyName}: ${wins}/${total} Wins (${winrate}%), ${draws} Draws (${drawrate}%), ${losses} Losses (${lossrate}%)`);
-    }
+	logDiv.innerText = ""; // reset
 
-    logBattle("\n--- Results ---");
-    results.forEach(r => logBattle(r));
+	estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
   });
 });

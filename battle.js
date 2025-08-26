@@ -8,7 +8,7 @@ let skillsDictionary = {};
 let playerRetainers = [];  // active retainers
 let enemyRetainers = [];
 
-const MAX_LOG_LINES = 200;
+const MAX_LOG_LINES = 500;
 let SIMULATIONS = 100;
 
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];

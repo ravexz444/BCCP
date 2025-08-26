@@ -17,7 +17,7 @@ const races = ["Abominable", "Archangel", "Bestial", "Corrupted", "Demonic", "Dr
 async function loadAllData() {
 	const [
 		equip, 
-		coll, 
+		coll,
 		codes, 
 		excluded, 
 		dict, 

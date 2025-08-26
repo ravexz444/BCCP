@@ -1150,19 +1150,18 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 
 // ------------------ Battle Summary ------------------
 // Running multiple simulations and tracking rounds
-function estimate_winrate(player_skills, ret1, ret2, ret3, n, region, grimoire) {
-	let summary = []; // Store summary lines here
+// enemiesList: array of enemy names
+function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
+	let summary = [];
 
-	for (let enemy of (grimoire[region] || [])) {
+	for (let enemy of enemiesList) {
 		let results = { "Win": [], "Draw": [], "Loss": [] };
 
 		for (let i = 0; i < n; i++) {
-			// Pass enemy explicitly
 			let [result, round_num] = simulate_battle(enemy, player_skills, ret1, ret2, ret3);
 			results[result].push(round_num);
 		}
 
-		// Prepare summary for this enemy
 		summary.push(""); // Blank line
 		summary.push(`Enemy: ${enemy}`);
 		summary.push(`Win Rate: ${(results["Win"].length / n * 100).toFixed(2)}% (${results["Win"].length})`);
@@ -1179,52 +1178,54 @@ function estimate_winrate(player_skills, ret1, ret2, ret3, n, region, grimoire) 
 		}
 	}
 
-	// Print the summary **at the end**
+	// Print summary and update logDiv
 	console.log(summary.join("\n"));
-	return;
+	const logDiv = document.getElementById("battle-log");
+	logDiv.innerText = summary.join("\n");
 }
 
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadAllData();
+	await loadAllData();
 
-  const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
-  const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
+	const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
+	const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
 
-  const logDiv = document.getElementById("battle-log");
-  logDiv.innerHTML = `
-    <h2>Your Setup</h2>
-    <p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
-    <p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
-	<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
-    <h3>Skills:</h3>
-    <ul>${playerSkills.map(s => `<li>${s.name} [${s.type}, ${s.element}${s.race ? ", vs " + s.race : ""}]</li>`).join("")}</ul>
-  `;
+	const logDiv = document.getElementById("battle-log");
+	logDiv.innerHTML = `
+		<h2>Your Setup</h2>
+		<p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
+		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
+		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
+		<h3>Skills:</h3>
+		<ul>${playerSkills.map(s => `<li>${s.name} [${s.type}, ${s.element}${s.race ? ", vs " + s.race : ""}]</li>`).join("")}</ul>
+	`;
 
-  document.getElementById("battleBtn").addEventListener("click", () => {
-	const n = parseInt(document.getElementById("simulations").value, 10) || 1;
+	document.getElementById("battleBtn").addEventListener("click", () => {
+		const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 
-	// Manual 10 enemies
-	const selectors = document.querySelectorAll(".enemy-select");
-	const selectedEnemies = Array.from(selectors)
-		.map(sel => sel.value)
-		.filter(v => v !== "");
+		// --- Manual 10 enemies ---
+		const selectors = document.querySelectorAll(".enemy-select");
+		const selectedEnemies = Array.from(selectors)
+			.map(sel => sel.value)
+			.filter(v => v !== "");
 
-	// Batch-selected enemies
-	const batchType = document.getElementById("batchEnemyType").value;
-	const batchRegion = document.getElementById("batchEnemyRegion").value;
-	const batchEnemies = getEnemiesForRegion(batchRegion, batchType);
+		// --- Batch-selected enemies ---
+		const batchType = document.getElementById("batchEnemyType").value;
+		const batchRegion = document.getElementById("batchEnemyRegion").value;
+		const batchEnemies = getEnemiesForRegion(batchRegion, batchType);
 
-	// Combine both lists (unique)
-	const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];
+		// --- Combine both lists (unique) ---
+		const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];
 
-	if (enemiesList.length === 0) {
-		alert("Please select at least one enemy.");
-		return;
-	}
+		if (enemiesList.length === 0) {
+			alert("Please select at least one enemy.");
+			return;
+		}
 
-	logDiv.innerText = ""; // reset
+		logDiv.innerText = ""; // reset log
 
-	estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
-  });
+		// --- Run battle simulations ---
+		estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
+	});
 });

@@ -13,20 +13,60 @@ const MAX_LOG_LINES = 500;
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];
 const races = ["Abominable", "Archangel", "Bestial", "Corrupted", "Demonic", "Draconic","Eldritch", "Ethereal", "Lycan", "Necro", "Righteous", "Techno", "Vampiric", "Xeno"];
 
-// ------------------ Load Player Data ------------------
-async function loadData() {
-  const [equip, coll, codes, excluded, dict] = await Promise.all([
-    fetch("equipment_list.json").then(r => r.json()),
-    fetch("collection_list.json").then(r => r.json()),
-    fetch("collection_codes.json").then(r => r.json()),
-    fetch("excluded_skills.json").then(r => r.json()),
-    fetch("skills_dictionary.json").then(r => r.json())
-  ]);
-  equipmentData = equip;
-  collectionData = coll;
-  collectionCodes = codes;
-  excludedSkills = excluded;
-  skillsDictionary = dict;
+// ------------------ Load All Data ------------------
+async function loadAllData() {
+	const [
+		equip, 
+		coll, 
+		codes, 
+		excluded, 
+		dict, 
+		enemies, 
+		retainers
+	] = await Promise.all([
+		fetch("equipment_list.json").then(r => r.json()),
+		fetch("collection_list.json").then(r => r.json()),
+		fetch("collection_codes.json").then(r => r.json()),
+		fetch("excluded_skills.json").then(r => r.json()),
+		fetch("skills_dictionary.json").then(r => r.json()),
+		fetch("enemies_list.json").then(r => r.json()),
+		fetch("retainers_list.json").then(r => r.json())
+	]);
+
+	equipment_list = equip;
+	collection_list = coll;
+	collection_codes = codes;
+	excluded_skills = excluded;
+	skills_dictionary = dict;
+	enemies_list = enemies;
+	retainers_list = retainers;
+
+	// Build enemy selectors right after loading
+	buildEnemySelectors();
+}
+
+// ------------------ List of Functions ------------------
+// Prepare enemies list in droplist
+function buildEnemySelectors() {
+	const container = document.getElementById("enemySelectors");
+	container.innerHTML = ""; // clear old if reload
+
+	for (let i = 0; i < 10; i++) {
+		const select = document.createElement("select");
+		select.id = `enemy${i + 1}`;
+		select.classList.add("enemy-select");
+		select.innerHTML = `<option value="">-- Select Enemy --</option>`;
+		
+		Object.keys(enemiesData).forEach(name => {
+			const opt = document.createElement("option");
+			opt.value = name;
+			opt.textContent = name;
+			select.appendChild(opt);
+		});
+		
+		container.appendChild(select);
+		container.appendChild(document.createElement("br"));
+	}
 }
 
 // Search skill for all equipments and collections
@@ -1096,31 +1136,12 @@ let player_skills = init_setup(
 estimate_winrate(player_skills, ret1, ret2, ret3, n, region, grimoire);
 
 
-// ------------------ Load Enemies ------------------
-async function loadEnemies() {
-  const response = await fetch("enemies_list.json");
-  enemiesData = await response.json();
 
-  const container = document.getElementById("enemySelectors");
-  for (let i = 0; i < 10; i++) {
-    const select = document.createElement("select");
-    select.id = `enemy${i + 1}`;
-    select.classList.add("enemy-select");
-    select.innerHTML = `<option value="">-- Select Enemy --</option>`;
-    Object.keys(enemiesData).forEach(name => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      select.appendChild(opt);
-    });
-    container.appendChild(select);
-    container.appendChild(document.createElement("br"));
-  }
-}
+
 
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadData();
+  await loadAllData();
 
   const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
   const playerSkills = getSkillsForSetup(setup);

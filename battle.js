@@ -54,7 +54,7 @@ function buildEnemySelectors() {
 	const container = document.getElementById("enemySelectors");
 	container.innerHTML = ""; // clear old if reload
 
-	// --- Manual selector heading ---
+	// Heading - Manual
 	const manualHeading = document.createElement("h3");
 	manualHeading.textContent = "Manual Selector";
 	container.appendChild(manualHeading);
@@ -77,7 +77,7 @@ function buildEnemySelectors() {
 		container.appendChild(document.createElement("br"));
 	}
 
-	// --- Batch selector heading ---
+	// Heading - Batch
 	const batchHeading = document.createElement("h3");
 	batchHeading.textContent = "Batch Selector";
 	container.appendChild(batchHeading);
@@ -85,6 +85,12 @@ function buildEnemySelectors() {
 	// --- Batch selector ---
 	const batchDiv = document.createElement("div");
 	batchDiv.id = "batchEnemySelector";
+
+	// Label - Type
+	const typeLabel = document.createElement("label");
+	typeLabel.htmlFor = "batchEnemyType";
+	typeLabel.textContent = "Type: ";
+	batchDiv.appendChild(typeLabel);
 
 	// Enemy type select
 	const typeSelect = document.createElement("select");
@@ -96,6 +102,15 @@ function buildEnemySelectors() {
 	`;
 	batchDiv.appendChild(typeSelect);
 
+	// Spacing
+	batchDiv.appendChild(document.createTextNode(" "));
+	
+	// Label - Region
+	const regionLabel = document.createElement("label");
+	regionLabel.htmlFor = "batchEnemyRegion";
+	regionLabel.textContent = "Region: ";
+	batchDiv.appendChild(regionLabel);
+	
 	// Region select
 	const regionSelect = document.createElement("select");
 	regionSelect.id = "batchEnemyRegion";

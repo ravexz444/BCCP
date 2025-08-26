@@ -121,7 +121,7 @@ function init_setup(setup) {
 	// Equipment skills
 	for (let equip of setup.equipment || []) {
 		if (equipment_list[equip]) {
-			for (let skill of equipment_list[equip].skills) {
+			for (let skill of equipment_list[equip].skill) {
 				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}
@@ -130,7 +130,7 @@ function init_setup(setup) {
 	// Collection skills
 	for (let coll of setup.collections || []) {
 		if (collection_list[coll]) {
-			for (let skill of collection_list[coll].skills) {
+			for (let skill of collection_list[coll].skill) {
 				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}

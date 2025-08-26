@@ -248,40 +248,47 @@ async function loadAllData() {
 loadAllData();
 
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("goBattleBtn");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      // Collect chosen collections
-      const collections = [];
-      for (const code of Object.keys(collectionCodes)) {
-        const checkbox = document.getElementById("collection-" + code);
-        if (checkbox && checkbox.checked) {
-          collections.push(collectionCodes[code]); // full name
-        }
-      }
+	const btn = document.getElementById("goBattleBtn");
+	if (btn) {
+		btn.addEventListener("click", () => {
+			// Collect chosen collections
+			const collections = [];
+			for (const code of Object.keys(collectionCodes)) {
+				const checkbox = document.getElementById("collection-" + code);
+				if (checkbox && checkbox.checked) {
+					collections.push(collectionCodes[code]); // full name
+				}
+			}
 
-      // Collect chosen equipment
-      const equipment = [];
-      equipmentTypes.forEach(type => {
-        if (type === "Accessory" || type === "Retainer") {
-          for (let i = 1; i <= 3; i++) {
-            const select = document.getElementById(`select-${type}-${i}`);
-            if (select && select.value) equipment.push(select.value);
-          }
-        } else {
-          const select = document.getElementById(`select-${type}`);
-          if (select && select.value) equipment.push(select.value);
-        }
-      });
+			// Collect chosen equipment and retainers separately
+			const equipment = [];
+			const retainers = [];
+			equipmentTypes.forEach(type => {
+				if (type === "Accessory") {
+					for (let i = 1; i <= 3; i++) {
+						const select = document.getElementById(`select-${type}-${i}`);
+						if (select && select.value) equipment.push(select.value);
+					}
+				} else if (type === "Retainer") {
+					for (let i = 1; i <= 3; i++) {
+						const select = document.getElementById(`select-${type}-${i}`);
+						if (select && select.value) retainers.push(select.value);
+					}
+				} else {
+					const select = document.getElementById(`select-${type}`);
+					if (select && select.value) equipment.push(select.value);
+				}
+			});
 
-      // Save to localStorage
-      const setup = { collections, equipment };
-      localStorage.setItem("playerSetup", JSON.stringify(setup));
+			// Save to localStorage
+			const setup = { collections, retainers, equipment };
+			localStorage.setItem("playerSetup", JSON.stringify(setup));
 
-      // Redirect to battle
-      window.location.href = "battle.html";
-    });
-  }
+			// Redirect to battle
+			window.location.href = "battle.html";
+		});
+	}
+});
 
   // Check all collections
   const checkAllBtn = document.getElementById("checkAllCollections");

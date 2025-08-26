@@ -1198,7 +1198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
 		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
 		<h3>Skills:</h3>
-		<ul>${playerSkills.map(s => `<li>${s.name} [${s.type}, ${s.element}${s.race ? ", vs " + s.race : ""}]</li>`).join("")}</ul>
+  		<ul>${player_skills.map(s => `<li>${s.name} [${s.type}, ${s.element}${s.race ? ", vs " + s.race : ""}]</li>`).join("")}</ul>
 	`;
 
 	document.getElementById("battleBtn").addEventListener("click", () => {

@@ -350,7 +350,7 @@ async function loadAllData() {
 }
 
 // ---------------------- DOM READY ----------------------
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 	await loadAllData();  // ensure dropdowns exist
 
 	// Auto-restore Active Setup

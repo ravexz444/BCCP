@@ -162,11 +162,7 @@ function init_setup(setup) {
 	let player_skills = [];
 
 	// --- Equipment skills ---
-	for (let type in setup) {
-		// Skip non-equipment fields
-		if (["collections", "retainers"].includes(type)) continue;
-
-		const equipName = setup[type];
+	for (let [slot, equipName] of Object.entries(setup.equipment || {})) {
 		if (equipment_list[equipName]) {
 			for (let skill of equipment_list[equipName].skill) {
 				player_skills.push([skill[0], skill[1], skill[2]]);

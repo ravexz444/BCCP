@@ -1285,6 +1285,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
 	`;
 
+	document.getElementById("setupBtn").addEventListener("click", () => {
+		window.location.href = "index.html";
+	});
+
 	document.getElementById("saveBattleBtn").addEventListener("click", () => {
 		const name = document.getElementById("battleName").value.trim();
 		if (name) saveBattle(name);

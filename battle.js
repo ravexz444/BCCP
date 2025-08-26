@@ -103,6 +103,43 @@ function init_setup(coin, bait, hex, weapon, chest, head, hands, feet, power, em
     return player_skills;
 }
 
+function init_setup(setup) {
+	// setup = { coin, bait, hex, weapon, chest, head, hands, feet, power, emblem, coffin, acc1, acc2, acc3, mount, collection }
+
+	let skills = [];
+
+	// Collect all skills from the setup
+	Object.values(setup).forEach(item => {
+		if (item && item.skills) {
+			item.skills.forEach(skill => {
+				// tuple-like object { name, value, prob }
+				skills.push({
+					name: skill.name,
+					value: skill.value,
+					prob: skill.prob
+				});
+			});
+		}
+	});
+	
+    // Get skills from equipment_list
+    for (let eq of player_equipment) {
+        if (eq in equipment_list) {
+            player_skills.push(...equipment_list[eq]["skill"]);
+        }
+    }
+
+    // Get skills from collection_list
+    for (let col_id of collection) {
+        let col_name = collection_names[col_id] || "";
+        if (col_name in collection_list) {
+            player_skills.push(...collection_list[col_name]["skill"]);
+        }
+    }
+
+    return player_skills;
+}
+
 // Parse skills' value
 function parse_value(value) {
     try {

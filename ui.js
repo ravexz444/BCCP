@@ -264,6 +264,82 @@ function refreshSavedSetups() {
 	if (setups.length > 0) select.value = setups[0].name;
 }
 
+// ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
+// Index -> Battle
+function exportToBattle() {
+	const collections = [];
+	for (const code of Object.keys(collectionCodes)) {
+		const cb = document.getElementById("collection-" + code);
+		if (cb && cb.checked) collections.push(collectionCodes[code]);
+	}
+
+	const equipment = [];
+	const retainers = [];
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory") {
+			for (let i = 1; i <= 3; i++) {
+				const sel = document.getElementById(`select-${type}-${i}`);
+				if (sel && sel.value) equipment.push(sel.value);
+			}
+		} else if (type === "Retainer") {
+			for (let i = 1; i <= 3; i++) {
+				const sel = document.getElementById(`select-${type}-${i}`);
+				if (sel && sel.value) retainers.push(sel.value);
+			}
+		} else {
+			const sel = document.getElementById(`select-${type}`);
+			if (sel && sel.value) equipment.push(sel.value);
+		}
+	});
+
+	localStorage.setItem("activeSetup", JSON.stringify({ collections, retainers, equipment }));
+	window.location.href = "battle.html";
+}
+
+// Battle -> Index
+function importFromBattle() {
+	const savedActiveSetup = localStorage.getItem("activeSetup"); // use the same key you stored
+	if (!savedActiveSetup) return;
+
+	const setup = JSON.parse(savedActiveSetup);
+
+	// Restore collections
+	if (setup.collections) {
+		for (const code of Object.keys(collectionCodes)) {
+			const cb = document.getElementById("collection-" + code);
+			if (cb && setup.collections.includes(collectionCodes[code])) {
+				cb.checked = true;
+			}
+		}
+	}
+
+	// Restore equipment
+	if (setup.equipment) {
+		let accIndex = 1;
+		setup.equipment.forEach(eq => {
+			const type = findEquipmentType(eq);
+			if (type === "Accessory") {
+				const sel = document.getElementById(`select-Accessory-${accIndex}`);
+				if (sel) sel.value = eq;
+				accIndex++;
+			} else {
+				const sel = document.getElementById(`select-${type}`);
+				if (sel) sel.value = eq;
+			}
+		});
+	}
+
+	// Restore retainers
+	if (setup.retainers) {
+		let retIndex = 1;
+		setup.retainers.forEach(ret => {
+			const sel = document.getElementById(`select-Retainer-${retIndex}`);
+			if (sel) sel.value = ret;
+			retIndex++;
+		});
+	}
+}
+
 // ---------------------- DATA LOADING ----------------------
 async function loadAllData() {
 	const [equip, coll, codes, groups, combinables] = await Promise.all([
@@ -295,37 +371,12 @@ async function loadAllData() {
 document.addEventListener("DOMContentLoaded", () => {
 	loadAllData();
 
-	// Go to Battle button
+	// Auto-restore Active Setup
+	importFromBattle();
+
+	// Go to Battle button + Export Active Setup
 	const goBtn = document.getElementById("goBattleBtn");
-	if (goBtn) goBtn.addEventListener("click", () => {
-		const collections = [];
-		for (const code of Object.keys(collectionCodes)) {
-			const cb = document.getElementById("collection-" + code);
-			if (cb && cb.checked) collections.push(collectionCodes[code]);
-		}
-
-		const equipment = [];
-		const retainers = [];
-		equipmentTypes.forEach(type => {
-			if (type === "Accessory") {
-				for (let i = 1; i <= 3; i++) {
-					const sel = document.getElementById(`select-${type}-${i}`);
-					if (sel && sel.value) equipment.push(sel.value);
-				}
-			} else if (type === "Retainer") {
-				for (let i = 1; i <= 3; i++) {
-					const sel = document.getElementById(`select-${type}-${i}`);
-					if (sel && sel.value) retainers.push(sel.value);
-				}
-			} else {
-				const sel = document.getElementById(`select-${type}`);
-				if (sel && sel.value) equipment.push(sel.value);
-			}
-		});
-
-		localStorage.setItem("playerSetup", JSON.stringify({ collections, retainers, equipment }));
-		window.location.href = "battle.html";
-	});
+	if (goBtn) goBtn.addEventListener("click", exportToBattle);
 
 	// Check All / Uncheck All collections
 	const checkAllBtn = document.getElementById("checkAllCollections");
@@ -340,21 +391,21 @@ document.addEventListener("DOMContentLoaded", () => {
 		updateSkills();
 	});
 
-	// Save Setup
+	// Save Setup Button
 	const saveBtn = document.getElementById("saveSetupBtn");
 	if (saveBtn) saveBtn.addEventListener("click", () => {
 		const name = document.getElementById("setupName").value.trim();
 		if (name) saveSetup(name);
 	});
 
-	// Load Setup
+	// Load Setup Button
 	const loadBtn = document.getElementById("loadSetupBtn");
 	if (loadBtn) loadBtn.addEventListener("click", () => {
 		const sel = document.getElementById("loadSetupSelect");
 		if (sel.value) loadSetup(sel.value);
 	});
 
-	// Delete Setup
+	// Delete Setup Button
 	const deleteBtn = document.getElementById("deleteSetupBtn");
 	if (deleteBtn) deleteBtn.addEventListener("click", () => {
 		const sel = document.getElementById("loadSetupSelect");

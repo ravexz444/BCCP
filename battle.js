@@ -153,16 +153,20 @@ function getEnemiesForRegion(region, type = "all") {
 function init_setup(setup) {
 	let player_skills = [];
 
-	// Equipment skills
-	for (let equip of setup.equipment || []) {
-		if (equipment_list[equip]) {
-			for (let skill of equipment_list[equip].skill) {
+	// --- Equipment skills ---
+	for (let type in setup) {
+		// Skip non-equipment fields
+		if (["collections", "retainers"].includes(type)) continue;
+
+		const equipName = setup[type];
+		if (equipment_list[equipName]) {
+			for (let skill of equipment_list[equipName].skill) {
 				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}
 	}
 
-	// Collection skills
+	// --- Collection skills ---
 	for (let coll of setup.collections || []) {
 		if (collection_list[coll]) {
 			for (let skill of collection_list[coll].skill) {
@@ -171,7 +175,7 @@ function init_setup(setup) {
 		}
 	}
 
-	// Retainers → separate variables
+	// --- Retainers ---
 	const rets = setup.retainers || [];
 	const ret1 = rets[0] || "";
 	const ret2 = rets[1] || "";
@@ -1276,15 +1280,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const setup = JSON.parse(localStorage.getItem("activeSetup")) || {};
 	const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
 
+	// Show chosen setup in log
 	const logDiv = document.getElementById("setup-log");
 	logDiv.innerHTML = `
-		<p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
+		<h3>Setup</h3>
+		<p><b>Equipment:</b></p>
+		<ul>
+			${Object.entries(setup)
+				.filter(([k]) => !["collections", "retainers"].includes(k))
+				.map(([k, v]) => `<li>${k}: ${v || "None"}</li>`)
+				.join("")}
+		</ul>
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
 		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
+
 		<h3>Skills:</h3>
 		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
 	`;
 
+	// Button to go back to index.html
 	document.getElementById("setupBtn").addEventListener("click", () => {
 		window.location.href = "index.html";
 	});

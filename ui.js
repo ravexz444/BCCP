@@ -351,7 +351,7 @@ async function loadAllData() {
 
 // ---------------------- DOM READY ----------------------
 document.addEventListener("DOMContentLoaded", () => {
-	loadAllData();
+	await loadAllData();  // ensure dropdowns exist
 
 	// Auto-restore Active Setup
 	importFromBattle();

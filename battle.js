@@ -3,33 +3,62 @@ let collectionData = {};
 let collectionCodes = {};
 let enemiesData = {};
 let retainersData = {};
+let excludedSkills = [];
+let skillsDictionary = {};
 
 const MAX_LOG_LINES = 200;
-const SIMULATIONS = 100;
+let SIMULATIONS = 100;
+
+const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];
+const races = ["Abominable", "Archangel", "Bestial", "Corrupted", "Demonic", "Draconic","Eldritch", "Ethereal", "Lycan", "Necro", "Righteous", "Techno", "Vampiric", "Xeno"];
 
 // ------------------ Load Player Data ------------------
 async function loadData() {
-  const [equip, coll, codes] = await Promise.all([
+  const [equip, coll, codes, excluded, dict] = await Promise.all([
     fetch("equipment_list.json").then(r => r.json()),
     fetch("collection_list.json").then(r => r.json()),
-    fetch("collection_codes.json").then(r => r.json())
+    fetch("collection_codes.json").then(r => r.json()),
+    fetch("excluded_skills.json").then(r => r.json()),
+    fetch("skills_dictionary.json").then(r => r.json())
   ]);
   equipmentData = equip;
   collectionData = coll;
   collectionCodes = codes;
+  excludedSkills = excluded;
+  skillsDictionary = dict;
 }
 
 function getSkillsForSetup(setup) {
   let skills = [];
   (setup.equipment || []).forEach(eq => {
     const item = equipmentData[eq];
-    if (item?.skill) skills.push(...item.skill);
+    if (item?.skill) skills.push(...item.skill.map(s => s[0])); // only push skill name
   });
   (setup.collections || []).forEach(c => {
     const item = collectionData[c];
-    if (item?.skill) skills.push(...item.skill);
+    if (item?.skill) skills.push(...item.skill.map(s => s[0]));
   });
-  return skills;
+  return categorizeSkills(skills);
+}
+
+// ------------------ Skill Filtering ------------------
+function filterSkills(skillList) {
+  return skillList
+    .filter(skill => !excludedSkills.includes(skill)) // remove excluded
+    .filter(skill => skillsDictionary[skill]);        // keep only valid
+}
+
+function categorizeSkills(skillList) {
+  const filtered = filterSkills(skillList);
+  return filtered.map(skill => {
+    const info = skillsDictionary[skill];
+    return {
+      name: skill,
+      type: info.type,
+      element: info.element || null,
+      race: info.race || null
+    };
+  });
 }
 
 // ------------------ Load Enemies ------------------
@@ -41,6 +70,7 @@ async function loadEnemies() {
   for (let i = 0; i < 10; i++) {
     const select = document.createElement("select");
     select.id = `enemy${i + 1}`;
+    select.classList.add("enemy-select");
     select.innerHTML = `<option value="">-- Select Enemy --</option>`;
     Object.keys(enemiesData).forEach(name => {
       const opt = document.createElement("option");
@@ -70,29 +100,29 @@ function randomInRange(min, max) {
 
 // Pick a random skill from list with probability handling
 function pickSkill(skillList) {
-  const candidates = skillList.filter(s => Math.random() < s[2]); // keep those that "trigger"
+  const candidates = skillList.filter(s => Math.random() < (s[2] ?? 1.0)); 
   if (candidates.length === 0) return null;
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
 // ------------------ Battle Simulation ------------------
-function simulateBattle(enemy, playerSkills, enemyName) {
+function simulateBattle(enemy, playerSkills, enemyName, simCount) {
   let wins = 0;
 
-  for (let sim = 0; sim < SIMULATIONS; sim++) {
-    let playerHP = 100; // TODO: base this on setup if you want
+  for (let sim = 0; sim < simCount; sim++) {
+    let playerHP = 100; // TODO: link to setup
     let enemyHP = enemy.maxhp;
     let turn = 0;
 
     while (playerHP > 0 && enemyHP > 0) {
       if (turn % 2 === 0) {
         // Player turn
-        const skill = pickSkill(playerSkills.map(s => [s[0], s[1], 1.0])); // assume prob=1.0
+        const skill = playerSkills[Math.floor(Math.random() * playerSkills.length)];
         if (skill) {
-          let dmgRange = skill[1].split("-").map(Number);
-          let dmg = randomInRange(dmgRange[0], dmgRange[1]);
+          // For now: fake damage since dictionary doesn’t have numbers
+          const dmg = randomInRange(4, 8);
           enemyHP -= dmg;
-          if (sim === 0) logBattle(`Player uses ${skill[0]}, hits ${dmg}, Enemy HP: ${enemyHP}`);
+          if (sim === 0) logBattle(`Player uses ${skill.name} (${skill.type}), hits ${dmg}, Enemy HP: ${enemyHP}`);
         }
       } else {
         // Enemy turn
@@ -110,55 +140,54 @@ function simulateBattle(enemy, playerSkills, enemyName) {
     if (playerHP > 0) wins++;
   }
 
-  return { wins, total: SIMULATIONS };
+  return { wins, total: simCount };
 }
 
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
-	await loadData();
+  await loadData();
 
-	const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
-	const playerSkills = getSkillsForSetup(setup);
+  const setup = JSON.parse(localStorage.getItem("playerSetup")) || {};
+  const playerSkills = getSkillsForSetup(setup);
 
-	const logDiv = document.getElementById("battle-log");
-	logDiv.innerHTML = `
-		<h2>Your Setup</h2>
-		<p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
-		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
-		<h3>Skills:</h3>
-		<ul>${playerSkills.map(s => `<li>${s[0]} (${s[1]})</li>`).join("")}</ul>
-	`;
+  const logDiv = document.getElementById("battle-log");
+  logDiv.innerHTML = `
+    <h2>Your Setup</h2>
+    <p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
+    <p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
+    <h3>Skills:</h3>
+    <ul>${playerSkills.map(s => `<li>${s.name} [${s.type}, ${s.element}${s.race ? ", vs " + s.race : ""}]</li>`).join("")}</ul>
+  `;
 
-	await loadEnemies();
+  await loadEnemies();
 
-	document.getElementById("battleBtn").addEventListener("click", () => {
-		const simulationCount = parseInt(document.getElementById("simulations").value, 10) || 100;
+  document.getElementById("battleBtn").addEventListener("click", () => {
+    const simulationCount = parseInt(document.getElementById("simulations").value, 10) || 100;
 
-		const selectors = document.querySelectorAll(".enemy-select");
-		const selectedEnemies = Array.from(selectors)
-			.map(sel => sel.value)
-			.filter(v => v !== "");
+    const selectors = document.querySelectorAll(".enemy-select");
+    const selectedEnemies = Array.from(selectors)
+      .map(sel => sel.value)
+      .filter(v => v !== "");
 
-		if (selectedEnemies.length === 0) {
-			alert("Please select at least one enemy.");
-			return;
-		}
+    if (selectedEnemies.length === 0) {
+      alert("Please select at least one enemy.");
+      return;
+    }
 
-		logDiv.innerText = ""; // reset
-		const results = [];
+    logDiv.innerText = ""; // reset
+    const results = [];
 
-		for (const enemyName of selectedEnemies) {
-			const enemy = enemiesData[enemyName];
-			if (!enemy) continue;
+    for (const enemyName of selectedEnemies) {
+      const enemy = enemiesData[enemyName];
+      if (!enemy) continue;
 
-			logBattle(`--- Battle vs ${enemyName} ---`);
-			const { wins, total } = simulateBattle(enemy, playerSkills, enemyName, simulationCount);
-			const winrate = (wins / total * 100).toFixed(1);
-			results.push(`${enemyName}: ${wins}/${total} (${winrate}%)`);
-		}
+      logBattle(`--- Battle vs ${enemyName} ---`);
+      const { wins, total } = simulateBattle(enemy, playerSkills, enemyName, simulationCount);
+      const winrate = (wins / total * 100).toFixed(1);
+      results.push(`${enemyName}: ${wins}/${total} (${winrate}%)`);
+    }
 
-		logBattle("\n--- Results ---");
-		results.forEach(r => logBattle(r));
-	});
+    logBattle("\n--- Results ---");
+    results.forEach(r => logBattle(r));
+  });
 });
-

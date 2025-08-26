@@ -1,13 +1,3 @@
-let equipmentData = {};
-let collectionData = {};
-let collectionCodes = {};
-let enemiesData = {};
-let retainersData = {};
-let excludedSkills = [];
-let skillsDictionary = {};
-let playerRetainers = [];  // active retainers
-let enemyRetainers = [];
-
 const MAX_LOG_LINES = 500;
 
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];
@@ -61,7 +51,7 @@ function buildEnemySelectors() {
 		select.classList.add("enemy-select");
 		select.innerHTML = `<option value="">-- Select Enemy --</option>`;
 
-		Object.keys(enemiesData).forEach(name => {
+		Object.keys(enemies_list).forEach(name => {
 			const opt = document.createElement("option");
 			opt.value = name;
 			opt.textContent = name;
@@ -130,8 +120,8 @@ function init_setup(setup) {
 
 	// Equipment skills
 	for (let equip of setup.equipment || []) {
-		if (equipmentData[equip]) {
-			for (let skill of equipmentData[equip].skills) {
+		if (equipment_list[equip]) {
+			for (let skill of equipment_list[equip].skills) {
 				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}
@@ -139,8 +129,8 @@ function init_setup(setup) {
 
 	// Collection skills
 	for (let coll of setup.collections || []) {
-		if (collectionData[coll]) {
-			for (let skill of collectionData[coll].skills) {
+		if (collection_list[coll]) {
+			for (let skill of collection_list[coll].skills) {
 				player_skills.push([skill[0], skill[1], skill[2]]);
 			}
 		}

@@ -1193,7 +1193,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	const logDiv = document.getElementById("setup-log");
 	logDiv.innerHTML = `
-		<h2>Your Setup</h2>
 		<p><b>Equipment:</b> ${setup.equipment?.join(", ") || "None"}</p>
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
 		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>

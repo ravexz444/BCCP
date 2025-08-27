@@ -1227,7 +1227,7 @@ function saveBattle(name) {
 		.map(sel => sel.value)
 		.filter(v => v !== "");
 
-	const batchType = document.getElementById("batchEnemyType").value;
+	const batchGroup = document.getElementById("batchEnemyGroup").value;
 	const batchRegion = document.getElementById("batchEnemyRegion").value;
 
 	const n = parseInt(document.getElementById("simulations").value, 10) || 1;
@@ -1235,7 +1235,7 @@ function saveBattle(name) {
 	battles.push({
 		name,
 		manualEnemies,
-		batchType,
+		batchGroup,
 		batchRegion,
 		simulations: n
 	});
@@ -1256,7 +1256,7 @@ function loadBattle(name) {
 	});
 
 	// Batch selection
-	document.getElementById("batchEnemyType").value = battle.batchType;
+	document.getElementById("batchEnemyGroup").value = battle.batchGroup;
 	document.getElementById("batchEnemyRegion").value = battle.batchRegion;
 
 	// Number of simulations
@@ -1335,9 +1335,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 			.filter(v => v !== "");
 
 		// --- Batch-selected enemies ---
-		const batchType = document.getElementById("batchEnemyType").value;
+		const batchGroup = document.getElementById("batchEnemyGroup").value;
 		const batchRegion = document.getElementById("batchEnemyRegion").value;
-		const batchEnemies = getEnemiesForRegion(batchRegion, batchType);
+		const batchEnemies = getEnemiesForRegion(batchRegion, batchGroup);
 
 		// --- Combine both lists (unique) ---
 		const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];

@@ -10,33 +10,102 @@ let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
 
 // ---------------------- UI BUILDERS ----------------------
-function createDropdown(type, index = null) {
-	const label = document.createElement("label");
-	label.textContent = index ? `${type} ${index}: ` : `${type}: `;
+function createSearchUI() {
+	const container = document.getElementById("equipment-selectors");
 
-	const select = document.createElement("select");
-	select.id = index ? `select-${type}-${index}` : `select-${type}`;
+	// Search box
+	const searchBox = document.createElement("input");
+	searchBox.type = "text";
+	searchBox.id = "equipmentSearch";
+	searchBox.placeholder = "Search equipment...";
+	container.appendChild(searchBox);
 
-	const defaultOption = document.createElement("option");
-	defaultOption.value = "";
-	defaultOption.textContent = "-- Select " + type + " --";
-	select.appendChild(defaultOption);
+	// Results area
+	const resultsDiv = document.createElement("div");
+	resultsDiv.id = "searchResults";
+	resultsDiv.style.border = "1px solid #ccc";
+	resultsDiv.style.maxHeight = "200px";
+	resultsDiv.style.overflowY = "auto";
+	container.appendChild(resultsDiv);
 
-	for (const [name, info] of Object.entries(equipmentData)) {
-		if (info.type === type) {
-			const option = document.createElement("option");
-			option.value = name;
-			option.textContent = name;
-			select.appendChild(option);
+	// Equipped list area
+	const equippedDiv = document.createElement("div");
+	equippedDiv.id = "equippedList";
+	container.appendChild(equippedDiv);
+
+	// Search handler
+	searchBox.addEventListener("input", () => {
+		const query = searchBox.value.toLowerCase();
+		resultsDiv.innerHTML = "";
+
+		if (!query) return;
+
+		for (const [name, info] of Object.entries(equipmentData)) {
+			if (name.toLowerCase().includes(query)) {
+				const btn = document.createElement("button");
+				btn.textContent = `${name} (${info.type})`;
+				btn.addEventListener("click", () => equipItem(name, info.type));
+				resultsDiv.appendChild(btn);
+				resultsDiv.appendChild(document.createElement("br"));
+			}
+		}
+	});
+}
+
+// ---------------------- EQUIP LOGIC ----------------------
+let equipped = {}; // { type: [names...] }
+
+function equipItem(name, type) {
+	if (!equipped[type]) equipped[type] = [];
+
+	// single-slot types
+	if (type !== "Accessory" && type !== "Retainer") {
+		equipped[type] = [name];
+	} else {
+		// multi-slot types
+		const max = 3; // can tweak to 2 if non-premium
+		if (equipped[type].length < max) {
+			equipped[type].push(name);
+		} else {
+			// replace the oldest one (FIFO style)
+			equipped[type].shift();
+			equipped[type].push(name);
 		}
 	}
 
-	select.addEventListener("change", updateSkills);
+	updateEquippedList();
+	updateSkills();
+}
 
-	const container = document.getElementById("equipment-selectors");
-	container.appendChild(label);
-	container.appendChild(select);
-	container.appendChild(document.createElement("br"));
+function updateEquippedList() {
+	const equippedDiv = document.getElementById("equippedList");
+	equippedDiv.innerHTML = "<h3>Equipped</h3>";
+
+	equipmentTypes.forEach(type => {
+		if (equipped[type] && equipped[type].length > 0) {
+			const line = document.createElement("div");
+			line.textContent = `${type}: ${equipped[type].join(", ")}`;
+
+			// add "remove" button(s)
+			equipped[type].forEach((item, idx) => {
+				const removeBtn = document.createElement("button");
+				removeBtn.textContent = "❌";
+				removeBtn.style.marginLeft = "5px";
+				removeBtn.addEventListener("click", () => {
+					equipped[type].splice(idx, 1);
+					updateEquippedList();
+					updateSkills();
+				});
+				line.appendChild(removeBtn);
+			});
+
+			equippedDiv.appendChild(line);
+		} else {
+			const line = document.createElement("div");
+			line.textContent = `${type}: -`;
+			equippedDiv.appendChild(line);
+		}
+	});
 }
 
 function createCollectionCheckboxes() {

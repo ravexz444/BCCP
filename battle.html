@@ -6,7 +6,32 @@
   <script src="battle.js" defer></script>
 </head>
 <body>
+  <button id="setupBtn">Back to Setup</button>
+
+  <br><br>
+  <h2>Your Setup</h2>
+  <div id="setup-log"></div>
+
+  <h2>Enemies Selector</h2>
+  <div id="manualEnemySelector"></div>
+  <div id="batchEnemySelector"></div>
+
+  <br><br>
+  <label for="simulations">Number of simulations:</label>
+  <input type="number" id="simulations" value="1" min="1" max="10000">
+
+  <br><br>
+  <h2>Saved Battles</h2>
+  <input type="text" id="battleName" placeholder="Enter battle name">
+  <button id="saveBattleBtn">Save Battle</button>
+  <select id="loadBattleSelect"></select>
+  <button id="loadBattleBtn">Load Battle</button>
+  <button id="deleteBattleBtn">Delete Battle</button>
+
+  <br><br>
+  <button id="battleBtn">Battle</button>
+  
   <h1>Battle Page</h1>
-  <div id="battle-log"></div>
+  <div id="battle-log" style="white-space: pre-line; border:1px solid #ccc; padding:10px; max-height:300px; overflow-y:auto;"></div>
 </body>
 </html>

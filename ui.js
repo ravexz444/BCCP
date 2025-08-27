@@ -1,6 +1,6 @@
 const equipmentTypes = [
-  "Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
-  "Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
+	"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
+	"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
 ];
 
 let equipmentData = {};
@@ -9,431 +9,398 @@ let collectionCodes = {}; // shortCode → fullName mapping
 let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
 
+// ---------------------- UI BUILDERS ----------------------
 function createDropdown(type, index = null) {
-  const label = document.createElement("label");
-  label.textContent = index ? `${type} ${index}: ` : `${type}: `;
+	const label = document.createElement("label");
+	label.textContent = index ? `${type} ${index}: ` : `${type}: `;
 
-  const select = document.createElement("select");
-  select.id = index ? `select-${type}-${index}` : `select-${type}`;
+	const select = document.createElement("select");
+	select.id = index ? `select-${type}-${index}` : `select-${type}`;
 
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "-- Select " + type + " --";
-  select.appendChild(defaultOption);
+	const defaultOption = document.createElement("option");
+	defaultOption.value = "";
+	defaultOption.textContent = "-- Select " + type + " --";
+	select.appendChild(defaultOption);
 
-  for (const [name, info] of Object.entries(equipmentData)) {
-    if (info.type === type) {
-      const option = document.createElement("option");
-      option.value = name;
-      option.textContent = name;
-      select.appendChild(option);
-    }
-  }
+	for (const [name, info] of Object.entries(equipmentData)) {
+		if (info.type === type) {
+			const option = document.createElement("option");
+			option.value = name;
+			option.textContent = name;
+			select.appendChild(option);
+		}
+	}
 
-  select.addEventListener("change", updateSkills);
+	select.addEventListener("change", updateSkills);
 
-  const container = document.getElementById("equipment-selectors");
-  container.appendChild(label);
-  container.appendChild(select);
-  container.appendChild(document.createElement("br"));
+	const container = document.getElementById("equipment-selectors");
+	container.appendChild(label);
+	container.appendChild(select);
+	container.appendChild(document.createElement("br"));
 }
 
 function createCollectionCheckboxes() {
-  const container = document.getElementById("collection-selectors");
+	const container = document.getElementById("collection-selectors");
 
-  for (const code of Object.keys(collectionCodes)) {
-    const div = document.createElement("div");
+	for (const code of Object.keys(collectionCodes)) {
+		const div = document.createElement("div");
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = "collection-" + code; // use short code
-    checkbox.value = code;
-    checkbox.addEventListener("change", updateSkills);
+		const checkbox = document.createElement("input");
+		checkbox.type = "checkbox";
+		checkbox.id = "collection-" + code;
+		checkbox.value = code;
+		checkbox.addEventListener("change", updateSkills);
 
-    const label = document.createElement("label");
-    label.htmlFor = "collection-" + code;
-    label.textContent = `${code}`;
+		const label = document.createElement("label");
+		label.htmlFor = checkbox.id;
+		label.textContent = code;
 
-    div.appendChild(checkbox);
-    div.appendChild(label);
-    container.appendChild(div);
-  }
+		div.appendChild(checkbox);
+		div.appendChild(label);
+		container.appendChild(div);
+	}
 }
 
-// ---- parsing helpers ----
+// ---------------------- PARSING HELPERS ----------------------
 function parseSkillValue(raw) {
-  // Accept numbers as-is
-  if (typeof raw === "number") return { type: "number", value: raw, unit: "" };
+	if (typeof raw === "number") return { type: "number", value: raw, unit: "" };
+	if (typeof raw !== "string") return { type: "text", raw: String(raw) };
 
-  if (typeof raw !== "string") return { type: "text", raw: String(raw) };
+	const s = raw.trim();
 
-  const s = raw.trim();
+	let m = s.match(/^(-?\d+(?:\.\d+)?)\s*%$/);
+	if (m) return { type: "percent", value: parseFloat(m[1]), unit: "%" };
 
-  // percent, e.g. "10%"
-  let m = s.match(/^(-?\d+(?:\.\d+)?)\s*%$/);
-  if (m) return { type: "percent", value: parseFloat(m[1]), unit: "%" };
+	m = s.match(/^(-?\d+(?:\.\d+)?)\+$/);
+	if (m) return { type: "plus", value: parseFloat(m[1]), unit: "+" };
 
-  // trailing plus, e.g. "18+"
-  m = s.match(/^(-?\d+(?:\.\d+)?)\+$/);
-  if (m) return { type: "plus", value: parseFloat(m[1]), unit: "+" };
+	m = s.match(/^(-?\d+(?:\.\d+)?)\s*-\s*(-?\d+(?:\.\d+)?)$/);
+	if (m) return { type: "range", range: [parseFloat(m[1]), parseFloat(m[2])], raw: s };
 
-  // range, e.g. "1-3"
-  m = s.match(/^(-?\d+(?:\.\d+)?)\s*-\s*(-?\d+(?:\.\d+)?)$/);
-  if (m) return { type: "range", range: [parseFloat(m[1]), parseFloat(m[2])], raw: s };
+	m = s.match(/^-?\d+(?:\.\d+)?$/);
+	if (m) return { type: "number", value: parseFloat(s), unit: "" };
 
-  // plain number string
-  m = s.match(/^-?\d+(?:\.\d+)?$/);
-  if (m) return { type: "number", value: parseFloat(s), unit: "" };
-
-  // fallback text
-  return { type: "text", raw: s };
+	return { type: "text", raw: s };
 }
 
 function formatTotal(total, unit) {
-  if (total == null) return "";
-  // keep integers clean; allow decimals if needed
-  const num = Number.isInteger(total) ? total : Number(total.toFixed(2));
-  return unit === "%" ? `${num}%` : `${num}`;
+	if (total == null) return "";
+	const num = Number.isInteger(total) ? total : Number(total.toFixed(2));
+	return unit === "%" ? `${num}%` : `${num}`;
 }
 
-// ---- grouping + combining ----
+// ---------------------- SKILL GROUPING ----------------------
 function addSkill(categoryMap, category, skillName, rawValue) {
-  if (!categoryMap[category]) categoryMap[category] = {};
-  if (!categoryMap[category][skillName]) {
-    categoryMap[category][skillName] = { total: null, unit: "", parts: [] };
-  }
+	if (!categoryMap[category]) categoryMap[category] = {};
+	if (!categoryMap[category][skillName]) {
+		categoryMap[category][skillName] = { total: null, unit: "", parts: [] };
+	}
 
-  const entry = categoryMap[category][skillName];
-  const parsed = parseSkillValue(rawValue);
+	const entry = categoryMap[category][skillName];
+	const parsed = parseSkillValue(rawValue);
 
-  // Combine only if the skill is in combinable list AND parsed is numeric-like
-  if (combinableSkills.has(skillName) && (parsed.type === "number" || parsed.type === "percent" || parsed.type === "plus")) {
-    const add = parsed.value;
-    entry.total = (entry.total ?? 0) + add;
-    // prefer % if percent
-    if (parsed.type === "percent") entry.unit = "%";
-    entry.parts.push(typeof rawValue === "string" ? rawValue : String(rawValue));
-  } else {
-    // Non-combinable (or non-numeric): keep raw parts; no total
-    entry.parts.push(typeof rawValue === "string" ? rawValue : String(rawValue));
-  }
+	if (combinableSkills.has(skillName) &&
+		(parsed.type === "number" || parsed.type === "percent" || parsed.type === "plus")) {
+
+		const add = parsed.value;
+		entry.total = (entry.total ?? 0) + add;
+		if (parsed.type === "percent") entry.unit = "%";
+		entry.parts.push(typeof rawValue === "string" ? rawValue : String(rawValue));
+	} else {
+		entry.parts.push(typeof rawValue === "string" ? rawValue : String(rawValue));
+	}
 }
 
 function summarizeSkills(allSkillsWithValues) {
-  const categoryMap = {};
+	const categoryMap = {};
 
-  allSkillsWithValues.forEach(([skillName, value]) => {
-    let placed = false;
-    for (const [groupName, groupSkills] of Object.entries(skillGroups)) {
-      if (groupSkills.includes(skillName)) {
-        addSkill(categoryMap, groupName, skillName, value);
-        placed = true;
-        break;
-      }
-    }
-    if (!placed) addSkill(categoryMap, "Other", skillName, value);
-  });
+	allSkillsWithValues.forEach(([skillName, value]) => {
+		let placed = false;
+		for (const [groupName, groupSkills] of Object.entries(skillGroups)) {
+			if (groupSkills.includes(skillName)) {
+				addSkill(categoryMap, groupName, skillName, value);
+				placed = true;
+				break;
+			}
+		}
+		if (!placed) addSkill(categoryMap, "Other", skillName, value);
+	});
 
-  return categoryMap;
+	return categoryMap;
 }
 
 function renderSkillSummary(allSkillsWithValues) {
-  const categoryMap = summarizeSkills(allSkillsWithValues);
-  const container = document.getElementById("skills-summary");
-  container.innerHTML = "";
+	const categoryMap = summarizeSkills(allSkillsWithValues);
+	const container = document.getElementById("skills-summary");
+	container.innerHTML = "";
 
-  for (const [category, skills] of Object.entries(categoryMap)) {
-    const h3 = document.createElement("h3");
-    h3.textContent = category;
-    container.appendChild(h3);
+	for (const [category, skills] of Object.entries(categoryMap)) {
+		const h3 = document.createElement("h3");
+		h3.textContent = category;
+		container.appendChild(h3);
 
-    const ul = document.createElement("ul");
-    for (const [skill, data] of Object.entries(skills)) {
-      const li = document.createElement("li");
-      if (data.total != null) {
-        // Show total and breakdown (if multiple parts)
-        const totalText = formatTotal(data.total, data.unit);
-        if (data.parts.length > 1) {
-          li.innerHTML = `${skill} ${totalText} (${data.parts.join(", ")})</span>`;
-        } else {
-          li.textContent = `${skill} ${totalText}`;
-        }
-      } else {
-        // Non-combinable: just show raw values (joined if more than one)
-        li.textContent = `${skill} ${data.parts.join(", ")}`;
-      }
-      ul.appendChild(li);
-    }
-    container.appendChild(ul);
-  }
+		const ul = document.createElement("ul");
+		for (const [skill, data] of Object.entries(skills)) {
+			const li = document.createElement("li");
+			if (data.total != null) {
+				const totalText = formatTotal(data.total, data.unit);
+				li.innerHTML = data.parts.length > 1 ?
+					`${skill} ${totalText} (${data.parts.join(", ")})` :
+					`${skill} ${totalText}`;
+			} else {
+				li.textContent = `${skill} ${data.parts.join(", ")}`;
+			}
+			ul.appendChild(li);
+		}
+		container.appendChild(ul);
+	}
 }
 
-// ---- main update ----
+// ---------------------- MAIN LOGIC ----------------------
 function updateSkills() {
-  const outputDiv = document.getElementById("skills-output");
-  outputDiv.innerHTML = "";
+	const outputDiv = document.getElementById("skills-output");
+	outputDiv.innerHTML = "";
 
-  let chosenItems = [];
+	const chosenItems = [];
 
-  // Equipment + Retainers
-  equipmentTypes.forEach(type => {
-    if (type === "Accessory" || type === "Retainer") {
-      for (let i = 1; i <= 3; i++) {
-        const select = document.getElementById(`select-${type}-${i}`);
-        if (select && select.value) chosenItems.push(select.value);
-      }
-    } else {
-      const select = document.getElementById(`select-${type}`);
-      if (select && select.value) chosenItems.push(select.value);
-    }
-  });
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) {
+				const select = document.getElementById(`select-${type}-${i}`);
+				if (select && select.value) chosenItems.push(select.value);
+			}
+		} else {
+			const select = document.getElementById(`select-${type}`);
+			if (select && select.value) chosenItems.push(select.value);
+		}
+	});
 
-  // Collections (use codes, map to full names)
-  for (const code of Object.keys(collectionCodes)) {
-    const checkbox = document.getElementById("collection-" + code);
-    if (checkbox && checkbox.checked) {
-      const fullName = collectionCodes[code];
-      chosenItems.push(fullName);
-    }
-  }
+	for (const code of Object.keys(collectionCodes)) {
+		const checkbox = document.getElementById("collection-" + code);
+		if (checkbox && checkbox.checked) chosenItems.push(collectionCodes[code]);
+	}
 
-  // Per-item display + collect for summary
-  let allSkillsWithValues = [];
-  chosenItems.forEach(itemName => {
-    let info = equipmentData[itemName] || collectionData[itemName];
-    if (info && info.skill) {
-      // Per-item output
-      const itemDiv = document.createElement("div");
-      itemDiv.innerHTML = `<b>${itemName}</b><br>` +
-        info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
-      outputDiv.appendChild(itemDiv);
-      outputDiv.appendChild(document.createElement("br"));
+	const allSkillsWithValues = [];
+	chosenItems.forEach(itemName => {
+		const info = equipmentData[itemName] || collectionData[itemName];
+		if (info && info.skill) {
+			const itemDiv = document.createElement("div");
+			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
+				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
+			outputDiv.appendChild(itemDiv);
+			outputDiv.appendChild(document.createElement("br"));
 
-      // Collect for summary: [skillName, rawValueStringOrNumber]
-      info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
-    }
-  });
+			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
+		}
+	});
 
-  renderSkillSummary(allSkillsWithValues);
+	renderSkillSummary(allSkillsWithValues);
 }
 
-// ---- data loading ----
-async function loadAllData() {
-  const [equip, coll, codes, groups, combinables] = await Promise.all([
-    fetch("equipment_list.json").then(r => r.json()),
-    fetch("collection_list.json").then(r => r.json()),
-    fetch("collection_codes.json").then(r => r.json()),
-    fetch("skill_groups.json").then(r => r.json()),   // your revised format: { "Weapon Attack": [...], ... }
-    fetch("combinable_skills.json").then(r => r.json())
-  ]);
+// ---------------------- SETUP STORAGE ----------------------
+function saveSetup(name) {
+	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
+		.filter(s => s.name !== name);
 
-  equipmentData = equip;
-  collectionData = coll;
-  collectionCodes = codes;
-  skillGroups = groups; // already the dictionary
-  combinableSkills = new Set(combinables);
+	const collections = [];
+	for (const code of Object.keys(collectionCodes)) {
+		const cb = document.getElementById("collection-" + code);
+		if (cb && cb.checked) collections.push(collectionCodes[code]);
+	}
 
-  // Build UI
-  equipmentTypes.forEach(type => {
-    if (type === "Accessory" || type === "Retainer") {
-      for (let i = 1; i <= 3; i++) createDropdown(type, i);
-    } else {
-      createDropdown(type);
-    }
-  });
-  createCollectionCheckboxes();
+	const equipment = {};
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) {
+				const sel = document.getElementById(`select-${type}-${i}`);
+				if (sel && sel.value) equipment[`${type}-${i}`] = sel.value;
+			}
+		} else {
+			const sel = document.getElementById(`select-${type}`);
+			if (sel && sel.value) equipment[type] = sel.value;
+		}
+	});
+
+	setups.push({ name, collections, equipment });
+	localStorage.setItem("savedSetups", JSON.stringify(setups));
+	refreshSavedSetups();
 }
 
-// run on page load
-loadAllData();
+function loadSetup(name) {
+	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+	const setup = setups.find(s => s.name === name);
+	if (!setup) return;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("goBattleBtn");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      // Collect chosen collections
-      const collections = [];
-      for (const code of Object.keys(collectionCodes)) {
-        const checkbox = document.getElementById("collection-" + code);
-        if (checkbox && checkbox.checked) {
-          collections.push(collectionCodes[code]); // full name
-        }
-      }
+	document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
+		cb.checked = setup.collections.includes(collectionCodes[cb.id.replace("collection-", "")]);
+	});
 
-      // Collect chosen equipment
-      const equipment = [];
-      equipmentTypes.forEach(type => {
-        if (type === "Accessory" || type === "Retainer") {
-          for (let i = 1; i <= 3; i++) {
-            const select = document.getElementById(`select-${type}-${i}`);
-            if (select && select.value) equipment.push(select.value);
-          }
-        } else {
-          const select = document.getElementById(`select-${type}`);
-          if (select && select.value) equipment.push(select.value);
-        }
-      });
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) {
+				const sel = document.getElementById(`select-${type}-${i}`);
+				if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
+			}
+		} else {
+			const sel = document.getElementById(`select-${type}`);
+			if (sel) sel.value = setup.equipment[type] || "";
+		}
+	});
 
-      // Save to localStorage
-      const setup = { collections, equipment };
-      localStorage.setItem("playerSetup", JSON.stringify(setup));
-
-      // Redirect to battle
-      window.location.href = "battle.html";
-    });
-  }
-
-  // Check all collections
-  const checkAllBtn = document.getElementById("checkAllCollections");
-  if (checkAllBtn) {
-    checkAllBtn.addEventListener("click", () => {
-      document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
-        cb.checked = true;
-      });
-      updateSkills();
-    });
-  }
-
-  // Uncheck all collections
-  const uncheckAllBtn = document.getElementById("uncheckAllCollections");
-  if (uncheckAllBtn) {
-    uncheckAllBtn.addEventListener("click", () => {
-      document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
-        cb.checked = false;
-      });
-      updateSkills();
-    });
-  }
-
-  // Save Setup
-  const saveBtn = document.getElementById("saveSetupBtn");
-  if (saveBtn) {
-    saveBtn.addEventListener("click", () => {
-      const name = document.getElementById("setupName").value.trim();
-      if (name) {
-        saveSetup(name);
-        refreshSavedSetups();
-      }
-    });
-  }
-
-  // Load Setup
-  const loadBtn = document.getElementById("loadSetupBtn");
-  if (loadBtn) {
-    loadBtn.addEventListener("click", () => {
-      const select = document.getElementById("loadSetupSelect");
-      if (select.value) loadSetup(select.value);
-    });
-  }
-
-  refreshSavedSetups();
-
-  // Delete Setup
-  const deleteBtn = document.getElementById("deleteSetupBtn");
-  if (deleteBtn) {
-    deleteBtn.addEventListener("click", () => {
-      const select = document.getElementById("loadSetupSelect");
-      const setupName = select.value;
-  
-      if (!setupName) {
-        alert("Please select a setup to delete.");
-        return;
-      }
-  
-      if (!confirm(`Delete setup "${setupName}"?`)) return;
-  
-      let setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
-      setups = setups.filter(s => s.name !== setupName);
-      localStorage.setItem("savedSetups", JSON.stringify(setups));
-  
-      // Refresh dropdown after deletion
-      refreshSavedSetups();
-    });
-  }
-});
-  
-function saveSetup(setupName) {
-  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
-
-  // Remove old with same name
-  const filtered = setups.filter(s => s.name !== setupName);
-
-  // Collect new selections
-  const collections = [];
-  for (const code of Object.keys(collectionCodes)) {
-    const checkbox = document.getElementById("collection-" + code);
-    if (checkbox && checkbox.checked) {
-      collections.push(collectionCodes[code]);
-    }
-  }
-
-  const equipment = [];
-  equipmentTypes.forEach(type => {
-    if (type === "Accessory" || type === "Retainer") {
-      for (let i = 1; i <= 3; i++) {
-        const select = document.getElementById(`select-${type}-${i}`);
-        if (select && select.value) equipment.push(select.value);
-      }
-    } else {
-      const select = document.getElementById(`select-${type}`);
-      if (select && select.value) equipment.push(select.value);
-    }
-  });
-
-  filtered.push({ name: setupName, collections, equipment });
-
-  localStorage.setItem("savedSetups", JSON.stringify(filtered));
+	updateSkills();
 }
 
-function loadSetup(setupName) {
-  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
-  const setup = setups.find(s => s.name === setupName);
-  if (!setup) return;
-
-  // Apply collections
-  document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
-    cb.checked = setup.collections.includes(collectionCodes[cb.id.replace("collection-", "")]);
-  });
-
-  // Apply equipment
-  equipmentTypes.forEach(type => {
-    if (type === "Accessory" || type === "Retainer") {
-      for (let i = 1; i <= 3; i++) {
-        const select = document.getElementById(`select-${type}-${i}`);
-        if (select) {
-          const matched = setup.equipment.find(e => Array.from(select.options).some(opt => opt.value === e));
-          if (matched) select.value = matched;
-          else select.value = "";
-        }
-      }
-    } else {
-      const select = document.getElementById(`select-${type}`);
-      if (select) {
-        const matched = setup.equipment.find(e => Array.from(select.options).some(opt => opt.value === e));
-        if (matched) select.value = matched;
-        else select.value = "";
-      }
-    }
-  });
-
-  updateSkills();
-}
-
-function deleteSetup(setupName) {
-  let setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
-  setups = setups.filter(s => s.name !== setupName);
-  localStorage.setItem("savedSetups", JSON.stringify(setups));
+function deleteSetup(name) {
+	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
+		.filter(s => s.name !== name);
+	localStorage.setItem("savedSetups", JSON.stringify(setups));
+	refreshSavedSetups();
 }
 
 function refreshSavedSetups() {
-  const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
-  const select = document.getElementById("loadSetupSelect");
-  select.innerHTML = setups.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
-
-  if (setups.length > 0) {
-    select.value = setups[0].name; // auto-select first
-  }
+	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]");
+	const select = document.getElementById("loadSetupSelect");
+	select.innerHTML = setups.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
+	if (setups.length > 0) select.value = setups[0].name;
 }
 
-// Run on page load
-refreshSavedSetups();
+// ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
+// Index -> Battle
+function exportToBattle() {
+	const collections = [];
+	for (const code of Object.keys(collectionCodes)) {
+		const cb = document.getElementById("collection-" + code);
+		if (cb && cb.checked) collections.push(collectionCodes[code]);
+	}
+
+	const equipment = {};
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) {
+				const sel = document.getElementById(`select-${type}-${i}`);
+				equipment[`${type}-${i}`] = sel?.value || "";
+			}
+		} else {
+			const sel = document.getElementById(`select-${type}`);
+			equipment[type] = sel?.value || "";
+		}
+	});
+
+	// Save the whole active setup
+	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
+	window.location.href = "battle.html";
+}
+
+// Battle -> Index
+function importFromBattle() {
+	const savedActiveSetup = localStorage.getItem("activeSetup");
+	if (!savedActiveSetup) return;
+
+	const setup = JSON.parse(savedActiveSetup);
+
+	// Restore collections
+	if (setup.collections) {
+		for (const code of Object.keys(collectionCodes)) {
+			const cb = document.getElementById("collection-" + code);
+			if (cb) cb.checked = setup.collections.includes(collectionCodes[code]);
+		}
+	}
+
+	// Restore equipment
+	if (setup.equipment) {
+		equipmentTypes.forEach(type => {
+			if (type === "Accessory" || type === "Retainer") {
+				for (let i = 1; i <= 3; i++) {
+					const sel = document.getElementById(`select-${type}-${i}`);
+					if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
+				}
+			} else {
+				const sel = document.getElementById(`select-${type}`);
+				if (sel) sel.value = setup.equipment[type] || "";
+			}
+		});
+	}
+}
+
+// ---------------------- DATA LOADING ----------------------
+async function loadAllData() {
+	const [equip, coll, codes, groups, combinables] = await Promise.all([
+		fetch("equipment_list.json").then(r => r.json()),
+		fetch("collection_list.json").then(r => r.json()),
+		fetch("collection_codes.json").then(r => r.json()),
+		fetch("skill_groups.json").then(r => r.json()),
+		fetch("combinable_skills.json").then(r => r.json())
+	]);
+
+	equipmentData = equip;
+	collectionData = coll;
+	collectionCodes = codes;
+	skillGroups = groups;
+	combinableSkills = new Set(combinables);
+
+	equipmentTypes.forEach(type => {
+		if (type === "Accessory" || type === "Retainer") {
+			for (let i = 1; i <= 3; i++) createDropdown(type, i);
+		} else {
+			createDropdown(type);
+		}
+	});
+	createCollectionCheckboxes();
+	updateSkills();
+}
+
+// ---------------------- DOM READY ----------------------
+document.addEventListener("DOMContentLoaded", async () => {
+	await loadAllData();  // ensure dropdowns exist
+
+	// Auto-restore Active Setup
+	importFromBattle();
+
+	// Go to Battle button + Export Active Setup
+	const goBtn = document.getElementById("goBattleBtn");
+	if (goBtn) goBtn.addEventListener("click", exportToBattle);
+
+	// Check All / Uncheck All collections
+	const checkAllBtn = document.getElementById("checkAllCollections");
+	if (checkAllBtn) checkAllBtn.addEventListener("click", () => {
+		document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => cb.checked = true);
+		updateSkills();
+	});
+
+	const uncheckAllBtn = document.getElementById("uncheckAllCollections");
+	if (uncheckAllBtn) uncheckAllBtn.addEventListener("click", () => {
+		document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => cb.checked = false);
+		updateSkills();
+	});
+
+	// Save Setup Button
+	const saveBtn = document.getElementById("saveSetupBtn");
+	if (saveBtn) saveBtn.addEventListener("click", () => {
+		const name = document.getElementById("setupName").value.trim();
+		if (name) saveSetup(name);
+	});
+
+	// Load Setup Button
+	const loadBtn = document.getElementById("loadSetupBtn");
+	if (loadBtn) loadBtn.addEventListener("click", () => {
+		const sel = document.getElementById("loadSetupSelect");
+		if (sel.value) loadSetup(sel.value);
+	});
+
+	// Delete Setup Button
+	const deleteBtn = document.getElementById("deleteSetupBtn");
+	if (deleteBtn) deleteBtn.addEventListener("click", () => {
+		const sel = document.getElementById("loadSetupSelect");
+		const setupName = sel.value;
+		if (!setupName) {
+			alert("Please select a setup to delete.");
+			return;
+		}
+		if (!confirm(`Delete setup "${setupName}"?`)) return;
+		deleteSetup(setupName);
+	});
+
+	// Initialize saved setups dropdown
+	refreshSavedSetups();
+});
+

@@ -1299,7 +1299,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		</ul>
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
 	    <p><b>Retainers:</b> ${
-			[setup.ret1, setup.ret2, setup.ret3].filter(r => r).join(", ") || "None"
+			[ret1, ret2, ret3].filter(r => r).join(", ") || "None"
 	    }</p>
   
   		<h3>Skills:</h3>

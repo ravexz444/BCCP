@@ -1345,6 +1345,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 		// --- Combine both lists (unique) ---
 		const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];
+		console.log("MEnemies List:", selectedEnemies);
+		console.log("BEnemies List:", batchEnemies);
+		console.log("Enemies List:", enemiesList);
 
 		if (enemiesList.length === 0) {
 			alert("Please select at least one enemy.");
@@ -1354,6 +1357,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 		logDiv.innerText = ""; // reset log
 
 		// --- Run battle simulations ---
+		console.log("P Sk:", player_skills);
+		console.log("P Rets:", ret1, ret2, ret3);
+		console.log("N:", n);
 		estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
 	});
 });

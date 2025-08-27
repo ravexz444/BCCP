@@ -1306,7 +1306,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 				.join("")}
 		</ul>
 		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
-		<p><b>Retainers:</b> ${setup.retainers?.join(", ") || "None"}</p>
+	    <p><b>Retainers:</b> ${
+			[setup.ret1, setup.ret2, setup.ret3].filter(r => r).join(", ") || "None"
+	    }</p>
   
   		<h3>Skills:</h3>
 		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>

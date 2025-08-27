@@ -1036,26 +1036,25 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
     let stun_next_turn = false;
 
     for (let round_num = 1; round_num < 6; round_num++) {
+		// Count charges
+		let player_evade_charges = calc_charges(player_skills_list, "Evade", player_attunement);
+		let enemy_evade_charges = calc_charges(enemy_skills_list, "Evade", enemy_attunement);
+		let player_dispel_charges = calc_charges(player_skills_list, "Dispel", player_attunement);
+		let enemy_dispel_charges = calc_charges(enemy_skills_list, "Dispel", enemy_attunement);
+		let player_flying_charges = calc_charges(player_skills_list, "Flying", player_attunement);
+		let enemy_flying_charges = calc_charges(enemy_skills_list, "Flying", enemy_attunement);
+
+		console.log("P E:", player_evade_charges);
+		console.log("E E:", enemy_evade_charges);
+		console.log("P D:", player_dispel_charges);
+		console.log("E D:", enemy_dispel_charges);
+		console.log("P F:", player_flying_charges);
+		console.log("E F:", enemy_flying_charges);
 
         // ================================
         // First priority (Curse, Shield, Call Ret, Kill Ret, StrInst)
         // ================================
         for (let i = 1; i < 3; i++) {
-            // Count charges
-            let player_evade_charges = calc_charges(player_skills_list, "Evade", player_attunement);
-            let enemy_evade_charges = calc_charges(enemy_skills_list, "Evade", enemy_attunement);
-            let player_dispel_charges = calc_charges(player_skills_list, "Dispel", player_attunement);
-            let enemy_dispel_charges = calc_charges(enemy_skills_list, "Dispel", enemy_attunement);
-            let player_flying_charges = calc_charges(player_skills_list, "Flying", player_attunement);
-            let enemy_flying_charges = calc_charges(enemy_skills_list, "Flying", enemy_attunement);
-
-			console.log("P E:", player_evade_charges);
-			console.log("E E:", enemy_evade_charges);
-			console.log("P D:", player_dispel_charges);
-			console.log("E D:", enemy_dispel_charges);
-			console.log("P F:", player_flying_charges);
-			console.log("E F:", enemy_flying_charges);
-
             if (player_turn) {
                 // Player acts first
                 [

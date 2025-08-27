@@ -1281,6 +1281,9 @@ function refreshSavedBattles() {
 document.addEventListener("DOMContentLoaded", async () => {
 	await loadAllData();
 
+	// Build enemy selectors (manual + batch)
+	buildEnemySelectors();
+
 	const setup = JSON.parse(localStorage.getItem("activeSetup")) || {};
 	const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
 

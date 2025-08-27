@@ -1044,13 +1044,6 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 		let player_flying_charges = calc_charges(player_skills_list, "Flying", player_attunement);
 		let enemy_flying_charges = calc_charges(enemy_skills_list, "Flying", enemy_attunement);
 
-		console.log("P E:", player_evade_charges);
-		console.log("E E:", enemy_evade_charges);
-		console.log("P D:", player_dispel_charges);
-		console.log("E D:", enemy_dispel_charges);
-		console.log("P F:", player_flying_charges);
-		console.log("E F:", enemy_flying_charges);
-
         // ================================
         // First priority (Curse, Shield, Call Ret, Kill Ret, StrInst)
         // ================================

@@ -181,11 +181,11 @@ function init_setup(setup) {
 	}
 
 	// --- Retainers ---
-	const rets = setup.retainers || [];
-	const ret1 = rets[0] || "";
-	const ret2 = rets[1] || "";
-	const ret3 = rets[2] || "";
-
+	const eq = setup.equipment || {};
+	const ret1 = eq["Retainer-1"] || "";
+	const ret2 = eq["Retainer-2"] || "";
+	const ret3 = eq["Retainer-3"] || "";
+	
 	return { player_skills, ret1, ret2, ret3 };
 }
 

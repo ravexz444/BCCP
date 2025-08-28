@@ -36,16 +36,18 @@ function compareValue(op, a, b) {
 	}
 }
 
-//Support "" as single value
+// parse query: support quotes + negation
 function parseQuery(query) {
 	const filters = [];
-	const regex = /(-?\w+:"[^"]+"|-?\w+:[^\s]+)|"([^"]+)"|(\S+)/g;
+	const regex = /(-?\w+:"[^"]+"|-?\w+:[^\s,]+)|"([^"]+)"|(\S+)/g;
 	let match;
 	while ((match = regex.exec(query)) !== null) {
 		let term = match[0];
-		const neg = term.startsWith("-");
+		let neg = false;
+		if (term.startsWith("-")) { neg = true; term = term.slice(1); }
+		
 		if (term.includes(":")) {
-			const [field, rawVal] = term.replace(/^-/, "").split(":");
+			const [field, rawVal] = term.split(":");
 			let value = rawVal;
 			if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
 			filters.push({ field: field.toLowerCase(), value, neg });
@@ -59,45 +61,43 @@ function parseQuery(query) {
 	return filters;
 }
 
-function matchesRegion(itemRegion, filters) {
-	if (!Array.isArray(filters)) filters = [filters];
+// region filter logic
+function matchesRegion(itemRegion, filter) {
+	const val = filter.value.toLowerCase();
 
-	for (const filter of filters) {
-		const val = filter.value.toLowerCase();
-
-		// NEGATION
-		if (filter.neg) {
-			if ((val === "event" && eventRegions.includes(itemRegion)) ||
-				(val === "premium" && premiumRegions.includes(itemRegion)) ||
-				itemRegion.toLowerCase() === val) {
-				return false;
-			}
-			continue;
-		}
-
-		// POSITIVE
-		if ((val === "event" && !eventRegions.includes(itemRegion)) ||
-			(val === "premium" && !premiumRegions.includes(itemRegion))) {
+	// NEGATION
+	if (filter.neg) {
+		if ((val === "event" && eventRegions.includes(itemRegion)) ||
+			(val === "premium" && premiumRegions.includes(itemRegion)) ||
+			itemRegion.toLowerCase() === val) {
 			return false;
 		}
-
-		// numeric comparison: region:<R07
-		const m = val.match(/^(<|>|<=|>=)?r(\d+)/i);
-		if (m) {
-			const op = m[1] || "=";
-			const num = parseInt(m[2], 10);
-			const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
-			if (!compareValue(op, itemNum, num)) return false;
-			continue;
-		}
-
-		// exact / partial match
-		if (!itemRegion.toLowerCase().startsWith(val)) return false;
+		return true; // passes negative filter
 	}
+
+	// POSITIVE
+	if ((val === "event" && !eventRegions.includes(itemRegion)) ||
+		(val === "premium" && !premiumRegions.includes(itemRegion))) {
+		return false;
+	}
+
+	// numeric comparison for regions: <R10, >R05, etc
+	const m = val.match(/^(<|>|<=|>=)?r(\d+)/i);
+	if (m) {
+		const op = m[1] || "=";
+		const num = parseInt(m[2], 10);
+		const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
+		if (!compareValue(op, itemNum, num)) return false;
+		return true;
+	}
+
+	// exact / partial match
+	if (!itemRegion.toLowerCase().startsWith(val)) return false;
 
 	return true;
 }
 
+// main equipment matcher
 function matchEquipment(name, info, filters) {
 	for (const f of filters) {
 		const v = f.value.toLowerCase();
@@ -112,7 +112,7 @@ function matchEquipment(name, info, filters) {
 		}
 
 		else if (f.field === "region") {
-			matched = matchesRegion(info.region, [f]);
+			matched = matchesRegion(info.region, f);
 		}
 
 		else if (f.field === "mat") {
@@ -133,11 +133,10 @@ function matchEquipment(name, info, filters) {
 				(info.rarity || "").toLowerCase().includes(v);
 		}
 
-		// handle negation
-		if (f.neg && matched) return false;
-		if (!f.neg && !matched) return false;
+		// APPLY NEGATION & POSITIVE
+		if (f.neg && matched) return false; // exclude if negative matches
+		if (!f.neg && !matched) return false; // exclude if positive fails
 	}
-
 	return true;
 }
 

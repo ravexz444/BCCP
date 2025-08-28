@@ -373,6 +373,16 @@ function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
 		.filter(s => s.name !== name);
 
+	// check if name already exists
+	const existing = setups.find(s => s.name === name);
+	if (existing) {
+		const ok = confirm(`A setup with the name "${name}" already exists. Do you want to overwrite it?`);
+		if (!ok) return; // user cancelled
+	}
+
+	// remove old entry if any
+	const newSetups = setups.filter(s => s.name !== name);
+	
 	// === Save collections ===
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {

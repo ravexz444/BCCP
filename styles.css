@@ -5,15 +5,7 @@
 	gap: 6px 16px;
 }
 
-// Initial states of hide / unhide
-#skills-output {
-	display: none;
-}
-#skills-summary {
-	display: block;
-}
-
-// Reusabel hidden class
+// Reusable hidden class
 .hidden {
 	display: none !important;
 }

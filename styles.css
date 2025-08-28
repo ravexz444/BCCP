@@ -1,11 +1,11 @@
-// Grid for collection
+/* Grid for collection */
 #collection-selectors {
 	display: grid;
 	grid-template-columns: repeat(5, auto); /* 5 per row */
 	gap: 6px 16px;
 }
 
-// Reusable hidden class
+/* Reusable hidden class */
 .hidden {
 	display: none !important;
 }

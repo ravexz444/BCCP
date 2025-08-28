@@ -403,7 +403,14 @@ function loadSetup(name) {
 	// === Restore equipment ===
 	equipped = {}; // reset
 	for (const [type, items] of Object.entries(setup.equipment)) {
-		equipped[type] = [...items]; // clone array
+		// Ensure everything is stored as an array
+		if (Array.isArray(items)) {
+			equipped[type] = [...items]; 
+		} else if (typeof items === "string") {
+			equipped[type] = [items]; // wrap single string in array
+		} else {
+			equipped[type] = [];
+		}
 	}
 
 	updateEquippedList();

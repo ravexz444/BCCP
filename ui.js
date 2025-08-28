@@ -52,13 +52,41 @@ function parseQuery(query) {
 	return filters;
 }
 
+function matchesRegion(itemRegion, filters) {
+	if (!Array.isArray(filters)) filters = [filters]; // ensure array
+	for (const filter of filters) {
+		const val = filter.value.toLowerCase();
+
+		// negative filter
+		if (filter.neg) {
+			if (val === "event" && eventRegions.includes(itemRegion)) return false;
+			if (itemRegion.toLowerCase() === val) return false;
+			continue;
+		}
+
+		// numeric comparison: region:<R07
+		let m = val.match(/^(<|>|<=|>=)?r(\d+)/i);
+		if (m) {
+			const op = m[1] || "=";
+			const num = parseInt(m[2], 10);
+			const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
+			if (!compareValue(op, itemNum, num)) return false;
+			continue;
+		}
+
+		// exact / partial match
+		if (!itemRegion.toLowerCase().startsWith(val)) return false;
+	}
+
+	return true;
+}
+
 function matchEquipment(name, info, filters) {
 	for (const f of filters) {
 		const v = f.value.toLowerCase();
 		let matched = false;
 
 		if (f.field === "xp") {
-			// comparison operator support
 			const m = v.match(/^(<=|>=|<|>)?(.+)$/);
 			if (!m) continue;
 			const op = m[1] || "=";
@@ -67,15 +95,9 @@ function matchEquipment(name, info, filters) {
 		}
 
 		else if (f.field === "region") {
-			const m = v.match(/^(<=|>=|<|>)?r(\d+)/i);
-			if (m) {
-				const op = m[1] || "=";
-				const num = parseInt(m[2]);
-				const equipNum = parseInt(info.region.replace(/[^\d]/g, ""));
-				matched = compareValue(op, equipNum, num);
-			} else {
-				matched = info.region.toLowerCase().includes(v);
-			}
+			// delegate all region logic to matchesRegion
+			matched = matchesRegion(info.region, [f]); 
+			// matched = true if passes region filter
 		}
 
 		else if (f.field === "mat") {
@@ -91,15 +113,14 @@ function matchEquipment(name, info, filters) {
 		}
 
 		else if (f.field === "text") {
-			// fallback free text search across name + type + rarity
 			matched = name.toLowerCase().includes(v) ||
 				(info.type || "").toLowerCase().includes(v) ||
 				(info.rarity || "").toLowerCase().includes(v);
 		}
 
-		// handle negation
 		if (f.neg ? matched : !matched) return false;
 	}
+
 	return true;
 }
 

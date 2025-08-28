@@ -373,24 +373,16 @@ function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
 		.filter(s => s.name !== name);
 
+	// === Save collections ===
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {
 		const cb = document.getElementById("collection-" + code);
-		if (cb && cb.checked) collections.push(collectionCodes[code]);
+		if (cb && cb.checked) collections.push(code); // store raw code, not display name
 	}
 
-	const equipment = {};
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel && sel.value) equipment[`${type}-${i}`] = sel.value;
-			}
-		} else {
-			const sel = document.getElementById(`select-${type}`);
-			if (sel && sel.value) equipment[type] = sel.value;
-		}
-	});
+	// === Save equipment ===
+	// Just clone the current equipped object
+	const equipment = JSON.parse(JSON.stringify(equipped));
 
 	setups.push({ name, collections, equipment });
 	localStorage.setItem("savedSetups", JSON.stringify(setups));
@@ -402,22 +394,19 @@ function loadSetup(name) {
 	const setup = setups.find(s => s.name === name);
 	if (!setup) return;
 
+	// === Restore collections ===
 	document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
-		cb.checked = setup.collections.includes(collectionCodes[cb.id.replace("collection-", "")]);
+		const code = cb.id.replace("collection-", "");
+		cb.checked = setup.collections.includes(code);
 	});
 
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
-			}
-		} else {
-			const sel = document.getElementById(`select-${type}`);
-			if (sel) sel.value = setup.equipment[type] || "";
-		}
-	});
+	// === Restore equipment ===
+	equipped = {}; // reset
+	for (const [type, items] of Object.entries(setup.equipment)) {
+		equipped[type] = [...items]; // clone array
+	}
 
+	updateEquippedList();
 	updateSkills();
 }
 
@@ -438,26 +427,16 @@ function refreshSavedSetups() {
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
 // Index -> Battle
 function exportToBattle() {
+	// Save collections
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {
 		const cb = document.getElementById("collection-" + code);
-		if (cb && cb.checked) collections.push(collectionCodes[code]);
+		if (cb && cb.checked) collections.push(code);
 	}
 
-	const equipment = {};
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				equipment[`${type}-${i}`] = sel?.value || "";
-			}
-		} else {
-			const sel = document.getElementById(`select-${type}`);
-			equipment[type] = sel?.value || "";
-		}
-	});
+	// Save equipment (clone equipped object)
+	const equipment = JSON.parse(JSON.stringify(equipped));
 
-	// Save the whole active setup
 	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
 	window.location.href = "battle.html";
 }
@@ -473,23 +452,17 @@ function importFromBattle() {
 	if (setup.collections) {
 		for (const code of Object.keys(collectionCodes)) {
 			const cb = document.getElementById("collection-" + code);
-			if (cb) cb.checked = setup.collections.includes(collectionCodes[code]);
+			if (cb) cb.checked = setup.collections.includes(code);
 		}
 	}
 
 	// Restore equipment
 	if (setup.equipment) {
-		equipmentTypes.forEach(type => {
-			if (type === "Accessory" || type === "Retainer") {
-				for (let i = 1; i <= 3; i++) {
-					const sel = document.getElementById(`select-${type}-${i}`);
-					if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
-				}
-			} else {
-				const sel = document.getElementById(`select-${type}`);
-				if (sel) sel.value = setup.equipment[type] || "";
-			}
-		});
+		equipped = {}; // reset
+		for (const [type, items] of Object.entries(setup.equipment)) {
+			equipped[type] = [...items];
+		}
+		updateEquippedList();
 	}
 
 	updateSkills();

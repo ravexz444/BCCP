@@ -10,6 +10,7 @@ let collectionData = {};
 let collectionCodes = {}; // shortCode → fullName mapping
 let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
+let savedSetups = { 1: null, 2: null, 3: null };
 
 // ---------------------- Toggle Button ----------------------
 function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
@@ -622,7 +623,7 @@ function refreshSavedSetups() {
 }
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
-function exportToBattle(setupIndex = 1) {
+function saveActiveSetup(slot) {
 	// Save collections
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {
@@ -646,10 +647,23 @@ function exportToBattle(setupIndex = 1) {
 		}
 	}
 
-	// Store under activeSetup-1, -2, -3
-	localStorage.setItem(`activeSetup-${setupIndex}`, JSON.stringify({ collections, equipment }));
+	// Store setup into localStorage
+	const setup = { collections, equipment };
+	localStorage.setItem(`activeSetup-${slot}`, JSON.stringify(setup));
 
-	// Go to battle page
+	// ✅ indicator
+	const indicator = document.getElementById(`indicator${slot}`);
+	if (indicator) indicator.textContent = "✅";
+}
+
+function sendAllToBattle() {
+	const setupsToSend = {};
+	for (let i = 1; i <= 3; i++) {
+		const data = localStorage.getItem(`activeSetup-${i}`);
+		if (data) setupsToSend[i] = JSON.parse(data);
+	}
+	localStorage.setItem("setupsWithSkills", JSON.stringify(setupsToSend));
+
 	window.location.href = "battle.html";
 }
 
@@ -734,12 +748,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Auto-restore Active Setup
 	importFromBattle();
 
-	// Go to Battle buttons (up to 3 setups)
-	["goBattleBtn1", "goBattleBtn2", "goBattleBtn3"].forEach((id, idx) => {
-	    const btn = document.getElementById(id);
-	    if (btn) btn.addEventListener("click", () => exportToBattle(idx + 1));
+	// Active Setup Save buttons
+	["saveSetup1", "saveSetup2", "saveSetup3"].forEach((id, idx) => {
+		const btn = document.getElementById(id);
+		if (btn) btn.addEventListener("click", () => saveActiveSetup(idx + 1));
 	});
-
+	
+	// Active Setup Transfer button
+	const sendBtn = document.getElementById("sendToBattle");
+	if (sendBtn) sendBtn.addEventListener("click", sendAllToBattle);
+	
 	// Check All / Uncheck All collections
 	const checkAllBtn = document.getElementById("checkAllCollections");
 	if (checkAllBtn) checkAllBtn.addEventListener("click", () => {

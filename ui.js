@@ -60,37 +60,47 @@ function equipItem(name, type) {
 
 	// prevent duplicates
 	if (equipped[type].includes(name)) {
-		// move it to the end if it's multi-slot, else just ignore
-		if (type === "Accessory" || type === "Retainer") {
-			// remove old instance, then push once
-			equipped[type] = equipped[type].filter(item => item !== name);
-			equipped[type].push(name);
-		}
-		// for single-slot types, just replace (no need to re-add)
-		else {
-			equipped[type] = [name];
-		}
+		alert(`${name} is already equipped in ${type}.`);
+		return;
+	}
+
+	// single-slot types (always replace)
+	if (type !== "Accessory" && type !== "Retainer") {
+		equipped[type] = [name];
+		updateEquippedList();
+		updateSkills();
+		return;
+	}
+
+	// multi-slot types (Accessory / Retainer)
+	const max = 3;
+	if (equipped[type].length < max) {
+		// still room → just add
+		equipped[type].push(name);
 	} else {
-		// single-slot types
-		if (type !== "Accessory" && type !== "Retainer") {
-			equipped[type] = [name];
-		} else {
-			// multi-slot types
-			const max = 3; // tweak to 2 if non-premium
-			if (equipped[type].length < max) {
-				equipped[type].push(name);
-			} else {
-				// replace the oldest one (FIFO style)
-				equipped[type].shift();
-				equipped[type].push(name);
-			}
+		// already at max → ask user which slot to replace
+		let current = equipped[type]
+			.map((item, idx) => `${idx + 1}: ${item}`)
+			.join("\n");
+
+		let choice = prompt(
+			`${type} slots are full.\nCurrently equipped:\n${current}\n\nEnter the slot number (1-${max}) to replace with ${name}, or Cancel to abort:`
+		);
+
+		if (!choice) return; // user pressed cancel
+		let slot = parseInt(choice, 10);
+		if (isNaN(slot) || slot < 1 || slot > max) {
+			alert("Invalid slot number.");
+			return;
 		}
+
+		// replace chosen slot
+		equipped[type][slot - 1] = name;
 	}
 
 	updateEquippedList();
 	updateSkills();
 }
-
 // Delete equipped list
 function updateEquippedList() {
 	const equippedDiv = document.getElementById("equippedList");

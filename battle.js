@@ -1211,10 +1211,7 @@ function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
 		}
 	}
 
-	// Print summary and update logDiv
-	console.log(summary.join("\n"));
-	const logDiv = document.getElementById("battle-log");
-	logDiv.innerText = summary.join("\n");
+	return summary.join("\n");
 }
 
 // ------------------ Toggle button to hide/unhide ------------------
@@ -1449,39 +1446,41 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Battle Simulation
 	document.getElementById("battleBtn").addEventListener("click", () => {
 		const n = parseInt(document.getElementById("simulations").value, 10) || 1;
-
+	
+		// Collect enemies
 		// --- Manual 10 enemies ---
 		const selectors = document.querySelectorAll(".enemy-select");
-		const selectedEnemies = Array.from(selectors)
-			.map(sel => sel.value)
-			.filter(v => v !== "");
-
+		const selectedEnemies = Array.from(selectors).map(sel => sel.value).filter(v => v !== "");
 		// --- Batch-selected enemies ---
 		const batchGroup = document.getElementById("batchEnemyGroup").value;
 		const batchRegion = document.getElementById("batchEnemyRegion").value;
 		const batchEnemies = getEnemiesForRegion(batchRegion, batchGroup);
-
 		// --- Combine both lists (unique) ---
 		const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];
-		console.log("MEnemies List:", selectedEnemies);
-		console.log("BEnemies List:", batchEnemies);
-		console.log("Enemies List:", enemiesList);
-
+	
 		if (enemiesList.length === 0) {
 			alert("Please select at least one enemy.");
 			return;
 		}
-
+	
 		const logDiv = document.getElementById("battle-log");
-		logDiv.innerText = ""; // reset log
-
-		// --- Run battle simulations for each active setup ---
+		logDiv.innerHTML = ""; // reset log
+	
+		// --- Run battle simulations for each setup ---
 		setupsWithSkills.forEach((setup, idx) => {
 			const { player_skills, ret1, ret2, ret3 } = setup;
-			logDiv.innerText += `--- Setup ${idx + 1} ---\n`;
-			console.log(`Running Setup ${idx + 1}`, player_skills, ret1, ret2, ret3);
-			estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
-			logDiv.innerText += "\n\n";
+			const resultText = estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
+	
+			// Create a block for each setup
+			const block = document.createElement("div");
+			block.classList.add("battle-result");
+			block.innerHTML = `
+				<div style="display:flex; justify-content:space-between;">
+					<div><b>Setup ${idx + 1}</b></div>
+					<div class="winrate-summary" style="text-align:right; white-space:pre-line;">${resultText}</div>
+				</div>
+			`;
+			logDiv.appendChild(block);
 		});
 	});
 });

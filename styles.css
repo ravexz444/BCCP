@@ -24,3 +24,8 @@
 	overflow-y: auto;
 	background-color: #fffafa;
 }
+
+.battle-result {
+	border-bottom: 1px solid #ccc;
+	padding: 8px 0;
+}

@@ -382,7 +382,16 @@ function saveSetup(name) {
 
 	// === Save equipment ===
 	// Just clone the current equipped object
-	const equipment = JSON.parse(JSON.stringify(equipped));
+	const equipment = {};
+	for (const [type, items] of Object.entries(equipped)) {
+		if (Array.isArray(items)) {
+			equipment[type] = [...items];
+		} else if (typeof items === "string") {
+			equipment[type] = [items];
+		} else {
+			equipment[type] = [];
+		}
+	}
 
 	setups.push({ name, collections, equipment });
 	localStorage.setItem("savedSetups", JSON.stringify(setups));

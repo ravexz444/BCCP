@@ -9,3 +9,8 @@
 .hidden {
 	display: none !important;
 }
+
+/* Give red color for different items between setups */
+.diff { 
+	color: red; font-weight: bold; 
+}

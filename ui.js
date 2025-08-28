@@ -108,6 +108,7 @@ function updateEquippedList() {
 	});
 }
 
+// === Collection Checkbox ===
 function createCollectionCheckboxes() {
 	const container = document.getElementById("collection-selectors");
 
@@ -130,7 +131,7 @@ function createCollectionCheckboxes() {
 	}
 }
 
-// ---------------------- PARSING HELPERS ----------------------
+// === Parse Value ===
 function parseSkillValue(raw) {
 	if (typeof raw === "number") return { type: "number", value: raw, unit: "" };
 	if (typeof raw !== "string") return { type: "text", raw: String(raw) };
@@ -158,7 +159,7 @@ function formatTotal(total, unit) {
 	return unit === "%" ? `${num}%` : `${num}`;
 }
 
-// ---------------------- SKILL GROUPING ----------------------
+// === Skill Grouping ===
 function addSkill(categoryMap, category, skillName, rawValue) {
 	if (!categoryMap[category]) categoryMap[category] = {};
 	if (!categoryMap[category][skillName]) {
@@ -225,44 +226,46 @@ function renderSkillSummary(allSkillsWithValues) {
 	}
 }
 
-// ---------------------- MAIN LOGIC ----------------------
+// === Extract Skill then Update Skill List ===
 function updateSkills() {
 	const outputDiv = document.getElementById("skills-output");
 	outputDiv.innerHTML = "";
 
 	const chosenItems = [];
 
+	// 1. Add equipped items (from search UI)
 	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const select = document.getElementById(`select-${type}-${i}`);
-				if (select && select.value) chosenItems.push(select.value);
-			}
-		} else {
-			const select = document.getElementById(`select-${type}`);
-			if (select && select.value) chosenItems.push(select.value);
+		if (equipped[type] && equipped[type].length > 0) {
+			equipped[type].forEach(name => chosenItems.push(name));
 		}
 	});
 
+	// 2. Add checked collections
 	for (const code of Object.keys(collectionCodes)) {
 		const checkbox = document.getElementById("collection-" + code);
-		if (checkbox && checkbox.checked) chosenItems.push(collectionCodes[code]);
+		if (checkbox && checkbox.checked) {
+			chosenItems.push(collectionCodes[code]);
+		}
 	}
 
+	// 3. Build full skill list
 	const allSkillsWithValues = [];
 	chosenItems.forEach(itemName => {
 		const info = equipmentData[itemName] || collectionData[itemName];
 		if (info && info.skill) {
+			// Show item skills in "skills-output"
 			const itemDiv = document.createElement("div");
 			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
 				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
 			outputDiv.appendChild(itemDiv);
 			outputDiv.appendChild(document.createElement("br"));
 
+			// Collect for summary
 			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
 		}
 	});
 
+	// 4. Render grouped summary
 	renderSkillSummary(allSkillsWithValues);
 }
 

@@ -36,63 +36,56 @@ function compareValue(op, a, b) {
 	}
 }
 
-// parse query: support quotes + negation
 function parseQuery(query) {
 	const filters = [];
-	const regex = /(-?\w+:"[^"]+"|-?\w+:[^\s,]+)|"([^"]+)"|(\S+)/g;
-	let match;
-	while ((match = regex.exec(query)) !== null) {
-		let term = match[0];
-		let neg = false;
-		if (term.startsWith("-")) { neg = true; term = term.slice(1); }
-		
-		if (term.includes(":")) {
-			const [field, rawVal] = term.split(":");
-			let value = rawVal;
-			if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-			filters.push({ field: field.toLowerCase(), value, neg });
-		} else {
-			// plain text search
-			let value = term;
-			if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
-			filters.push({ field: "text", value, neg: false });
+	// split by semicolon first
+	const fieldClauses = query.split(";").map(s => s.trim()).filter(Boolean);
+
+	for (const clause of fieldClauses) {
+		// field:val1,val2,val3
+		const [fieldRaw, valuesRaw] = clause.split(":");
+		if (!valuesRaw) continue;
+		const field = fieldRaw.toLowerCase().trim();
+		const values = valuesRaw.split(",").map(v => v.trim()).filter(Boolean);
+
+		for (const val of values) {
+			const neg = val.startsWith("-");
+			let value = val.replace(/^-/, "").replace(/^"|"$/g, "");
+			filters.push({ field, value, neg });
 		}
 	}
 	return filters;
 }
 
 // region filter logic
-function matchesRegion(itemRegion, filter) {
-	const val = filter.value.toLowerCase();
+function matchesRegion(itemRegion, filters) {
+	if (!Array.isArray(filters)) filters = [filters];
 
-	// NEGATION
-	if (filter.neg) {
-		if ((val === "event" && eventRegions.includes(itemRegion)) ||
-			(val === "premium" && premiumRegions.includes(itemRegion)) ||
-			itemRegion.toLowerCase() === val) {
-			return false;
+	for (const filter of filters) {
+		const valRaw = filter.value.toLowerCase();
+		const neg = filter.neg;
+
+		// Special keywords
+		if (["event","premium"].includes(valRaw)) {
+			const inList = (valRaw === "event" ? eventRegions : premiumRegions).includes(itemRegion);
+			if ((neg && inList) || (!neg && !inList)) return false;
+			continue;
 		}
-		return true; // passes negative filter
-	}
 
-	// POSITIVE
-	if ((val === "event" && !eventRegions.includes(itemRegion)) ||
-		(val === "premium" && !premiumRegions.includes(itemRegion))) {
-		return false;
-	}
+		// Numeric comparison: <R07, >=R03, etc
+		const m = valRaw.match(/^(<|>|<=|>=)?r(\d+)/i);
+		if (m) {
+			const op = m[1] || "=";
+			const num = parseInt(m[2], 10);
+			const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
+			if ((neg && compareValue(op, itemNum, num)) || (!neg && !compareValue(op, itemNum, num))) return false;
+			continue;
+		}
 
-	// numeric comparison for regions: <R10, >R05, etc
-	const m = val.match(/^(<|>|<=|>=)?r(\d+)/i);
-	if (m) {
-		const op = m[1] || "=";
-		const num = parseInt(m[2], 10);
-		const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
-		if (!compareValue(op, itemNum, num)) return false;
-		return true;
+		// Exact / partial match
+		const starts = itemRegion.toLowerCase().startsWith(valRaw);
+		if ((neg && starts) || (!neg && !starts)) return false;
 	}
-
-	// exact / partial match
-	if (!itemRegion.toLowerCase().startsWith(val)) return false;
 
 	return true;
 }
@@ -110,33 +103,34 @@ function matchEquipment(name, info, filters) {
 			const num = parseNumber(m[2]);
 			matched = compareValue(op, info.xp, num);
 		}
-
 		else if (f.field === "region") {
-			matched = matchesRegion(info.region, f);
+			matched = matchesRegion(info.region, [f]);
 		}
-
 		else if (f.field === "mat") {
-			matched = info.mat && info.mat.some(([matName]) => matName.toLowerCase().includes(v));
+			matched = info.mat && info.mat.some(([matName]) => {
+				const nameLower = matName.toLowerCase();
+				return f.neg ? nameLower === v : nameLower.includes(v);
+			});
 		}
-
 		else if (f.field === "skill") {
-			matched = info.skill && info.skill.some(([s]) => s.toLowerCase().includes(v));
+			matched = info.skill && info.skill.some(([s]) => {
+				const skillLower = s.toLowerCase();
+				return f.neg ? skillLower === v : skillLower.includes(v);
+			});
 		}
-
 		else if (["race", "source", "rarity", "type"].includes(f.field)) {
-			matched = (info[f.field] || "").toLowerCase().includes(v);
+			const fieldVal = (info[f.field] || "").toLowerCase();
+			matched = f.neg ? fieldVal === v : fieldVal.includes(v);
 		}
-
 		else if (f.field === "text") {
-			matched = name.toLowerCase().includes(v) ||
-				(info.type || "").toLowerCase().includes(v) ||
-				(info.rarity || "").toLowerCase().includes(v);
+			const textVal = name.toLowerCase() + " " + (info.type || "").toLowerCase() + " " + (info.rarity || "").toLowerCase();
+			matched = f.neg ? textVal.includes(v) : textVal.includes(v);
 		}
 
-		// APPLY NEGATION & POSITIVE
-		if (f.neg && matched) return false; // exclude if negative matches
-		if (!f.neg && !matched) return false; // exclude if positive fails
+		if (f.neg && matched) return false;
+		if (!f.neg && !matched) return false;
 	}
+
 	return true;
 }
 

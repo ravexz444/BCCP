@@ -17,7 +17,7 @@ function createSearchUI() {
 	const searchBox = document.createElement("input");
 	searchBox.type = "text";
 	searchBox.id = "equipmentSearch";
-	searchBox.placeholder = "Search equipment...";
+	searchBox.placeholder = "Search equipment (e.g., skill:Shadowcurse, region:<R07, mat:!Papyrus, xp:<1.5M)";
 	container.appendChild(searchBox);
 
 	// Results area
@@ -33,15 +33,107 @@ function createSearchUI() {
 	equippedDiv.id = "equippedList";
 	container.appendChild(equippedDiv);
 
+	// Helper: parse XP/number string (supports K, M)
+	function parseNumber(val) {
+		val = val.toUpperCase().replace(/,/g, "").trim();
+		if (val.endsWith("K")) return parseFloat(val) * 1000;
+		if (val.endsWith("M")) return parseFloat(val) * 1000000;
+		return parseFloat(val);
+	}
+
 	// Search handler
 	searchBox.addEventListener("input", () => {
-		const query = searchBox.value.toLowerCase();
+		const query = searchBox.value.trim();
 		resultsDiv.innerHTML = "";
 
 		if (!query) return;
 
+		// Split into filters (comma or space separated)
+		const filters = query.split(/[, ]+/).filter(Boolean);
+
 		for (const [name, info] of Object.entries(equipmentData)) {
-			if (name.toLowerCase().includes(query)) {
+			let match = true;
+
+			for (const filter of filters) {
+				// Check key:value
+				const [rawKey, rawVal] = filter.split(":");
+				if (!rawVal) {
+					// fallback: free-text search on name
+					if (!name.toLowerCase().includes(filter.toLowerCase())) {
+						match = false;
+						break;
+					}
+					continue;
+				}
+
+				const key = rawKey.toLowerCase();
+				let val = rawVal.trim();
+
+				// Handle negation "!"
+				const isNegation = val.startsWith("!");
+				if (isNegation) val = val.slice(1);
+
+				// ---------------- Field checks ----------------
+				if (key === "skill") {
+					const hasSkill = info.skill?.some(s => s[0].toLowerCase().includes(val.toLowerCase()));
+					if (isNegation ? hasSkill : !hasSkill) { match = false; break; }
+				}
+
+				else if (key === "rarity") {
+					const ok = (info.rarity || "").toLowerCase().includes(val.toLowerCase());
+					if (isNegation ? ok : !ok) { match = false; break; }
+				}
+
+				else if (key === "region") {
+					// support <, <=, >, >=
+					const regionNum = parseInt((info.region || "R00").replace(/\D/g, ""));
+					const filterNum = parseInt(val.replace(/\D/g, ""));
+					if (filter.startsWith("region:<")) {
+						if (!(regionNum < filterNum)) { match = false; break; }
+					} else if (filter.startsWith("region:>")) {
+						if (!(regionNum > filterNum)) { match = false; break; }
+					} else {
+						if (!info.region?.toLowerCase().includes(val.toLowerCase())) {
+							match = false; break;
+						}
+					}
+				}
+
+				else if (key === "xp") {
+					const itemXP = parseNumber(info.xp || 0);
+					const filterXP = parseNumber(val);
+					if (filter.includes("<")) {
+						if (!(itemXP < filterXP)) { match = false; break; }
+					} else if (filter.includes(">")) {
+						if (!(itemXP > filterXP)) { match = false; break; }
+					} else {
+						if (itemXP !== filterXP) { match = false; break; }
+					}
+				}
+
+				else if (key === "mat") {
+					const hasMat = info.materials?.some(m => m.toLowerCase().includes(val.toLowerCase()));
+					if (isNegation ? hasMat : !hasMat) { match = false; break; }
+				}
+
+				else if (key === "type") {
+					const ok = (info.type || "").toLowerCase().includes(val.toLowerCase());
+					if (isNegation ? ok : !ok) { match = false; break; }
+				}
+
+				else if (key === "race") {
+					const ok = (info.race || "").toLowerCase().includes(val.toLowerCase());
+					if (isNegation ? ok : !ok) { match = false; break; }
+				}
+
+				else if (key === "source") {
+					const ok = (info.source || "").toLowerCase().includes(val.toLowerCase());
+					if (isNegation ? ok : !ok) { match = false; break; }
+				}
+			}
+
+			// If all filters passed → show result
+			if (match) {
 				const btn = document.createElement("button");
 				btn.textContent = `${name} (${info.type})`;
 				btn.addEventListener("click", () => equipItem(name, info.type));

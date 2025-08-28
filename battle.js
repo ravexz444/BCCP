@@ -1385,7 +1385,7 @@ function highlightDifferences(activeSetups, setupsWithSkills) {
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
 	// Setup toggles
-	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", true);
+	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", false);
 
 	await loadAllData();
 

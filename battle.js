@@ -1311,6 +1311,16 @@ function refreshSavedBattles() {
 	if (battles.length > 0) select.value = battles[0].name;
 }
 
+// ------------------ Load up to 3 active setups ------------------
+function loadActiveSetups() {
+	const setups = [];
+	for (let i = 1; i <= 3; i++) {
+		const setup = localStorage.getItem(`activeSetup-${i}`);
+		if (setup) setups.push(JSON.parse(setup));
+	}
+	return setups;
+}
+
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
 	// Setup toggles
@@ -1321,26 +1331,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Build enemy selectors (manual + batch)
 	buildEnemySelectors();
 
-	const setup = JSON.parse(localStorage.getItem("activeSetup")) || {};
-	const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
+	const activeSetups = loadActiveSetups(); // array of setups
+	const setupsWithSkills = activeSetups.map(setup => init_setup(setup));
 
 	// Show chosen setup in log
 	const logDiv = document.getElementById("setup-log");
-	logDiv.innerHTML = `
-		<p><b>Equipment:</b></p>
-		<ul>
-			${Object.entries(setup.equipment || {})
-				.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`)
-				.join("")}
-		</ul>
-		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
-	    <p><b>Retainers:</b> ${
-			[ret1, ret2, ret3].filter(r => r).join(", ") || "None"
-	    }</p>
-  
-  		<h3>Skills:</h3>
-		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
-	`;
+	logDiv.innerHTML = activeSetups.map((setup, idx) => {
+		const { player_skills, ret1, ret2, ret3 } = setupsWithSkills[idx];
+		const equipmentList = Object.entries(setup.equipment || {})
+			.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`).join("");
+		const collectionsList = (setup.collections || []).join(", ") || "None";
+		const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
+	
+		return `<p><b>Setup ${idx + 1}:</b></p>
+		<ul>${equipmentList}</ul>
+		<p><b>Collections:</b> ${collectionsList}</p>
+		<p><b>Retainers:</b> ${retainersList}</p>
+		<h3>Skills:</h3>
+		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>`;
+	}).join("<hr>");
 
 	// Button to go back to index.html
 	document.getElementById("setupBtn").addEventListener("click", () => {
@@ -1393,10 +1402,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 		logDiv.innerText = ""; // reset log
 
-		// --- Run battle simulations ---
-		console.log("P Sk:", player_skills);
-		console.log("P Rets:", ret1, ret2, ret3);
-		console.log("N:", n);
-		estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
+		// --- Run battle simulations for each active setup ---
+		setupsWithSkills.forEach((setup, idx) => {
+			const { player_skills, ret1, ret2, ret3 } = setup;
+			logDiv.innerText += `--- Setup ${idx + 1} ---\n`;
+			console.log(`Running Setup ${idx + 1}`, player_skills, ret1, ret2, ret3);
+			estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
+			logDiv.innerText += "\n\n";
+		});
 	});
 });

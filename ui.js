@@ -52,7 +52,7 @@ function createSearchUI() {
 	});
 }
 
-// ---------------------- EQUIP LOGIC ----------------------
+// Equip by selecting result
 let equipped = {}; // { type: [names...] }
 
 function equipItem(name, type) {
@@ -91,29 +91,49 @@ function equipItem(name, type) {
 	updateSkills();
 }
 
+// Delete equipped list
 function updateEquippedList() {
 	const equippedDiv = document.getElementById("equippedList");
 	equippedDiv.innerHTML = "<h3>Equipped</h3>";
 
 	equipmentTypes.forEach(type => {
 		if (equipped[type] && equipped[type].length > 0) {
-			const line = document.createElement("div");
-			line.textContent = `${type}: ${equipped[type].join(", ")}`;
+			// handle multi-slot separately
+			if (type === "Accessory" || type === "Retainer") {
+				equipped[type].forEach((item, idx) => {
+					const line = document.createElement("div");
+					line.textContent = `${type} ${idx + 1}: ${item}`;
 
-			// add "remove" button(s)
-			equipped[type].forEach((item, idx) => {
+					// add remove button
+					const removeBtn = document.createElement("button");
+					removeBtn.textContent = "❌";
+					removeBtn.style.marginLeft = "5px";
+					removeBtn.addEventListener("click", () => {
+						equipped[type].splice(idx, 1);
+						updateEquippedList();
+						updateSkills();
+					});
+					line.appendChild(removeBtn);
+
+					equippedDiv.appendChild(line);
+				});
+			} else {
+				// single-slot
+				const line = document.createElement("div");
+				line.textContent = `${type}: ${equipped[type][0]}`;
+
 				const removeBtn = document.createElement("button");
 				removeBtn.textContent = "❌";
 				removeBtn.style.marginLeft = "5px";
 				removeBtn.addEventListener("click", () => {
-					equipped[type].splice(idx, 1);
+					equipped[type] = [];
 					updateEquippedList();
 					updateSkills();
 				});
 				line.appendChild(removeBtn);
-			});
 
-			equippedDiv.appendChild(line);
+				equippedDiv.appendChild(line);
+			}
 		} else {
 			const line = document.createElement("div");
 			line.textContent = `${type}: -`;

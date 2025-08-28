@@ -734,9 +734,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Auto-restore Active Setup
 	importFromBattle();
 
-	// Go to Battle button + Export Active Setup
-	const goBtn = document.getElementById("goBattleBtn");
-	if (goBtn) goBtn.addEventListener("click", exportToBattle);
+	// Go to Battle buttons (up to 3 setups)
+	["goBattleBtn1", "goBattleBtn2", "goBattleBtn3"].forEach((id, idx) => {
+	    const btn = document.getElementById(id);
+	    if (btn) btn.addEventListener("click", () => exportToBattle(idx + 1));
+	});
 
 	// Check All / Uncheck All collections
 	const checkAllBtn = document.getElementById("checkAllCollections");

@@ -89,6 +89,8 @@ function matchesRegion(itemRegion, filters) {
 }
 
 function matchEquipment(name, info, filters) {
+	let keep = true;
+
 	for (const f of filters) {
 		const v = f.value.toLowerCase();
 		let matched = false;
@@ -102,9 +104,7 @@ function matchEquipment(name, info, filters) {
 		}
 
 		else if (f.field === "region") {
-			// delegate all region logic to matchesRegion
-			matched = matchesRegion(info.region, [f]); 
-			// matched = true if passes region filter
+			matched = matchesRegion(info.region, [f]);
 		}
 
 		else if (f.field === "mat") {
@@ -125,10 +125,12 @@ function matchEquipment(name, info, filters) {
 				(info.rarity || "").toLowerCase().includes(v);
 		}
 
-		if (f.neg ? matched : !matched) return false;
+		// **explicit negation handling**
+		if (f.neg && matched) return false;  // exclude if negation matches
+		if (!f.neg && !matched) return false; // exclude if positive filter fails
 	}
 
-	return true;
+	return true; // passed all filters
 }
 
 // Search Builder

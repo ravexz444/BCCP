@@ -519,15 +519,22 @@ function saveSetup(name) {
 	}
 
 	// === Save equipment ===
-	// Just clone the current equipped object
 	const equipment = {};
 	for (const [type, items] of Object.entries(equipped)) {
-		if (Array.isArray(items)) {
-			equipment[type] = [...items];
-		} else if (typeof items === "string") {
-			equipment[type] = [items];
+		if (type === "Retainer" || type === "Accessory") {
+			// save each item with index
+			(items || []).forEach((it, idx) => {
+				if (it) equipment[`${type}-${idx + 1}`] = it;
+			});
 		} else {
-			equipment[type] = [];
+			// other types store as array
+			if (Array.isArray(items)) {
+				equipment[type] = [...items];
+			} else if (typeof items === "string") {
+				equipment[type] = [items];
+			} else {
+				equipment[type] = [];
+			}
 		}
 	}
 
@@ -579,7 +586,6 @@ function refreshSavedSetups() {
 }
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
-// Index -> Battle
 function exportToBattle() {
 	// Save collections
 	const collections = [];
@@ -589,10 +595,15 @@ function exportToBattle() {
 	}
 
 	// Save equipment
-	// Just clone the current equipped object
 	const equipment = {};
+
 	for (const [type, items] of Object.entries(equipped)) {
-		if (Array.isArray(items)) {
+		if (type === "Retainer" || type === "Accessory") {
+			// Use indexed keys to preserve order
+			items.forEach((item, idx) => {
+				equipment[`${type}-${idx + 1}`] = item;
+			});
+		} else if (Array.isArray(items)) {
 			equipment[type] = [...items];
 		} else if (typeof items === "string") {
 			equipment[type] = [items];
@@ -622,17 +633,29 @@ function importFromBattle() {
 
 	// Restore equipment
 	equipped = {}; // reset
-	for (const [type, items] of Object.entries(setup.equipment)) {
-		// Ensure everything is stored as an array
-		if (Array.isArray(items)) {
-			equipped[type] = [...items]; 
-		} else if (typeof items === "string") {
-			equipped[type] = [items]; // wrap single string in array
+	const tempAccessory = [];
+	const tempRetainer = [];
+
+	for (const [key, value] of Object.entries(setup.equipment)) {
+		if (key.startsWith("Accessory-")) {
+			if (value) tempAccessory.push(value);
+		} else if (key.startsWith("Retainer-")) {
+			if (value) tempRetainer.push(value);
 		} else {
-			equipped[type] = [];
-		}		
+			// other equipment types stored as array
+			if (Array.isArray(value)) {
+				equipped[key] = [...value];
+			} else if (typeof value === "string") {
+				equipped[key] = [value];
+			} else {
+				equipped[key] = [];
+			}
+		}
 	}
-	
+
+	if (tempAccessory.length) equipped["Accessory"] = tempAccessory;
+	if (tempRetainer.length) equipped["Retainer"] = tempRetainer;
+
 	updateEquippedList();
 	updateSkills();
 }

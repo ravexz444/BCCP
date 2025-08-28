@@ -109,26 +109,29 @@ function matchEquipment(name, info, filters) {
 		else if (f.field === "mat") {
 			matched = info.mat && info.mat.some(([matName]) => {
 				const nameLower = matName.toLowerCase();
-				return f.neg ? nameLower === v : nameLower.includes(v);
+				return nameLower.includes(v);
 			});
+			if (f.neg) matched = !matched;
 		}
 		else if (f.field === "skill") {
 			matched = info.skill && info.skill.some(([s]) => {
 				const skillLower = s.toLowerCase();
-				return f.neg ? skillLower === v : skillLower.includes(v);
+				return skillLower.includes(v);
 			});
+			if (f.neg) matched = !matched;
 		}
 		else if (["race", "source", "rarity", "type"].includes(f.field)) {
 			const fieldVal = (info[f.field] || "").toLowerCase();
-			matched = f.neg ? fieldVal === v : fieldVal.includes(v);
+			matched = fieldVal.includes(v);
+			if (f.neg) matched = !matched;
 		}
 		else if (f.field === "text") {
 			const textVal = name.toLowerCase() + " " + (info.type || "").toLowerCase() + " " + (info.rarity || "").toLowerCase();
-			matched = f.neg ? textVal.includes(v) : textVal.includes(v);
+			matched = textVal.includes(v);
+			if (f.neg) matched = !matched;
 		}
 
-		if (f.neg && matched) return false;
-		if (!f.neg && !matched) return false;
+		if (!matched) return false; // failed any filter
 	}
 
 	return true;

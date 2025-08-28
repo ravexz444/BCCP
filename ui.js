@@ -482,6 +482,11 @@ async function loadAllData() {
 
 // ---------------------- DOM READY ----------------------
 document.addEventListener("DOMContentLoaded", async () => {
+
+	// Setup toggles
+	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output", "Hide Skills Output", true);
+	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary", "Hide Skill Summary", false);
+	
 	await loadAllData();  // ensure dropdowns exist
 
 	// Create search function
@@ -490,12 +495,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	createCollectionCheckboxes();
 	updateSkills();
 
-
-
-	// Setup toggles
-	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output", "Hide Skills Output", true);
-	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary", "Hide Skill Summary", false);
-	
 	// Auto-restore Active Setup
 	importFromBattle();
 

@@ -153,28 +153,45 @@ function updateEquippedList() {
 }
 
 // === Collection Checkbox ===
+const collOrder = [
+	["1-1", "1-2", "1-3", "1-4", "1-5"], // row 1
+	["1.3-1", "1.3-2", "1.3-3"],         // row 2
+	["2-1", "2-2"],                      // row 3
+	["3-1", "3-2", "3-3", "3-4"]         // row 4
+];
+
 function createCollectionCheckboxes() {
 	const container = document.getElementById("collection-selectors");
 
-	for (const code of Object.keys(collectionCodes)) {
-		const div = document.createElement("div");
+	for (const row of collOrder) {
+		const rowDiv = document.createElement("div"); // one row
 
-		const checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		checkbox.id = "collection-" + code;
-		checkbox.value = code;
-		checkbox.addEventListener("change", updateSkills);
+		for (const code of row) {
+			if (!(code in collectionCodes)) {
+				console.warn(`Warning: ${code} not found in collectionCodes`);
+				continue;
+			}
 
-		const label = document.createElement("label");
-		label.htmlFor = checkbox.id;
-		label.textContent = code;
+			const div = document.createElement("div");
+			div.style.display = "inline-block"; // make them inline like a row
 
-		div.appendChild(checkbox);
-		div.appendChild(label);
-		container.appendChild(div);
+			const checkbox = document.createElement("input");
+			checkbox.type = "checkbox";
+			checkbox.id = "collection-" + code;
+			checkbox.value = code;
+			checkbox.addEventListener("change", updateSkills);
+
+			const label = document.createElement("label");
+			label.htmlFor = checkbox.id;
+			label.textContent = code;
+
+			div.appendChild(checkbox);
+			div.appendChild(label);
+			rowDiv.appendChild(div);
+		}
+		container.appendChild(rowDiv);
 	}
 }
-
 // === Parse Value ===
 function parseSkillValue(raw) {
 	if (typeof raw === "number") return { type: "number", value: raw, unit: "" };

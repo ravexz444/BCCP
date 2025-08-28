@@ -204,6 +204,7 @@ function createCollectionCheckboxes() {
 		container.appendChild(rowDiv);
 	}
 }
+
 // === Parse Value ===
 function parseSkillValue(raw) {
 	if (typeof raw === "number") return { type: "number", value: raw, unit: "" };
@@ -490,6 +491,8 @@ function importFromBattle() {
 			}
 		});
 	}
+
+	updateSkills();
 }
 
 // ---------------------- DATA LOADING ----------------------
@@ -517,12 +520,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary ▲", "Hide Skill Summary ▼", true);
 	
 	await loadAllData();  // ensure dropdowns exist
+	
 
 	// Create search function
 	createSearchUI();
 
 	createCollectionCheckboxes();
-	updateSkills();
 
 	// Auto-restore Active Setup
 	importFromBattle();

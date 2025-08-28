@@ -270,7 +270,7 @@ function renderSkillSummary(allSkillsWithValues) {
 	}
 }
 
-// === Extract Skill then Update Skill List ===
+// Extract skill, Update skill list ===
 function updateSkills() {
 	const outputDiv = document.getElementById("skills-output");
 	outputDiv.innerHTML = "";
@@ -311,6 +311,31 @@ function updateSkills() {
 
 	// 4. Render grouped summary
 	renderSkillSummary(allSkillsWithValues);
+}
+
+// Toggle button to hide/unhide
+function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
+	const btn = document.getElementById(buttonId);
+	const target = document.getElementById(targetId);
+
+	// Set initial state
+	if (startHidden) {
+		target.classList.add("hidden");
+		btn.textContent = showText;
+	} else {
+		target.classList.remove("hidden");
+		btn.textContent = hideText;
+	}
+
+	// Attach toggle event
+	btn.addEventListener("click", () => {
+		target.classList.toggle("hidden");
+		if (target.classList.contains("hidden")) {
+			btn.textContent = showText;
+		} else {
+			btn.textContent = hideText;
+		}
+	});
 }
 
 // ---------------------- SETUP STORAGE ----------------------
@@ -465,6 +490,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 	createCollectionCheckboxes();
 	updateSkills();
 
+
+
+	// Setup toggles
+	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output", "Hide Skills Output", true);
+	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary", "Hide Skill Summary", false);
+	
 	// Auto-restore Active Setup
 	importFromBattle();
 

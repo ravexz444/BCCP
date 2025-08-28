@@ -1217,6 +1217,31 @@ function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
 	logDiv.innerText = summary.join("\n");
 }
 
+// ------------------ Toggle button to hide/unhide ------------------
+function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
+	const btn = document.getElementById(buttonId);
+	const target = document.getElementById(targetId);
+
+	// Set initial state
+	if (startHidden) {
+		target.classList.add("hidden");
+		btn.textContent = showText;
+	} else {
+		target.classList.remove("hidden");
+		btn.textContent = hideText;
+	}
+
+	// Attach toggle event
+	btn.addEventListener("click", () => {
+		target.classList.toggle("hidden");
+		if (target.classList.contains("hidden")) {
+			btn.textContent = showText;
+		} else {
+			btn.textContent = hideText;
+		}
+	});
+}
+
 // ------------------ Enemy Selector Storage ------------------
 function saveBattle(name) {
 	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]")
@@ -1279,6 +1304,9 @@ function refreshSavedBattles() {
 
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
+	// Setup toggles
+	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", true);
+	
 	await loadAllData();
 
 	// Build enemy selectors (manual + batch)
@@ -1290,7 +1318,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Show chosen setup in log
 	const logDiv = document.getElementById("setup-log");
 	logDiv.innerHTML = `
-		<h3>Setup</h3>
 		<p><b>Equipment:</b></p>
 		<ul>
 			${Object.entries(setup.equipment || {})

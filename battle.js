@@ -1470,14 +1470,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 		setupsWithSkills.forEach((setup, idx) => {
 			const { player_skills, ret1, ret2, ret3 } = setup;
 			const resultText = estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
-	
+		
+			const setupData = activeSetups[idx];
+			const equipmentList = Object.entries(setupData.equipment || {})
+				.map(([slot, item]) => `<li><b>${slot}:</b> ${item || "None"}</li>`).join("");
+			const collectionsList = (setupData.collections || []).join(", ") || "None";
+			const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
+		
 			// Create a block for each setup
 			const block = document.createElement("div");
 			block.classList.add("battle-result");
 			block.innerHTML = `
-				<div style="display:flex; justify-content:space-between;">
-					<div><b>Setup ${idx + 1}</b></div>
-					<div class="winrate-summary" style="text-align:right; white-space:pre-line;">${resultText}</div>
+				<div class="setup">
+					<div class="setup-info">
+						<h3>Setup ${idx + 1}</h3>
+						<ul>${equipmentList}</ul>
+						<p><b>Collections:</b> ${collectionsList}</p>
+						<p><b>Retainers:</b> ${retainersList}</p>
+					</div>
+					<div class="setup-stats">
+						<pre>${resultText}</pre>
+					</div>
 				</div>
 			`;
 			logDiv.appendChild(block);

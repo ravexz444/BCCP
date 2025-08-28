@@ -1321,11 +1321,72 @@ function loadActiveSetups() {
 	return setups;
 }
 
+// ------------------ Render Setup Log ------------------
+function renderSetupLog(activeSetups, setupsWithSkills) {
+	const container = document.getElementById("setup-log");
+
+	container.innerHTML = setupsWithSkills.map((s, i) => {
+		const { player_skills, ret1, ret2, ret3 } = s;
+
+		const equipmentList = Object.entries(activeSetups[i].equipment || {})
+			.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`).join("");
+
+		const collectionsList = (activeSetups[i].collections || []).join(", ") || "None";
+		const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
+
+		return `
+			<div class="setup-block" data-idx="${i}">
+				<p><b>Setup ${i + 1}:</b></p>
+				<ul class="equipment-list">${equipmentList}</ul>
+				<p class="collection"><b>Collections:</b> ${collectionsList}</p>
+				<p class="retainers"><b>Retainers:</b> ${retainersList}</p>
+
+				<div class="skills hidden">
+					<h3>Skills:</h3>
+					<ul>
+						${player_skills.map(sk => `<li>${sk[0]} [${sk[1]}, ${sk[2]}]</li>`).join("")}
+					</ul>
+				</div>
+				<button class="toggleSkillBtn" data-idx="${i}">Show Skills</button>
+			</div>
+		`;
+	}).join("<hr>");
+
+	highlightDifferences(activeSetups, setupsWithSkills);
+}
+
+// ------------------ Highlight Differences ------------------
+function highlightDifferences(activeSetups, setupsWithSkills) {
+	if (activeSetups.length < 2) return; // only highlight if 2+ setups
+
+	// Compare each category across setups
+	const compareAndMark = (selector, values) => {
+		const allSame = values.every(v => v === values[0]);
+		if (!allSame) {
+			document.querySelectorAll(selector).forEach(el => el.classList.add("diff"));
+		}
+	};
+
+	// Equipment: compare as string
+	const equipmentStrings = activeSetups.map(s =>
+		Object.entries(s.equipment || {}).map(([slot, item]) => `${slot}:${item}`).join(",")
+	);
+	compareAndMark(".equipment-list", equipmentStrings);
+
+	// Collections
+	const collectionsStrings = activeSetups.map(s => (s.collections || []).join(","));
+	compareAndMark(".collection", collectionsStrings);
+
+	// Retainers
+	const retainersStrings = setupsWithSkills.map(s => [s.ret1, s.ret2, s.ret3].filter(r => r).join(","));
+	compareAndMark(".retainers", retainersStrings);
+}
+
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
 	// Setup toggles
 	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", true);
-	
+
 	await loadAllData();
 
 	// Build enemy selectors (manual + batch)
@@ -1334,22 +1395,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const activeSetups = loadActiveSetups(); // array of setups
 	const setupsWithSkills = activeSetups.map(setup => init_setup(setup));
 
-	// Show chosen setup in log
-	const logDiv = document.getElementById("setup-log");
-	logDiv.innerHTML = activeSetups.map((setup, idx) => {
-		const { player_skills, ret1, ret2, ret3 } = setupsWithSkills[idx];
-		const equipmentList = Object.entries(setup.equipment || {})
-			.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`).join("");
-		const collectionsList = (setup.collections || []).join(", ") || "None";
-		const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
-	
-		return `<p><b>Setup ${idx + 1}:</b></p>
-		<ul>${equipmentList}</ul>
-		<p><b>Collections:</b> ${collectionsList}</p>
-		<p><b>Retainers:</b> ${retainersList}</p>
-		<h3>Skills:</h3>
-		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>`;
-	}).join("<hr>");
+	// Render setup log (with hidden skills + diff highlight)
+	renderSetupLog(activeSetups, setupsWithSkills);
+
+	// Skill toggle handler
+	document.addEventListener("click", e => {
+		if (e.target.classList.contains("toggleSkillBtn")) {
+			const idx = e.target.dataset.idx;
+			const skillsDiv = document.querySelector(`.setup-block[data-idx="${idx}"] .skills`);
+			if (skillsDiv.classList.contains("hidden")) {
+				skillsDiv.classList.remove("hidden");
+				e.target.textContent = "Hide Skills";
+			} else {
+				skillsDiv.classList.add("hidden");
+				e.target.textContent = "Show Skills";
+			}
+		}
+	});
 
 	// Button to go back to index.html
 	document.getElementById("setupBtn").addEventListener("click", () => {
@@ -1374,7 +1436,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	});
 	
 	refreshSavedBattles();
-	
+
+	// Battle Simulation
 	document.getElementById("battleBtn").addEventListener("click", () => {
 		const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 
@@ -1400,6 +1463,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			return;
 		}
 
+		const logDiv = document.getElementById("battle-log");
 		logDiv.innerText = ""; // reset log
 
 		// --- Run battle simulations for each active setup ---

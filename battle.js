@@ -1266,7 +1266,7 @@ function saveBattle(name) {
 
 	const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 
-	battles.push({
+	newBattles.push({
 		name,
 		manualEnemies,
 		batchGroup,

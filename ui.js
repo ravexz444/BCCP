@@ -37,11 +37,6 @@ function setupToggle(buttonId, targetId, showText, hideText, startHidden = false
 }
 
 // ---------------------- Search UI ----------------------
-// field:value1,value2,-value3; field2:valueA,-valueB
-// ; separates different fields (AND logic)
-// , separates multiple values for the same field (OR logic)
-// - at the beginning of a value = exclude/negate
-// Values with spaces → "quotes" are optional but safer
 // Search Builder Helper
 function parseNumber(val) {
 	val = val.replace(/,/g, "").toUpperCase().trim();
@@ -314,15 +309,26 @@ function setupSearchHelp() {
 
 	// Fill the help info
 	searchHelpDiv.innerHTML = `
-		<strong>Search Tips:</strong>
-		<ul style="font-size:13px; line-height:1.4;">
-			<li><strong>Region:</strong> region:R02, region:&lt;R05, region:Event, region:-Event</li>
-			<li><strong>XP:</strong> xp:&lt;1M, xp:&gt;=500K</li>
-			<li><strong>Name:</strong> name:Key, name:-Key, name:"Bone Crossbow"</li>
-			<li><strong>Skill:</strong> skill:Charge, skill:Charge,-Shadow, skill:"Shadow Charge"</li>
-			<li><strong>Material:</strong> mat:Sanguine Pearl, mat:-Papyrus, mat:Sanguine Pearl,Gold Ingot</li>
-			<li><strong>Type/Race/Source/Rarity:</strong> type:Weapon, rarity:-Common, race:Undead</li>
-			<li><strong>Combined Examples:</strong> region:&lt;R3; name:-Key, skill:Charge; mat:Sanguine Pearl, xp:&lt;1M; region:-Event</li>
+
+		<p>Template</p>
+  		<ul style="font-size:13px; line-height:1.4;">
+			<li><strong>field</strong>:value1,value2,-value3; <strong>field2</strong>:valueA,-valueB</li>
+	  		<li><strong>;</strong> separates different fields</li>
+			<li><strong>,</strong> separates multiple values for the same field</li>
+			<li><strong>- at the beginning of a value</strong> means exclude/negate</li>
+			<li><strong>Values with spaces</strong> better use "quotes"</li>
+  		</ul>
+		<p>Example</p>
+  		<ul style="font-size:13px; line-height:1.4;">
+			<li>region:R02 / &lt;R05 / Event / Premium / &lt;R05,-Event</li>
+			<li>xp:&lt;1.2M / &gt;=500K</li>
+			<li>name:Key / -Pearl / "Bone Crossbow"</li>
+			<li>skill:Charge,-Shadow / "Loot Chance Modifier"</li>
+			<li>mat:Sanguine Pearl / -Phoenix Flame / Golden Skull, -Fel Wood</li>
+			<li>type:Weapon, rarity:-Common, race:Undead, source:Drop, rarity:Epic</li>
+			<li>region:R8; mat:Phoenix Flame</li>
+   			<li>xp:&lt;1M; region:-Event, -Premium</li> 
+	  		<li>region:&lt;R3; name:-Key</li> 
 		</ul>
 	`;
 

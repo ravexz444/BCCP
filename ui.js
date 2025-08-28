@@ -125,9 +125,9 @@ function matchEquipment(name, info, filters) {
 			matched = fieldVal.includes(v);
 			if (f.neg) matched = !matched;
 		}
-		else if (f.field === "text") {
-			const textVal = name.toLowerCase() + " " + (info.type || "").toLowerCase() + " " + (info.rarity || "").toLowerCase();
-			matched = textVal.includes(v);
+		else if (f.field === "name") {
+			const nameVal = name.toLowerCase();
+			matched = nameVal.includes(v);
 			if (f.neg) matched = !matched;
 		}
 

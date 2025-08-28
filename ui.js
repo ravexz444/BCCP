@@ -450,8 +450,18 @@ function exportToBattle() {
 		if (cb && cb.checked) collections.push(code);
 	}
 
-	// Save equipment (clone equipped object)
-	const equipment = JSON.parse(JSON.stringify(equipped));
+	// Save equipment
+	// Just clone the current equipped object
+	const equipment = {};
+	for (const [type, items] of Object.entries(equipped)) {
+		if (Array.isArray(items)) {
+			equipment[type] = [...items];
+		} else if (typeof items === "string") {
+			equipment[type] = [items];
+		} else {
+			equipment[type] = [];
+		}
+	}
 
 	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
 	window.location.href = "battle.html";
@@ -473,14 +483,19 @@ function importFromBattle() {
 	}
 
 	// Restore equipment
-	if (setup.equipment) {
-		equipped = {}; // reset
-		for (const [type, items] of Object.entries(setup.equipment)) {
-			equipped[type] = [...items];
-		}
-		updateEquippedList();
+	equipped = {}; // reset
+	for (const [type, items] of Object.entries(setup.equipment)) {
+		// Ensure everything is stored as an array
+		if (Array.isArray(items)) {
+			equipped[type] = [...items]; 
+		} else if (typeof items === "string") {
+			equipped[type] = [items]; // wrap single string in array
+		} else {
+			equipped[type] = [];
+		}		
 	}
-
+	
+	updateEquippedList();
 	updateSkills();
 }
 

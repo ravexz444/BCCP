@@ -14,3 +14,13 @@
 .diff { 
 	color: red; font-weight: bold; 
 }
+
+/* Battle log in battle.html */
+.log-box {
+	white-space: pre-line;
+	border: 1px solid #cc0000;
+	padding: 10px;
+	max-height: 300px;
+	overflow-y: auto;
+	background-color: #fffafa;
+}

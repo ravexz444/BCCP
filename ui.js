@@ -2,7 +2,8 @@ const equipmentTypes = [
 	"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
 	"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
 ];
-const eventRegions = ["PS2024", "PS2025", "LE", "RAA", "RDD", "R01.3","R02.3"];
+const eventRegions = ["LE", "RAA", "RDD", "R01.3","R02.3"];
+const premiumRegions = ["PS2024", "PS2025"];
 
 let equipmentData = {};
 let collectionData = {};
@@ -54,15 +55,21 @@ function parseQuery(query) {
 
 function matchesRegion(itemRegion, filters) {
 	if (!Array.isArray(filters)) filters = [filters]; // ensure array
+
 	for (const filter of filters) {
 		const val = filter.value.toLowerCase();
 
-		// negative filter
+		// handle negative filters
 		if (filter.neg) {
 			if (val === "event" && eventRegions.includes(itemRegion)) return false;
+			if (val === "premium" && premiumRegions.includes(itemRegion)) return false;
 			if (itemRegion.toLowerCase() === val) return false;
 			continue;
 		}
+
+		// handle positive "special" keywords
+		if (val === "event" && !eventRegions.includes(itemRegion)) return false;
+		if (val === "premium" && !premiumRegions.includes(itemRegion)) return false;
 
 		// numeric comparison: region:<R07
 		let m = val.match(/^(<|>|<=|>=)?r(\d+)/i);

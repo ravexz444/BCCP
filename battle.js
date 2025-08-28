@@ -1254,7 +1254,7 @@ function saveBattle(name) {
 	}
 
 	// Remove old entry if it exists
-	const filtered = battles.filter(b => b.name !== name);
+	const newBattles = battles.filter(b => b.name !== name);
 
 	const selectors = document.querySelectorAll(".enemy-select");
 	const manualEnemies = Array.from(selectors)
@@ -1274,7 +1274,7 @@ function saveBattle(name) {
 		simulations: n
 	});
 
-	localStorage.setItem("savedBattles", JSON.stringify(battles));
+	localStorage.setItem("savedBattles", JSON.stringify(newBattles));
 	refreshSavedBattles();
 }
 

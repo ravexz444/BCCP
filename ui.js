@@ -622,7 +622,7 @@ function refreshSavedSetups() {
 }
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
-function exportToBattle() {
+function exportToBattle(setupIndex = 1) {
 	// Save collections
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {
@@ -632,10 +632,8 @@ function exportToBattle() {
 
 	// Save equipment
 	const equipment = {};
-
 	for (const [type, items] of Object.entries(equipped)) {
 		if (type === "Retainer" || type === "Accessory") {
-			// Use indexed keys to preserve order
 			items.forEach((item, idx) => {
 				equipment[`${type}-${idx + 1}`] = item;
 			});
@@ -648,7 +646,10 @@ function exportToBattle() {
 		}
 	}
 
-	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
+	// Store under activeSetup-1, -2, -3
+	localStorage.setItem(`activeSetup-${setupIndex}`, JSON.stringify({ collections, equipment }));
+
+	// Go to battle page
 	window.location.href = "battle.html";
 }
 

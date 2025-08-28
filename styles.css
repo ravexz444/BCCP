@@ -3,3 +3,11 @@
 	grid-template-columns: repeat(5, auto); /* 5 per row */
 	gap: 6px 16px;
 }
+
+#skills-output {
+	display: none; /* hidden by default */
+}
+
+#skills-summary {
+	display: block; /* visible by default */
+}

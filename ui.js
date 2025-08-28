@@ -58,18 +58,32 @@ let equipped = {}; // { type: [names...] }
 function equipItem(name, type) {
 	if (!equipped[type]) equipped[type] = [];
 
-	// single-slot types
-	if (type !== "Accessory" && type !== "Retainer") {
-		equipped[type] = [name];
+	// prevent duplicates
+	if (equipped[type].includes(name)) {
+		// move it to the end if it's multi-slot, else just ignore
+		if (type === "Accessory" || type === "Retainer") {
+			// remove old instance, then push once
+			equipped[type] = equipped[type].filter(item => item !== name);
+			equipped[type].push(name);
+		}
+		// for single-slot types, just replace (no need to re-add)
+		else {
+			equipped[type] = [name];
+		}
 	} else {
-		// multi-slot types
-		const max = 3; // can tweak to 2 if non-premium
-		if (equipped[type].length < max) {
-			equipped[type].push(name);
+		// single-slot types
+		if (type !== "Accessory" && type !== "Retainer") {
+			equipped[type] = [name];
 		} else {
-			// replace the oldest one (FIFO style)
-			equipped[type].shift();
-			equipped[type].push(name);
+			// multi-slot types
+			const max = 3; // tweak to 2 if non-premium
+			if (equipped[type].length < max) {
+				equipped[type].push(name);
+			} else {
+				// replace the oldest one (FIFO style)
+				equipped[type].shift();
+				equipped[type].push(name);
+			}
 		}
 	}
 

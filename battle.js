@@ -1329,7 +1329,9 @@ function renderSetupLog(activeSetups, setupsWithSkills) {
 		const { player_skills, ret1, ret2, ret3 } = s;
 
 		const equipmentList = Object.entries(activeSetups[i].equipment || {})
-			.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`).join("");
+	    .map(([slot, item]) =>
+	        `<li data-slot="${slot}">${slot}: ${item?.[0] || "None"}</li>`
+	    ).join("");
 
 		const collectionsList = (activeSetups[i].collections || []).join(", ") || "None";
 		const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
@@ -1357,29 +1359,36 @@ function renderSetupLog(activeSetups, setupsWithSkills) {
 
 // ------------------ Highlight Differences ------------------
 function highlightDifferences(activeSetups, setupsWithSkills) {
-	if (activeSetups.length < 2) return; // only highlight if 2+ setups
+    if (activeSetups.length < 2) return; // only highlight if 2+ setups
 
-	// Compare each category across setups
-	const compareAndMark = (selector, values) => {
-		const allSame = values.every(v => v === values[0]);
-		if (!allSame) {
-			document.querySelectorAll(selector).forEach(el => el.classList.add("diff"));
-		}
-	};
+    // --- Equipment slot-by-slot ---
+    const allSlots = new Set();
+    activeSetups.forEach(s => Object.keys(s.equipment || {}).forEach(slot => allSlots.add(slot)));
 
-	// Equipment: compare as string
-	const equipmentStrings = activeSetups.map(s =>
-		Object.entries(s.equipment || {}).map(([slot, item]) => `${slot}:${item}`).join(",")
-	);
-	compareAndMark(".equipment-list", equipmentStrings);
+    allSlots.forEach(slot => {
+        const values = activeSetups.map(s => (s.equipment?.[slot]?.[0] || ""));
+        const allSame = values.every(v => v === values[0]);
+        if (!allSame) {
+            document.querySelectorAll(`.equipment-list li[data-slot="${slot}"]`)
+                .forEach(el => el.classList.add("diff"));
+        }
+    });
 
-	// Collections
-	const collectionsStrings = activeSetups.map(s => (s.collections || []).join(","));
-	compareAndMark(".collection", collectionsStrings);
+    // --- Collections ---
+    const collectionsStrings = activeSetups.map(s => (s.collections || []).join(","));
+    const collSame = collectionsStrings.every(v => v === collectionsStrings[0]);
+    if (!collSame) {
+        document.querySelectorAll(".collection").forEach(el => el.classList.add("diff"));
+    }
 
-	// Retainers
-	const retainersStrings = setupsWithSkills.map(s => [s.ret1, s.ret2, s.ret3].filter(r => r).join(","));
-	compareAndMark(".retainers", retainersStrings);
+    // --- Retainers ---
+    const retainersStrings = setupsWithSkills.map(s =>
+        [s.ret1, s.ret2, s.ret3].filter(r => r).join(",")
+    );
+    const retSame = retainersStrings.every(v => v === retainersStrings[0]);
+    if (!retSame) {
+        document.querySelectorAll(".retainers").forEach(el => el.classList.add("diff"));
+    }
 }
 
 // ------------------ Main ------------------

@@ -1217,10 +1217,44 @@ function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
 	logDiv.innerText = summary.join("\n");
 }
 
+// ------------------ Toggle button to hide/unhide ------------------
+function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
+	const btn = document.getElementById(buttonId);
+	const target = document.getElementById(targetId);
+
+	// Set initial state
+	if (startHidden) {
+		target.classList.add("hidden");
+		btn.textContent = showText;
+	} else {
+		target.classList.remove("hidden");
+		btn.textContent = hideText;
+	}
+
+	// Attach toggle event
+	btn.addEventListener("click", () => {
+		target.classList.toggle("hidden");
+		if (target.classList.contains("hidden")) {
+			btn.textContent = showText;
+		} else {
+			btn.textContent = hideText;
+		}
+	});
+}
+
 // ------------------ Enemy Selector Storage ------------------
 function saveBattle(name) {
 	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]")
-		.filter(b => b.name !== name);
+
+	// Check if a battle with this name already exists
+	if (battles.some(b => b.name === name)) {
+		if (!confirm(`A battle setup named "${name}" already exists. Overwrite?`)) {
+			return; // cancel save
+		}
+	}
+
+	// Remove old entry if it exists
+	const newBattles = battles.filter(b => b.name !== name);
 
 	const selectors = document.querySelectorAll(".enemy-select");
 	const manualEnemies = Array.from(selectors)
@@ -1232,7 +1266,7 @@ function saveBattle(name) {
 
 	const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 
-	battles.push({
+	newBattles.push({
 		name,
 		manualEnemies,
 		batchGroup,
@@ -1240,7 +1274,7 @@ function saveBattle(name) {
 		simulations: n
 	});
 
-	localStorage.setItem("savedBattles", JSON.stringify(battles));
+	localStorage.setItem("savedBattles", JSON.stringify(newBattles));
 	refreshSavedBattles();
 }
 
@@ -1279,6 +1313,9 @@ function refreshSavedBattles() {
 
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
+	// Setup toggles
+	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", true);
+	
 	await loadAllData();
 
 	// Build enemy selectors (manual + batch)
@@ -1290,7 +1327,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Show chosen setup in log
 	const logDiv = document.getElementById("setup-log");
 	logDiv.innerHTML = `
-		<h3>Setup</h3>
 		<p><b>Equipment:</b></p>
 		<ul>
 			${Object.entries(setup.equipment || {})

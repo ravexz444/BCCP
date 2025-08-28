@@ -2,6 +2,8 @@ const equipmentTypes = [
 	"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
 	"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
 ];
+const eventRegions = ["LE", "RAA", "RDD", "R01.3","R02.3"];
+const premiumRegions = ["PS2024", "PS2025"];
 
 let equipmentData = {};
 let collectionData = {};
@@ -9,59 +11,391 @@ let collectionCodes = {}; // shortCode → fullName mapping
 let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
 
-// ---------------------- UI BUILDERS ----------------------
-function createDropdown(type, index = null) {
-	const label = document.createElement("label");
-	label.textContent = index ? `${type} ${index}: ` : `${type}: `;
+// ---------------------- Toggle Button ----------------------
+function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
+	const btn = document.getElementById(buttonId);
+	const target = document.getElementById(targetId);
 
-	const select = document.createElement("select");
-	select.id = index ? `select-${type}-${index}` : `select-${type}`;
-
-	const defaultOption = document.createElement("option");
-	defaultOption.value = "";
-	defaultOption.textContent = "-- Select " + type + " --";
-	select.appendChild(defaultOption);
-
-	for (const [name, info] of Object.entries(equipmentData)) {
-		if (info.type === type) {
-			const option = document.createElement("option");
-			option.value = name;
-			option.textContent = name;
-			select.appendChild(option);
-		}
+	// Set initial state
+	if (startHidden) {
+		target.classList.add("hidden");
+		btn.textContent = showText;
+	} else {
+		target.classList.remove("hidden");
+		btn.textContent = hideText;
 	}
 
-	select.addEventListener("change", updateSkills);
-
-	const container = document.getElementById("equipment-selectors");
-	container.appendChild(label);
-	container.appendChild(select);
-	container.appendChild(document.createElement("br"));
+	// Attach toggle event
+	btn.addEventListener("click", () => {
+		target.classList.toggle("hidden");
+		if (target.classList.contains("hidden")) {
+			btn.textContent = showText;
+		} else {
+			btn.textContent = hideText;
+		}
+	});
 }
+
+// ---------------------- Search UI ----------------------
+// Search Builder Helper
+function parseNumber(val) {
+	val = val.replace(/,/g, "").toUpperCase().trim();
+	let mult = 1;
+	if (val.endsWith("K")) {
+		mult = 1000;
+		val = val.slice(0, -1);
+	} else if (val.endsWith("M")) {
+		mult = 1000000;
+		val = val.slice(0, -1);
+	}
+	return parseFloat(val) * mult;
+}
+
+function compareValue(op, a, b) {
+	switch (op) {
+		case "<": return a < b;
+		case ">": return a > b;
+		case "<=": return a <= b;
+		case ">=": return a >= b;
+		default: return a === b;
+	}
+}
+
+function parseQuery(query) {
+	const filters = [];
+	// split by semicolon first
+	const fieldClauses = query.split(";").map(s => s.trim()).filter(Boolean);
+
+	for (const clause of fieldClauses) {
+		// field:val1,val2,val3
+		const [fieldRaw, valuesRaw] = clause.split(":");
+		if (!valuesRaw) continue;
+		const field = fieldRaw.toLowerCase().trim();
+		const values = valuesRaw.split(",").map(v => v.trim()).filter(Boolean);
+
+		for (const val of values) {
+			const neg = val.startsWith("-");
+			let value = val.replace(/^-/, "").replace(/^"|"$/g, "");
+			filters.push({ field, value, neg });
+		}
+	}
+	return filters;
+}
+
+// region filter logic
+function matchesRegion(itemRegion, filters) {
+	if (!Array.isArray(filters)) filters = [filters];
+
+	for (const filter of filters) {
+		const valRaw = filter.value.toLowerCase();
+		const neg = filter.neg;
+
+		// Special keywords
+		if (["event","premium"].includes(valRaw)) {
+			const inList = (valRaw === "event" ? eventRegions : premiumRegions).includes(itemRegion);
+			if ((neg && inList) || (!neg && !inList)) return false;
+			continue;
+		}
+
+		// Numeric comparison: <R07, >=R03, etc
+		const m = valRaw.match(/^(<|>|<=|>=)?r(\d+)/i);
+		if (m) {
+			const op = m[1] || "=";
+			const num = parseInt(m[2], 10);
+			const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
+			if ((neg && compareValue(op, itemNum, num)) || (!neg && !compareValue(op, itemNum, num))) return false;
+			continue;
+		}
+
+		// Exact / partial match
+		const starts = itemRegion.toLowerCase().startsWith(valRaw);
+		if ((neg && starts) || (!neg && !starts)) return false;
+	}
+
+	return true;
+}
+
+// main equipment matcher
+function matchEquipment(name, info, filters) {
+	for (const f of filters) {
+		const v = f.value.toLowerCase();
+		let matched = false;
+
+		if (f.field === "xp") {
+			const m = v.match(/^(<=|>=|<|>)?(.+)$/);
+			if (!m) continue;
+			const op = m[1] || "=";
+			const num = parseNumber(m[2]);
+			matched = compareValue(op, info.xp, num);
+		}
+		else if (f.field === "region") {
+			matched = matchesRegion(info.region, [f]);
+		}
+		else if (f.field === "mat") {
+			matched = info.mat && info.mat.some(([matName]) => {
+				const nameLower = matName.toLowerCase();
+				return nameLower.includes(v);
+			});
+			if (f.neg) matched = !matched;
+		}
+		else if (f.field === "skill") {
+			matched = info.skill && info.skill.some(([s]) => {
+				const skillLower = s.toLowerCase();
+				return skillLower.includes(v);
+			});
+			if (f.neg) matched = !matched;
+		}
+		else if (["race", "source", "rarity", "type"].includes(f.field)) {
+			const fieldVal = (info[f.field] || "").toLowerCase();
+			matched = fieldVal.includes(v);
+			if (f.neg) matched = !matched;
+		}
+		else if (f.field === "name") {
+			const nameVal = name.toLowerCase();
+			matched = nameVal.includes(v);
+			if (f.neg) matched = !matched;
+		}
+
+		if (!matched) return false; // failed any filter
+	}
+
+	return true;
+}
+
+// Search Builder
+function createSearchUI() {
+	const container = document.getElementById("equipment-selectors");
+
+	const searchBox = document.createElement("input");
+	searchBox.type = "text";
+	searchBox.id = "equipmentSearch";
+	searchBox.placeholder = "Search equipment...";
+	container.appendChild(searchBox);
+
+	const resultsDiv = document.createElement("div");
+	resultsDiv.id = "searchResults";
+	resultsDiv.style.border = "1px solid #ccc";
+	resultsDiv.style.maxHeight = "200px";
+	resultsDiv.style.overflowY = "auto";
+	container.appendChild(resultsDiv);
+
+	const equippedDiv = document.createElement("div");
+	equippedDiv.id = "equippedList";
+	container.appendChild(equippedDiv);
+
+	searchBox.addEventListener("input", () => {
+		const query = searchBox.value.trim();
+		resultsDiv.innerHTML = "";
+		if (!query) return;
+
+		const filters = parseQuery(query);
+		for (const [name, info] of Object.entries(equipmentData)) {
+			if (matchEquipment(name, info, filters)) {
+				const btn = document.createElement("button");
+				btn.textContent = `${name} (${info.type})`;
+				btn.addEventListener("click", () => equipItem(name, info.type));
+				resultsDiv.appendChild(btn);
+				resultsDiv.appendChild(document.createElement("br"));
+			}
+		}
+	});
+}
+
+// Equip by selecting result
+let equipped = {}; // { type: [names...] }
+
+function equipItem(name, type) {
+	if (!equipped[type]) equipped[type] = [];
+
+	// prevent duplicates
+	if (equipped[type].includes(name)) {
+		alert(`${name} is already equipped in ${type}.`);
+		return;
+	}
+
+	// single-slot types (always replace)
+	if (type !== "Accessory" && type !== "Retainer") {
+		equipped[type] = [name];
+		updateEquippedList();
+		updateSkills();
+		return;
+	}
+
+	// multi-slot types (Accessory / Retainer)
+	const max = 3;
+	if (equipped[type].length < max) {
+		// still room → just add
+		equipped[type].push(name);
+	} else {
+		// already at max → ask user which slot to replace
+		let current = equipped[type]
+			.map((item, idx) => `${idx + 1}: ${item}`)
+			.join("\n");
+
+		let choice = prompt(
+			`${type} slots are full.\nCurrently equipped:\n${current}\n\nEnter the slot number (1-${max}) to replace with ${name}, or Cancel to abort:`
+		);
+
+		if (!choice) return; // user pressed cancel
+		let slot = parseInt(choice, 10);
+		if (isNaN(slot) || slot < 1 || slot > max) {
+			alert("Invalid slot number.");
+			return;
+		}
+
+		// replace chosen slot
+		equipped[type][slot - 1] = name;
+	}
+
+	updateEquippedList();
+	updateSkills();
+}
+
+// Delete equipped list
+function updateEquippedList() {
+	const equippedDiv = document.getElementById("equippedList");
+	equippedDiv.innerHTML = "<h3>Equipped</h3>";
+
+	equipmentTypes.forEach(type => {
+		if (equipped[type] && equipped[type].length > 0) {
+			// handle multi-slot separately
+			if (type === "Accessory" || type === "Retainer") {
+				equipped[type].forEach((item, idx) => {
+					const line = document.createElement("div");
+					line.textContent = `${type} ${idx + 1}: ${item}`;
+
+					// add remove button
+					const removeBtn = document.createElement("button");
+					removeBtn.textContent = "❌";
+					removeBtn.style.marginLeft = "5px";
+					removeBtn.addEventListener("click", () => {
+						equipped[type].splice(idx, 1);
+						updateEquippedList();
+						updateSkills();
+					});
+					line.appendChild(removeBtn);
+
+					equippedDiv.appendChild(line);
+				});
+			} else {
+				// single-slot
+				const line = document.createElement("div");
+				line.textContent = `${type}: ${equipped[type][0]}`;
+
+				const removeBtn = document.createElement("button");
+				removeBtn.textContent = "❌";
+				removeBtn.style.marginLeft = "5px";
+				removeBtn.addEventListener("click", () => {
+					equipped[type] = [];
+					updateEquippedList();
+					updateSkills();
+				});
+				line.appendChild(removeBtn);
+
+				equippedDiv.appendChild(line);
+			}
+		} else {
+			const line = document.createElement("div");
+			line.textContent = `${type}: -`;
+			equippedDiv.appendChild(line);
+		}
+	});
+}
+
+// Help Info for Search System
+function setupSearchHelp() {
+	const searchHelpDiv = document.getElementById("search-help");
+	if (!searchHelpDiv) return;
+
+	// Fill the help info
+	searchHelpDiv.innerHTML = `
+
+		<p>Template</p>
+  		<ul style="font-size:13px; line-height:1.4;">
+			<li><strong>field</strong>:value1,value2,-value3; <strong>field2</strong>:valueA,-valueB</li>
+	  		<li><strong>;</strong> separates different fields</li>
+			<li><strong>,</strong> separates multiple values for the same field</li>
+			<li><strong>- at the beginning of a value</strong> means exclude/negate</li>
+			<li><strong>Values with spaces</strong> better use "quotes"</li>
+  		</ul>
+		<p>Example</p>
+  		<ul style="font-size:13px; line-height:1.4;">
+			<li>region:R02 / &lt;R05 / Event / Premium / &lt;R05,-Event</li>
+			<li>xp:&lt;1.2M / &gt;=500K</li>
+			<li>name:Key / -Pearl / "Bone Crossbow"</li>
+			<li>skill:Charge,-Shadow / "Loot Chance Modifier"</li>
+			<li>mat:Sanguine Pearl / -Phoenix Flame / Golden Skull, -Fel Wood</li>
+			<li>type:Weapon, rarity:-Common, race:Undead, source:Drop, rarity:Epic</li>
+			<li>region:R8; mat:Phoenix Flame</li>
+   			<li>xp:&lt;1M; region:-Event, -Premium</li> 
+	  		<li>region:&lt;R3; name:-Key</li> 
+		</ul>
+	`;
+
+	// Initialize toggle button
+	setupToggle(
+		"toggleSearchHelpBtn",   // button ID
+		"search-help",           // content div ID
+		"Show Search Help ▲",     // button text when hidden
+		"Hide Search Help ▼",     // button text when shown
+		true                      // initially visible
+	);
+}
+
+// === Collection Checkbox ===
+const collOrder = [
+	["1-1", "1-2", "1-3", "1-4", "1-5"],
+	["2-1", "2-2", "2-3", "2-4", "2-5"],
+	["3-1", "3-2", "3-3", "3-4", "3-5"],
+	["4-1", "4-2", "4-3", "4-4", "4-5"],
+	["5-1", "5-2", "5-3", "5-4", "5-5"],
+	["6-1", "6-2", "6-3", "6-4", "6-5"],
+	["7-1", "7-2", "7-3", "7-4", "7-5"],
+	["8-1", "8-2", "8-3", "8-4", "8-5"],
+	["9-1", "9-2", "9-3", "9-4", "9-5"],
+	["10-1", "10-2", "10-3", "10-4", "10-5"],
+	["E-1", "E-2"],
+	["S-1", "S-2"],
+	["1.3-1", "1.3-2", "1.3-3"],
+	["2.3-1", "2.3-2", "2.3-3"],
+	["D-1", "D-3", "D-5", "D-2", "D-4", "D-6"],
+	["A-C", "A-K", "A-F"]
+];
 
 function createCollectionCheckboxes() {
 	const container = document.getElementById("collection-selectors");
 
-	for (const code of Object.keys(collectionCodes)) {
-		const div = document.createElement("div");
+	for (const row of collOrder) {
+		const rowDiv = document.createElement("div"); // one row
 
-		const checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		checkbox.id = "collection-" + code;
-		checkbox.value = code;
-		checkbox.addEventListener("change", updateSkills);
+		for (const code of row) {
+			if (!(code in collectionCodes)) {
+				console.warn(`Warning: ${code} not found in collectionCodes`);
+				continue;
+			}
 
-		const label = document.createElement("label");
-		label.htmlFor = checkbox.id;
-		label.textContent = code;
+			const div = document.createElement("div");
+			div.style.display = "inline-block"; // make them inline like a row
 
-		div.appendChild(checkbox);
-		div.appendChild(label);
-		container.appendChild(div);
+			const checkbox = document.createElement("input");
+			checkbox.type = "checkbox";
+			checkbox.id = "collection-" + code;
+			checkbox.value = code;
+			checkbox.addEventListener("change", updateSkills);
+
+			const label = document.createElement("label");
+			label.htmlFor = checkbox.id;
+			label.textContent = code;
+
+			div.appendChild(checkbox);
+			div.appendChild(label);
+			rowDiv.appendChild(div);
+		}
+		container.appendChild(rowDiv);
 	}
 }
 
-// ---------------------- PARSING HELPERS ----------------------
+// === Parse Value ===
 function parseSkillValue(raw) {
 	if (typeof raw === "number") return { type: "number", value: raw, unit: "" };
 	if (typeof raw !== "string") return { type: "text", raw: String(raw) };
@@ -89,7 +423,7 @@ function formatTotal(total, unit) {
 	return unit === "%" ? `${num}%` : `${num}`;
 }
 
-// ---------------------- SKILL GROUPING ----------------------
+// === Skill Grouping ===
 function addSkill(categoryMap, category, skillName, rawValue) {
 	if (!categoryMap[category]) categoryMap[category] = {};
 	if (!categoryMap[category][skillName]) {
@@ -156,73 +490,92 @@ function renderSkillSummary(allSkillsWithValues) {
 	}
 }
 
-// ---------------------- MAIN LOGIC ----------------------
+// Extract skill, Update skill list ===
 function updateSkills() {
 	const outputDiv = document.getElementById("skills-output");
 	outputDiv.innerHTML = "";
 
 	const chosenItems = [];
 
+	// 1. Add equipped items (from search UI)
 	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const select = document.getElementById(`select-${type}-${i}`);
-				if (select && select.value) chosenItems.push(select.value);
-			}
-		} else {
-			const select = document.getElementById(`select-${type}`);
-			if (select && select.value) chosenItems.push(select.value);
+		if (equipped[type] && equipped[type].length > 0) {
+			equipped[type].forEach(name => chosenItems.push(name));
 		}
 	});
 
+	// 2. Add checked collections
 	for (const code of Object.keys(collectionCodes)) {
 		const checkbox = document.getElementById("collection-" + code);
-		if (checkbox && checkbox.checked) chosenItems.push(collectionCodes[code]);
+		if (checkbox && checkbox.checked) {
+			chosenItems.push(collectionCodes[code]);
+		}
 	}
 
+	// 3. Build full skill list
 	const allSkillsWithValues = [];
 	chosenItems.forEach(itemName => {
 		const info = equipmentData[itemName] || collectionData[itemName];
 		if (info && info.skill) {
+			// Show item skills in "skills-output"
 			const itemDiv = document.createElement("div");
 			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
 				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
 			outputDiv.appendChild(itemDiv);
 			outputDiv.appendChild(document.createElement("br"));
 
+			// Collect for summary
 			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
 		}
 	});
 
+	// 4. Render grouped summary
 	renderSkillSummary(allSkillsWithValues);
 }
 
 // ---------------------- SETUP STORAGE ----------------------
 function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
-		.filter(s => s.name !== name);
 
+	// check if name already exists
+	const existing = setups.find(s => s.name === name);
+	if (existing) {
+		const ok = confirm(`A setup with the name "${name}" already exists. Do you want to overwrite it?`);
+		if (!ok) return; // user cancelled
+	}
+
+	// remove old entry if any
+	const newSetups = setups.filter(s => s.name !== name);
+	
+	// === Save collections ===
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {
 		const cb = document.getElementById("collection-" + code);
-		if (cb && cb.checked) collections.push(collectionCodes[code]);
+		if (cb && cb.checked) collections.push(code); // store raw code, not display name
 	}
 
+	// === Save equipment ===
 	const equipment = {};
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel && sel.value) equipment[`${type}-${i}`] = sel.value;
-			}
+	for (const [type, items] of Object.entries(equipped)) {
+		if (type === "Retainer" || type === "Accessory") {
+			// save each item with index
+			(items || []).forEach((it, idx) => {
+				if (it) equipment[`${type}-${idx + 1}`] = it;
+			});
 		} else {
-			const sel = document.getElementById(`select-${type}`);
-			if (sel && sel.value) equipment[type] = sel.value;
+			// other types store as array
+			if (Array.isArray(items)) {
+				equipment[type] = [...items];
+			} else if (typeof items === "string") {
+				equipment[type] = [items];
+			} else {
+				equipment[type] = [];
+			}
 		}
-	});
+	}
 
-	setups.push({ name, collections, equipment });
-	localStorage.setItem("savedSetups", JSON.stringify(setups));
+	newSetups.push({ name, collections, equipment });
+	localStorage.setItem("savedSetups", JSON.stringify(newSetups));
 	refreshSavedSetups();
 }
 
@@ -231,22 +584,26 @@ function loadSetup(name) {
 	const setup = setups.find(s => s.name === name);
 	if (!setup) return;
 
+	// === Restore collections ===
 	document.querySelectorAll("#collection-selectors input[type=checkbox]").forEach(cb => {
-		cb.checked = setup.collections.includes(collectionCodes[cb.id.replace("collection-", "")]);
+		const code = cb.id.replace("collection-", "");
+		cb.checked = setup.collections.includes(code);
 	});
 
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
-			}
+	// === Restore equipment ===
+	equipped = {}; // reset
+	for (const [type, items] of Object.entries(setup.equipment)) {
+		// Ensure everything is stored as an array
+		if (Array.isArray(items)) {
+			equipped[type] = [...items]; 
+		} else if (typeof items === "string") {
+			equipped[type] = [items]; // wrap single string in array
 		} else {
-			const sel = document.getElementById(`select-${type}`);
-			if (sel) sel.value = setup.equipment[type] || "";
+			equipped[type] = [];
 		}
-	});
+	}
 
+	updateEquippedList();
 	updateSkills();
 }
 
@@ -265,28 +622,32 @@ function refreshSavedSetups() {
 }
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
-// Index -> Battle
 function exportToBattle() {
+	// Save collections
 	const collections = [];
 	for (const code of Object.keys(collectionCodes)) {
 		const cb = document.getElementById("collection-" + code);
-		if (cb && cb.checked) collections.push(collectionCodes[code]);
+		if (cb && cb.checked) collections.push(code);
 	}
 
+	// Save equipment
 	const equipment = {};
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) {
-				const sel = document.getElementById(`select-${type}-${i}`);
-				equipment[`${type}-${i}`] = sel?.value || "";
-			}
-		} else {
-			const sel = document.getElementById(`select-${type}`);
-			equipment[type] = sel?.value || "";
-		}
-	});
 
-	// Save the whole active setup
+	for (const [type, items] of Object.entries(equipped)) {
+		if (type === "Retainer" || type === "Accessory") {
+			// Use indexed keys to preserve order
+			items.forEach((item, idx) => {
+				equipment[`${type}-${idx + 1}`] = item;
+			});
+		} else if (Array.isArray(items)) {
+			equipment[type] = [...items];
+		} else if (typeof items === "string") {
+			equipment[type] = [items];
+		} else {
+			equipment[type] = [];
+		}
+	}
+
 	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
 	window.location.href = "battle.html";
 }
@@ -302,24 +663,37 @@ function importFromBattle() {
 	if (setup.collections) {
 		for (const code of Object.keys(collectionCodes)) {
 			const cb = document.getElementById("collection-" + code);
-			if (cb) cb.checked = setup.collections.includes(collectionCodes[code]);
+			if (cb) cb.checked = setup.collections.includes(code);
 		}
 	}
 
 	// Restore equipment
-	if (setup.equipment) {
-		equipmentTypes.forEach(type => {
-			if (type === "Accessory" || type === "Retainer") {
-				for (let i = 1; i <= 3; i++) {
-					const sel = document.getElementById(`select-${type}-${i}`);
-					if (sel) sel.value = setup.equipment[`${type}-${i}`] || "";
-				}
+	equipped = {}; // reset
+	const tempAccessory = [];
+	const tempRetainer = [];
+
+	for (const [key, value] of Object.entries(setup.equipment)) {
+		if (key.startsWith("Accessory-")) {
+			if (value) tempAccessory.push(value);
+		} else if (key.startsWith("Retainer-")) {
+			if (value) tempRetainer.push(value);
+		} else {
+			// other equipment types stored as array
+			if (Array.isArray(value)) {
+				equipped[key] = [...value];
+			} else if (typeof value === "string") {
+				equipped[key] = [value];
 			} else {
-				const sel = document.getElementById(`select-${type}`);
-				if (sel) sel.value = setup.equipment[type] || "";
+				equipped[key] = [];
 			}
-		});
+		}
 	}
+
+	if (tempAccessory.length) equipped["Accessory"] = tempAccessory;
+	if (tempRetainer.length) equipped["Retainer"] = tempRetainer;
+
+	updateEquippedList();
+	updateSkills();
 }
 
 // ---------------------- DATA LOADING ----------------------
@@ -337,21 +711,24 @@ async function loadAllData() {
 	collectionCodes = codes;
 	skillGroups = groups;
 	combinableSkills = new Set(combinables);
-
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) createDropdown(type, i);
-		} else {
-			createDropdown(type);
-		}
-	});
-	createCollectionCheckboxes();
-	updateSkills();
 }
 
 // ---------------------- DOM READY ----------------------
 document.addEventListener("DOMContentLoaded", async () => {
+
+	// Setup toggles
+	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output ▲", "Hide Skills Output ▼", true);
+	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary ▲", "Hide Skill Summary ▼", true);
+
+	setupSearchHelp();
+	
 	await loadAllData();  // ensure dropdowns exist
+	
+
+	// Create search function
+	createSearchUI();
+
+	createCollectionCheckboxes();
 
 	// Auto-restore Active Setup
 	importFromBattle();

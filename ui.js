@@ -12,6 +12,11 @@ let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
 
 // ---------------------- Search UI ----------------------
+// field:value1,value2,-value3; field2:valueA,-valueB
+// ; separates different fields (AND logic)
+// , separates multiple values for the same field (OR logic)
+// - at the beginning of a value = exclude/negate
+// Values with spaces → "quotes" are optional but safer
 // Search Builder Helper
 function parseNumber(val) {
 	val = val.replace(/,/g, "").toUpperCase().trim();

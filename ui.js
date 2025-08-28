@@ -36,43 +36,53 @@ function compareValue(op, a, b) {
 	}
 }
 
+//Support "" as single value
 function parseQuery(query) {
-	// supports field:val, -field:val
 	const filters = [];
-	const terms = query.match(/(-?\w+:[^ ]+)|(\S+)/g) || [];
-	for (const term of terms) {
+	const regex = /(-?\w+:"[^"]+"|-?\w+:[^\s]+)|"([^"]+)"|(\S+)/g;
+	let match;
+	while ((match = regex.exec(query)) !== null) {
+		let term = match[0];
 		const neg = term.startsWith("-");
-		const [field, rawVal] = term.replace(/^-/, "").split(":");
-		if (rawVal) {
-			filters.push({ field: field.toLowerCase(), value: rawVal, neg });
+		if (term.includes(":")) {
+			const [field, rawVal] = term.replace(/^-/, "").split(":");
+			let value = rawVal;
+			if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+			filters.push({ field: field.toLowerCase(), value, neg });
 		} else {
 			// plain text search
-			filters.push({ field: "text", value: term.toLowerCase(), neg: false });
+			let value = term;
+			if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+			filters.push({ field: "text", value, neg: false });
 		}
 	}
 	return filters;
 }
 
 function matchesRegion(itemRegion, filters) {
-	if (!Array.isArray(filters)) filters = [filters]; // ensure array
+	if (!Array.isArray(filters)) filters = [filters];
 
 	for (const filter of filters) {
 		const val = filter.value.toLowerCase();
 
-		// handle negative filters
+		// NEGATION
 		if (filter.neg) {
-			if (val === "event" && eventRegions.includes(itemRegion)) return false;
-			if (val === "premium" && premiumRegions.includes(itemRegion)) return false;
-			if (itemRegion.toLowerCase() === val) return false;
+			if ((val === "event" && eventRegions.includes(itemRegion)) ||
+				(val === "premium" && premiumRegions.includes(itemRegion)) ||
+				itemRegion.toLowerCase() === val) {
+				return false;
+			}
 			continue;
 		}
 
-		// handle positive "special" keywords
-		if (val === "event" && !eventRegions.includes(itemRegion)) return false;
-		if (val === "premium" && !premiumRegions.includes(itemRegion)) return false;
+		// POSITIVE
+		if ((val === "event" && !eventRegions.includes(itemRegion)) ||
+			(val === "premium" && !premiumRegions.includes(itemRegion))) {
+			return false;
+		}
 
 		// numeric comparison: region:<R07
-		let m = val.match(/^(<|>|<=|>=)?r(\d+)/i);
+		const m = val.match(/^(<|>|<=|>=)?r(\d+)/i);
 		if (m) {
 			const op = m[1] || "=";
 			const num = parseInt(m[2], 10);
@@ -89,8 +99,6 @@ function matchesRegion(itemRegion, filters) {
 }
 
 function matchEquipment(name, info, filters) {
-	let keep = true;
-
 	for (const f of filters) {
 		const v = f.value.toLowerCase();
 		let matched = false;
@@ -125,12 +133,12 @@ function matchEquipment(name, info, filters) {
 				(info.rarity || "").toLowerCase().includes(v);
 		}
 
-		// **explicit negation handling**
-		if (f.neg && matched) return false;  // exclude if negation matches
-		if (!f.neg && !matched) return false; // exclude if positive filter fails
+		// handle negation
+		if (f.neg && matched) return false;
+		if (!f.neg && !matched) return false;
 	}
 
-	return true; // passed all filters
+	return true;
 }
 
 // Search Builder

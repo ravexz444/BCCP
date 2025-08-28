@@ -406,21 +406,17 @@ async function loadAllData() {
 	collectionCodes = codes;
 	skillGroups = groups;
 	combinableSkills = new Set(combinables);
-
-	equipmentTypes.forEach(type => {
-		if (type === "Accessory" || type === "Retainer") {
-			for (let i = 1; i <= 3; i++) createDropdown(type, i);
-		} else {
-			createDropdown(type);
-		}
-	});
-	createCollectionCheckboxes();
-	updateSkills();
 }
 
 // ---------------------- DOM READY ----------------------
 document.addEventListener("DOMContentLoaded", async () => {
 	await loadAllData();  // ensure dropdowns exist
+
+	// Create search function
+	createSearchUI();
+
+	createCollectionCheckboxes();
+	updateSkills();
 
 	// Auto-restore Active Setup
 	importFromBattle();

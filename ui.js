@@ -9,18 +9,109 @@ let collectionCodes = {}; // shortCode → fullName mapping
 let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
 
-// ---------------------- UI BUILDERS ----------------------
+// ---------------------- Search UI ----------------------
+// Search Builder Helper
+function parseNumber(val) {
+	val = val.replace(/,/g, "").toUpperCase().trim();
+	let mult = 1;
+	if (val.endsWith("K")) {
+		mult = 1000;
+		val = val.slice(0, -1);
+	} else if (val.endsWith("M")) {
+		mult = 1000000;
+		val = val.slice(0, -1);
+	}
+	return parseFloat(val) * mult;
+}
+
+function compareValue(op, a, b) {
+	switch (op) {
+		case "<": return a < b;
+		case ">": return a > b;
+		case "<=": return a <= b;
+		case ">=": return a >= b;
+		default: return a === b;
+	}
+}
+
+function parseQuery(query) {
+	// supports field:val, -field:val
+	const filters = [];
+	const terms = query.match(/(-?\w+:[^ ]+)|(\S+)/g) || [];
+	for (const term of terms) {
+		const neg = term.startsWith("-");
+		const [field, rawVal] = term.replace(/^-/, "").split(":");
+		if (rawVal) {
+			filters.push({ field: field.toLowerCase(), value: rawVal, neg });
+		} else {
+			// plain text search
+			filters.push({ field: "text", value: term.toLowerCase(), neg: false });
+		}
+	}
+	return filters;
+}
+
+function matchEquipment(name, info, filters) {
+	for (const f of filters) {
+		const v = f.value.toLowerCase();
+		let matched = false;
+
+		if (f.field === "xp") {
+			// comparison operator support
+			const m = v.match(/^(<=|>=|<|>)?(.+)$/);
+			if (!m) continue;
+			const op = m[1] || "=";
+			const num = parseNumber(m[2]);
+			matched = compareValue(op, info.xp, num);
+		}
+
+		else if (f.field === "region") {
+			const m = v.match(/^(<=|>=|<|>)?r(\d+)/i);
+			if (m) {
+				const op = m[1] || "=";
+				const num = parseInt(m[2]);
+				const equipNum = parseInt(info.region.replace(/[^\d]/g, ""));
+				matched = compareValue(op, equipNum, num);
+			} else {
+				matched = info.region.toLowerCase().includes(v);
+			}
+		}
+
+		else if (f.field === "mat") {
+			matched = info.mat && info.mat.some(([matName]) => matName.toLowerCase().includes(v));
+		}
+
+		else if (f.field === "skill") {
+			matched = info.skill && info.skill.some(([s]) => s.toLowerCase().includes(v));
+		}
+
+		else if (["race", "source", "rarity", "type"].includes(f.field)) {
+			matched = (info[f.field] || "").toLowerCase().includes(v);
+		}
+
+		else if (f.field === "text") {
+			// fallback free text search across name + type + rarity
+			matched = name.toLowerCase().includes(v) ||
+				(info.type || "").toLowerCase().includes(v) ||
+				(info.rarity || "").toLowerCase().includes(v);
+		}
+
+		// handle negation
+		if (f.neg ? matched : !matched) return false;
+	}
+	return true;
+}
+
+// Search Builder
 function createSearchUI() {
 	const container = document.getElementById("equipment-selectors");
 
-	// Search box
 	const searchBox = document.createElement("input");
 	searchBox.type = "text";
 	searchBox.id = "equipmentSearch";
-	searchBox.placeholder = "Search equipment (e.g., skill:Shadowcurse, region:<R07, mat:!Papyrus, xp:<1.5M)";
+	searchBox.placeholder = "Search equipment...";
 	container.appendChild(searchBox);
 
-	// Results area
 	const resultsDiv = document.createElement("div");
 	resultsDiv.id = "searchResults";
 	resultsDiv.style.border = "1px solid #ccc";
@@ -28,112 +119,18 @@ function createSearchUI() {
 	resultsDiv.style.overflowY = "auto";
 	container.appendChild(resultsDiv);
 
-	// Equipped list area
 	const equippedDiv = document.createElement("div");
 	equippedDiv.id = "equippedList";
 	container.appendChild(equippedDiv);
 
-	// Helper: parse XP/number string (supports K, M)
-	function parseNumber(val) {
-		val = val.toUpperCase().replace(/,/g, "").trim();
-		if (val.endsWith("K")) return parseFloat(val) * 1000;
-		if (val.endsWith("M")) return parseFloat(val) * 1000000;
-		return parseFloat(val);
-	}
-
-	// Search handler
 	searchBox.addEventListener("input", () => {
 		const query = searchBox.value.trim();
 		resultsDiv.innerHTML = "";
-
 		if (!query) return;
 
-		// Split into filters (comma or space separated)
-		const filters = query.split(/[, ]+/).filter(Boolean);
-
+		const filters = parseQuery(query);
 		for (const [name, info] of Object.entries(equipmentData)) {
-			let match = true;
-
-			for (const filter of filters) {
-				// Check key:value
-				const [rawKey, rawVal] = filter.split(":");
-				if (!rawVal) {
-					// fallback: free-text search on name
-					if (!name.toLowerCase().includes(filter.toLowerCase())) {
-						match = false;
-						break;
-					}
-					continue;
-				}
-
-				const key = rawKey.toLowerCase();
-				let val = rawVal.trim();
-
-				// Handle negation "!"
-				const isNegation = val.startsWith("!");
-				if (isNegation) val = val.slice(1);
-
-				// ---------------- Field checks ----------------
-				if (key === "skill") {
-					const hasSkill = info.skill?.some(s => s[0].toLowerCase().includes(val.toLowerCase()));
-					if (isNegation ? hasSkill : !hasSkill) { match = false; break; }
-				}
-
-				else if (key === "rarity") {
-					const ok = (info.rarity || "").toLowerCase().includes(val.toLowerCase());
-					if (isNegation ? ok : !ok) { match = false; break; }
-				}
-
-				else if (key === "region") {
-					// support <, <=, >, >=
-					const regionNum = parseInt((info.region || "R00").replace(/\D/g, ""));
-					const filterNum = parseInt(val.replace(/\D/g, ""));
-					if (filter.startsWith("region:<")) {
-						if (!(regionNum < filterNum)) { match = false; break; }
-					} else if (filter.startsWith("region:>")) {
-						if (!(regionNum > filterNum)) { match = false; break; }
-					} else {
-						if (!info.region?.toLowerCase().includes(val.toLowerCase())) {
-							match = false; break;
-						}
-					}
-				}
-
-				else if (key === "xp") {
-					const itemXP = parseNumber(info.xp || 0);
-					const filterXP = parseNumber(val);
-					if (filter.includes("<")) {
-						if (!(itemXP < filterXP)) { match = false; break; }
-					} else if (filter.includes(">")) {
-						if (!(itemXP > filterXP)) { match = false; break; }
-					} else {
-						if (itemXP !== filterXP) { match = false; break; }
-					}
-				}
-
-				else if (key === "mat") {
-					const hasMat = info.materials?.some(m => m.toLowerCase().includes(val.toLowerCase()));
-					if (isNegation ? hasMat : !hasMat) { match = false; break; }
-				}
-
-				else if (key === "type") {
-					const ok = (info.type || "").toLowerCase().includes(val.toLowerCase());
-					if (isNegation ? ok : !ok) { match = false; break; }
-				}
-
-				else if (key === "race") {
-					const ok = (info.race || "").toLowerCase().includes(val.toLowerCase());
-					if (isNegation ? ok : !ok) { match = false; break; }
-				}
-
-				else if (key === "source") {
-					const ok = (info.source || "").toLowerCase().includes(val.toLowerCase());
-					if (isNegation ? ok : !ok) { match = false; break; }
-				}
-			}
-
-			// If all filters passed → show result
-			if (match) {
+			if (matchEquipment(name, info, filters)) {
 				const btn = document.createElement("button");
 				btn.textContent = `${name} (${info.type})`;
 				btn.addEventListener("click", () => equipItem(name, info.type));
@@ -193,6 +190,7 @@ function equipItem(name, type) {
 	updateEquippedList();
 	updateSkills();
 }
+
 // Delete equipped list
 function updateEquippedList() {
 	const equippedDiv = document.getElementById("equippedList");

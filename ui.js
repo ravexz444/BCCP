@@ -11,6 +11,31 @@ let collectionCodes = {}; // shortCode → fullName mapping
 let skillGroups = {};     // { GroupName: [skill, ...], ... }
 let combinableSkills = new Set(); // filled from combinable_skills.json
 
+// ---------------------- Toggle Button ----------------------
+function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
+	const btn = document.getElementById(buttonId);
+	const target = document.getElementById(targetId);
+
+	// Set initial state
+	if (startHidden) {
+		target.classList.add("hidden");
+		btn.textContent = showText;
+	} else {
+		target.classList.remove("hidden");
+		btn.textContent = hideText;
+	}
+
+	// Attach toggle event
+	btn.addEventListener("click", () => {
+		target.classList.toggle("hidden");
+		if (target.classList.contains("hidden")) {
+			btn.textContent = showText;
+		} else {
+			btn.textContent = hideText;
+		}
+	});
+}
+
 // ---------------------- Search UI ----------------------
 // field:value1,value2,-value3; field2:valueA,-valueB
 // ; separates different fields (AND logic)
@@ -282,6 +307,35 @@ function updateEquippedList() {
 	});
 }
 
+// Help Info for Search System
+function setupSearchHelp() {
+	const searchHelpDiv = document.getElementById("search-help");
+	if (!searchHelpDiv) return;
+
+	// Fill the help info
+	searchHelpDiv.innerHTML = `
+		<strong>Search Tips:</strong>
+		<ul style="font-size:13px; line-height:1.4;">
+			<li><strong>Region:</strong> region:R02, region:&lt;R05, region:Event, region:-Event</li>
+			<li><strong>XP:</strong> xp:&lt;1M, xp:&gt;=500K</li>
+			<li><strong>Name:</strong> name:Key, name:-Key, name:"Bone Crossbow"</li>
+			<li><strong>Skill:</strong> skill:Charge, skill:Charge,-Shadow, skill:"Shadow Charge"</li>
+			<li><strong>Material:</strong> mat:Sanguine Pearl, mat:-Papyrus, mat:Sanguine Pearl,Gold Ingot</li>
+			<li><strong>Type/Race/Source/Rarity:</strong> type:Weapon, rarity:-Common, race:Undead</li>
+			<li><strong>Combined Examples:</strong> region:&lt;R3; name:-Key, skill:Charge; mat:Sanguine Pearl, xp:&lt;1M; region:-Event</li>
+		</ul>
+	`;
+
+	// Initialize toggle button
+	setupToggle(
+		"toggleSearchHelpBtn",   // button ID
+		"search-help",           // content div ID
+		"Show Search Help ▲",     // button text when hidden
+		"Hide Search Help ▼",     // button text when shown
+		true                      // initially visible
+	);
+}
+
 // === Collection Checkbox ===
 const collOrder = [
 	["1-1", "1-2", "1-3", "1-4", "1-5"],
@@ -473,31 +527,6 @@ function updateSkills() {
 	renderSkillSummary(allSkillsWithValues);
 }
 
-// Toggle button to hide/unhide
-function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
-	const btn = document.getElementById(buttonId);
-	const target = document.getElementById(targetId);
-
-	// Set initial state
-	if (startHidden) {
-		target.classList.add("hidden");
-		btn.textContent = showText;
-	} else {
-		target.classList.remove("hidden");
-		btn.textContent = hideText;
-	}
-
-	// Attach toggle event
-	btn.addEventListener("click", () => {
-		target.classList.toggle("hidden");
-		if (target.classList.contains("hidden")) {
-			btn.textContent = showText;
-		} else {
-			btn.textContent = hideText;
-		}
-	});
-}
-
 // ---------------------- SETUP STORAGE ----------------------
 function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
@@ -684,6 +713,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	// Setup toggles
 	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output ▲", "Hide Skills Output ▼", true);
 	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary ▲", "Hide Skill Summary ▼", true);
+
+	setupSearchHelp();
 	
 	await loadAllData();  // ensure dropdowns exist
 	

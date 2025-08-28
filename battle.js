@@ -1245,7 +1245,16 @@ function setupToggle(buttonId, targetId, showText, hideText, startHidden = false
 // ------------------ Enemy Selector Storage ------------------
 function saveBattle(name) {
 	const battles = JSON.parse(localStorage.getItem("savedBattles") || "[]")
-		.filter(b => b.name !== name);
+
+	// Check if a battle with this name already exists
+	if (battles.some(b => b.name === name)) {
+		if (!confirm(`A battle setup named "${name}" already exists. Overwrite?`)) {
+			return; // cancel save
+		}
+	}
+
+	// Remove old entry if it exists
+	const filtered = battles.filter(b => b.name !== name);
 
 	const selectors = document.querySelectorAll(".enemy-select");
 	const manualEnemies = Array.from(selectors)

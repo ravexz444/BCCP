@@ -484,8 +484,8 @@ async function loadAllData() {
 document.addEventListener("DOMContentLoaded", async () => {
 
 	// Setup toggles
-	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output", "Hide Skills Output", true);
-	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary", "Hide Skill Summary", false);
+	setupToggle("toggleSkillsOutputBtn", "skills-output", "Show Skills Output ▲", "Hide Skills Output ▼", true);
+	setupToggle("toggleSkillsSummaryBtn", "skills-summary", "Show Skill Summary ▲", "Hide Skill Summary ▼", true);
 	
 	await loadAllData();  // ensure dropdowns exist
 

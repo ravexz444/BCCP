@@ -371,7 +371,6 @@ function setupToggle(buttonId, targetId, showText, hideText, startHidden = false
 // ---------------------- SETUP STORAGE ----------------------
 function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
-		.filter(s => s.name !== name);
 
 	// check if name already exists
 	const existing = setups.find(s => s.name === name);
@@ -403,8 +402,8 @@ function saveSetup(name) {
 		}
 	}
 
-	setups.push({ name, collections, equipment });
-	localStorage.setItem("savedSetups", JSON.stringify(setups));
+	newSetups.push({ name, collections, equipment });
+	localStorage.setItem("savedSetups", JSON.stringify(newSetups));
 	refreshSavedSetups();
 }
 

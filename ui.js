@@ -2,6 +2,7 @@ const equipmentTypes = [
 	"Coin", "Bait", "Hex", "Weapon", "Head", "Chest", "Hands", "Feet",
 	"Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"
 ];
+const eventRegions = ["PS2024", "PS2025", "LE", "RAA", "RDD", "R01.3","R02.3"];
 
 let equipmentData = {};
 let collectionData = {};

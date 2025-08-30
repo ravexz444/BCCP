@@ -15,6 +15,15 @@
 	color: red; font-weight: bold; 
 }
 
+.log-box { 
+	white-space: pre-line; 
+	border: 1px solid #cc0000; 
+	padding: 10px; 
+	/* max-height: 300px; */
+	overflow-y: auto; 
+	background-color: #fffafa; 
+}
+
 .setup {
 	display: grid;
 	grid-template-columns: 1fr 250px; /* left flexible, right fixed */

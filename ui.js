@@ -246,7 +246,41 @@ function createSearchUI() {
 						img.style.width = "20px";
 						img.style.height = "20px";
 						img.style.objectFit = "contain";
-						img.title = skillName; // tooltip on hover
+					
+						// Custom tooltip
+						const tooltip = document.createElement("div");
+						tooltip.style.position = "absolute";
+						tooltip.style.backgroundColor = "#222";
+						tooltip.style.color = "#fff";
+						tooltip.style.padding = "6px";
+						tooltip.style.borderRadius = "4px";
+						tooltip.style.fontSize = "0.9em";
+						tooltip.style.lineHeight = "1.2em";
+						tooltip.style.whiteSpace = "pre-line"; // allow line breaks
+						tooltip.style.pointerEvents = "none";  // ignore mouse events
+						tooltip.style.display = "none";
+						tooltip.style.zIndex = 999;
+					
+						// Get description from skill_desc JSON
+						const desc = skill_desc[skillName]?.desc ?? "No description";
+					
+						tooltip.innerHTML = `<b>${skillName}</b>\n${desc}`;
+						document.body.appendChild(tooltip);
+					
+						// Show tooltip on hover
+						img.addEventListener("mouseenter", (e) => {
+							tooltip.style.display = "block";
+							tooltip.style.left = e.pageX + 10 + "px";
+							tooltip.style.top = e.pageY + 10 + "px";
+						});
+						img.addEventListener("mousemove", (e) => {
+							tooltip.style.left = e.pageX + 10 + "px";
+							tooltip.style.top = e.pageY + 10 + "px";
+						});
+						img.addEventListener("mouseleave", () => {
+							tooltip.style.display = "none";
+						});
+					
 						skillDiv.appendChild(img);
 					}
 

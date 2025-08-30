@@ -56,6 +56,42 @@ function setupToggle(buttonId, targetId, showText, hideText, startHidden = false
 	});
 }
 
+// ---------------------- Global Skill Tooltip ----------------------
+const skillTooltip = document.createElement("div");
+skillTooltip.id = "skill-tooltip";
+skillTooltip.style.position = "absolute";
+skillTooltip.style.backgroundColor = "#222";
+skillTooltip.style.color = "#fff";
+skillTooltip.style.padding = "6px";
+skillTooltip.style.borderRadius = "4px";
+skillTooltip.style.fontSize = "0.9em";
+skillTooltip.style.lineHeight = "1.2em";
+skillTooltip.style.whiteSpace = "pre-line";
+skillTooltip.style.pointerEvents = "none";
+skillTooltip.style.display = "none";
+skillTooltip.style.zIndex = 999;
+document.body.appendChild(skillTooltip);
+
+window.addEventListener("scroll", () => skillTooltip.style.display = "none");
+
+// Reusable function to attach skill tooltip to an element
+function attachSkillTooltip(element, skillName) {
+	element.addEventListener("mouseenter", (e) => {
+		const desc = glossary[skillName]?.desc ?? "No description";
+		skillTooltip.innerHTML = `<b>${skillName}</b><br>${desc}`;
+		skillTooltip.style.display = "block";
+		skillTooltip.style.left = e.pageX + 10 + "px";
+		skillTooltip.style.top = e.pageY + 10 + "px";
+	});
+	element.addEventListener("mousemove", (e) => {
+		skillTooltip.style.left = e.pageX + 10 + "px";
+		skillTooltip.style.top = e.pageY + 10 + "px";
+	});
+	element.addEventListener("mouseleave", () => {
+		skillTooltip.style.display = "none";
+	});
+}
+
 // ---------------------- Search UI ----------------------
 // Search Builder Helper
 function parseNumber(val) {
@@ -212,24 +248,6 @@ function createSearchUI() {
 			skillOrderMap[skillName] = idx++;
 		}
 	}
-
-	// Create a single global tooltip
-	const tooltip = document.createElement("div");
-	tooltip.style.position = "absolute";
-	tooltip.style.backgroundColor = "#222";
-	tooltip.style.color = "#fff";
-	tooltip.style.padding = "6px";
-	tooltip.style.borderRadius = "4px";
-	tooltip.style.fontSize = "0.9em";
-	tooltip.style.lineHeight = "1.2em";
-	tooltip.style.whiteSpace = "pre-line";
-	tooltip.style.pointerEvents = "none";
-	tooltip.style.display = "none";
-	tooltip.style.zIndex = 999;
-	document.body.appendChild(tooltip);
-
-	// Hide tooltip on scroll
-	window.addEventListener("scroll", () => tooltip.style.display = "none");
 	
 	searchBox.addEventListener("input", () => {
 		const query = searchBox.value.trim();
@@ -285,21 +303,8 @@ function createSearchUI() {
 						img.style.height = "20px";
 						img.style.objectFit = "contain";
 
-						// Tooltip
-						img.addEventListener("mouseenter", (e) => {
-							const desc = glossary[skillName]?.desc ?? "No description";
-							tooltip.innerHTML = `<b>${skillName}</b><br>${desc}`;
-							tooltip.style.display = "block";
-							tooltip.style.left = e.pageX + 10 + "px";
-							tooltip.style.top = e.pageY + 10 + "px";
-						});
-						img.addEventListener("mousemove", (e) => {
-							tooltip.style.left = e.pageX + 10 + "px";
-							tooltip.style.top = e.pageY + 10 + "px";
-						});
-						img.addEventListener("mouseleave", () => {
-							tooltip.style.display = "none";
-						});
+						// Attach global tooltip
+						attachSkillTooltip(img, skillName);
 
 						skillDiv.appendChild(img);
 					}
@@ -607,11 +612,17 @@ function renderSkillSummary(allSkillsWithValues) {
 					`${skill} ${totalText}`;
 			} else {
 				li.textContent = `${skill} ${data.parts.join(", ")}`;
+
+				li.textContent = `${skill} ${data.parts.join(", ")}`;
 			}
+	
+			attachSkillTooltip(li, skill);
+	
 			ul.appendChild(li);
 		}
 		container.appendChild(ul);
 	}
+				
 }
 
 // Extract skill, Update skill list ===
@@ -655,26 +666,6 @@ function updateSkills() {
 
 	// 4. Render grouped summary
 	renderSkillSummary(allSkillsWithValues);
-}
-
-// ---------------------- Retainer-1,Retainer-2,Retainer-3 -> Retainer ----------------------
-// When loading, 
-function normalizeSetup(saved) {
-	let result = {};
-
-	for (let key in saved) {
-		if (key.startsWith("Accessory")) {
-			if (!result["Accessory"]) result["Accessory"] = [];
-			if (saved[key].length > 0) result["Accessory"].push(...saved[key]);
-		} else if (key.startsWith("Retainer")) {
-			if (!result["Retainer"]) result["Retainer"] = [];
-			if (saved[key].length > 0) result["Retainer"].push(...saved[key]);
-		} else {
-			result[key] = [...saved[key]];
-		}
-	}
-
-	return result;
 }
 
 // ---------------------- PERMANENT SETUP STORAGE ----------------------

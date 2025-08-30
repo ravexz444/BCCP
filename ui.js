@@ -193,7 +193,25 @@ function createSearchUI() {
 			skillOrderMap[skillName] = idx++;
 		}
 	}
-	// Skills not in skill_group will be last (order 9999)
+
+	// Create a single global tooltip
+	const tooltip = document.createElement("div");
+	tooltip.style.position = "absolute";
+	tooltip.style.backgroundColor = "#222";
+	tooltip.style.color = "#fff";
+	tooltip.style.padding = "6px";
+	tooltip.style.borderRadius = "4px";
+	tooltip.style.fontSize = "0.9em";
+	tooltip.style.lineHeight = "1.2em";
+	tooltip.style.whiteSpace = "pre-line";
+	tooltip.style.pointerEvents = "none";
+	tooltip.style.display = "none";
+	tooltip.style.zIndex = 999;
+	document.body.appendChild(tooltip);
+
+	// Hide tooltip on scroll
+	window.addEventListener("scroll", () => tooltip.style.display = "none");
+	
 	searchBox.addEventListener("input", () => {
 		const query = searchBox.value.trim();
 		resultsDiv.innerHTML = "";
@@ -240,35 +258,18 @@ function createSearchUI() {
 					skillDiv.style.alignItems = "center";
 					skillDiv.style.gap = "2px";
 
-					if (skill_images[skillName]) {
+					// Image
+					if (skillName) {
 						const img = document.createElement("img");
 						img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
 						img.style.width = "20px";
 						img.style.height = "20px";
 						img.style.objectFit = "contain";
-					
-						// Custom tooltip
-						const tooltip = document.createElement("div");
-						tooltip.style.position = "absolute";
-						tooltip.style.backgroundColor = "#222";
-						tooltip.style.color = "#fff";
-						tooltip.style.padding = "6px";
-						tooltip.style.borderRadius = "4px";
-						tooltip.style.fontSize = "0.9em";
-						tooltip.style.lineHeight = "1.2em";
-						tooltip.style.whiteSpace = "pre-line"; // allow line breaks
-						tooltip.style.pointerEvents = "none";  // ignore mouse events
-						tooltip.style.display = "none";
-						tooltip.style.zIndex = 999;
-					
-						// Get description from skill_desc JSON
-						const desc = skill_desc[skillName]?.desc ?? "No description";
-					
-						tooltip.innerHTML = `<b>${skillName}</b>\n${desc}`;
-						document.body.appendChild(tooltip);
-					
-						// Show tooltip on hover
+
+						// Tooltip
 						img.addEventListener("mouseenter", (e) => {
+							const desc = skill_desc[skillName]?.desc ?? "No description";
+							tooltip.innerHTML = `<b>${skillName}</b><br>${desc}`;
 							tooltip.style.display = "block";
 							tooltip.style.left = e.pageX + 10 + "px";
 							tooltip.style.top = e.pageY + 10 + "px";
@@ -280,10 +281,11 @@ function createSearchUI() {
 						img.addEventListener("mouseleave", () => {
 							tooltip.style.display = "none";
 						});
-					
+
 						skillDiv.appendChild(img);
 					}
 
+					// Show only skill value
 					const textSpan = document.createElement("span");
 					textSpan.style.color = "#888";
 					textSpan.style.fontSize = "0.9em";

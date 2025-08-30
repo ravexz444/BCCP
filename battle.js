@@ -49,7 +49,31 @@ async function loadAllData() {
 	buildEnemySelectors();
 }
 
-// ------------------ List of Functions ------------------
+// === Return to Index.html, preserve last activeSetup ===
+function preserveLastSetup() {
+	const setups = [];
+	let last = null;
+
+	// collect all active setups
+	for (let i = 1; ; i++) {
+		const raw = localStorage.getItem(`activeSetup-${i}`);
+		if (!raw) break; // stop when no more
+		last = raw;
+		setups.push(raw);
+	}
+
+	// clear them all
+	for (let i = 1; ; i++) {
+		if (!localStorage.getItem(`activeSetup-${i}`)) break;
+		localStorage.removeItem(`activeSetup-${i}`);
+	}
+
+	// keep at least one (the last one)
+	if (last) {
+		localStorage.setItem("activeSetup-1", last);
+	}
+}
+
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {
 	const container = document.getElementById("manualEnemySelector");
@@ -1477,6 +1501,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// Button to go back to index.html
 	document.getElementById("setupBtn").addEventListener("click", () => {
+		preserveLastSetup();
 		window.location.href = "index.html";
 	});
 

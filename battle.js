@@ -205,10 +205,10 @@ function init_setup(setup) {
 	}
 
 	// --- Retainers ---
-	const eq = setup.equipment || {};
-	const ret1 = eq["Retainer-1"] || "";
-	const ret2 = eq["Retainer-2"] || "";
-	const ret3 = eq["Retainer-3"] || "";
+	const retainers = setup.equipment?.Retainer || [];
+	const ret1 = retainers[0] || "";
+	const ret2 = retainers[1] || "";
+	const ret3 = retainers[2] || "";
 	
 	return { player_skills, ret1, ret2, ret3 };
 }
@@ -1208,13 +1208,12 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 // ------------------ Battle Summary ------------------
 function buildEquipmentTable(setups) {
 	const eqTypes = [
-	"Coin", "Bait", "Hex",
-	"Weapon", "Head", "Chest", "Hands", "Feet",
-	"Power", "Emblem", "Coffin",
-	"Accessory-1", "Accessory-2", "Accessory-3",
-	"Mount",
-	"Retainer-1", "Retainer-2", "Retainer-3"
-];
+		"Coin", "Bait", "Hex",
+		"Weapon", "Head", "Chest", "Hands", "Feet",
+		"Power", "Emblem", "Coffin",
+		"Accessory", "Mount", "Retainer"
+	];
+	
 	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
 
 	let rows = eqTypes.map(eq => {
@@ -1388,13 +1387,23 @@ function refreshSavedBattles() {
 	if (battles.length > 0) select.value = battles[0].name;
 }
 
-// ------------------ Load up to 3 active setups ------------------
+// ------------------ Load up all active setups ------------------
 function loadActiveSetups() {
 	const setups = [];
-	for (let i = 1; i <= 3; i++) {
-		const setup = localStorage.getItem(`activeSetup-${i}`);
-		if (setup) setups.push(JSON.parse(setup));
+	let i = 1;
+
+	while (true) {
+		const setupRaw = localStorage.getItem(`activeSetup-${i}`);
+		if (!setupRaw) break; // stop if no more setups
+		try {
+			const setup = JSON.parse(setupRaw);
+			setups.push(setup);
+		} catch (e) {
+			console.warn(`Failed to parse activeSetup-${i}`, e);
+		}
+		i++;
 	}
+
 	return setups;
 }
 
@@ -1411,7 +1420,10 @@ function renderSetupLog(activeSetups, setupsWithSkills) {
 	    ).join("");
 
 		const collectionsList = (activeSetups[i].collections || []).join(", ") || "None";
-		const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
+		
+		// Retainers: combine all from array (ret1-3 fallback for display)
+		const retainersArray = activeSetups[i].equipment?.Retainer || [];
+		const retainersList = retainersArray.length > 0 ? retainersArray.join(", ") : "None";
 
 		return `
 			<div class="setup-block" data-idx="${i}">

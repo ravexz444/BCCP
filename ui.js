@@ -416,6 +416,9 @@ function createCollectionCheckboxes() {
 			label.htmlFor = checkbox.id;
 			label.textContent = code;
 
+			// Add tooltip (hover text)
+			label.title = collection_codes[code];
+
 			div.appendChild(checkbox);
 			div.appendChild(label);
 			rowDiv.appendChild(div);

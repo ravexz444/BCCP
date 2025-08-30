@@ -1187,13 +1187,20 @@ function buildEquipmentTable(setups) {
 	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
 
 	let rows = eqTypes.map(eq => {
-		let vals = setups.map(s => s.equipment?.[eq] || "-");
-		// check if all same
+		// normalize to string
+		let vals = setups.map(s => {
+			let v = s.equipment?.[eq];
+			if (Array.isArray(v)) v = v.join(", "); // handle arrays
+			return v || "-";
+		});
+
 		let uniqueVals = new Set(vals.filter(v => v !== "-"));
+
 		let cols = vals.map(v => {
 			let cls = (uniqueVals.size === 1 ? "" : "diff");
 			return `<td class="${cls}">${v}</td>`;
 		}).join("");
+
 		return `<tr><td>${eq}</td>${cols}</tr>`;
 	}).join("");
 
@@ -1228,10 +1235,10 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 		let maxWin = Math.max(...resultsPerSetup.map(r => r.winRate));
 
 		let cols = resultsPerSetup.map(r => {
-			let cls = (r.winRate === maxWin ? "maxwin" : "");
-			let wdl = `<span class="${cls}">${r.winRate.toFixed(0)}%</span> / ${r.drawRate.toFixed(0)}% / ${r.lossRate.toFixed(0)}%`;
-			let avg = `${r.avgW} / ${r.avgL}`;
-			return `<td>${wdl}</td><td>${avg}</td>`;
+		    let cls = (Math.abs(r.winRate - maxWin) < 0.0001 ? "maxwin" : "");
+		    let wdl = `<span class="${cls}">${r.winRate.toFixed(0)}%</span> / ${r.drawRate.toFixed(0)}% / ${r.lossRate.toFixed(0)}%`;
+		    let avg = `${r.avgW} / ${r.avgL}`;
+		    return `<td>${wdl}</td><td>${avg}</td>`;
 		}).join("");
 
 		return `<tr><td>${enemy}</td>${cols}</tr>`;

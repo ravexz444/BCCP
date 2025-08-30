@@ -599,9 +599,9 @@ function renderSkillSummary(allSkillsWithValues) {
 	container.innerHTML = "";
 
 	for (const [category, skills] of Object.entries(categoryMap)) {
-		const h3 = document.createElement("h3");
-		h3.textContent = category;
-		container.appendChild(h3);
+		const h4 = document.createElement("h4");
+		h4.textContent = category;
+		container.appendChild(h4);
 
 		const ul = document.createElement("ul");
 
@@ -641,9 +641,9 @@ function renderSkillSummary(allSkillsWithValues) {
 
 			textSpan.textContent = data.total != null
 				? (data.parts.length > 1 
-					? `${skill} ${formatTotal(data.total, data.unit)} (${data.parts.join(", ")})` 
-					: `${skill} ${formatTotal(data.total, data.unit)}`)
-				: `${skill} ${data.parts.join(", ")}`;
+					? ` ${formatTotal(data.total, data.unit)} (${data.parts.join(", ")})` 
+					: ` ${formatTotal(data.total, data.unit)}`)
+				: ` ${data.parts.join(", ")}`;
 
 			skillDiv.appendChild(textSpan);
 

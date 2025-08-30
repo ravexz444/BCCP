@@ -12,6 +12,7 @@ let skill_groups = {};     // { GroupName: [skill, ...], ... }
 let combinable_skills = new Set(); // filled from combinable_skills.json
 let savedSetups = { 1: null, 2: null, 3: null };
 let skillOrderMap = {};
+let categoryOrderMap = {};
 
 // ---------------------- DATA LOADING ----------------------
 async function loadAllData() {
@@ -594,11 +595,27 @@ function summarizeSkills(allSkillsWithValues) {
 }
 
 function renderSkillSummary(allSkillsWithValues) {
+	// Summarize skills into categories
 	const categoryMap = summarizeSkills(allSkillsWithValues);
 	const container = document.getElementById("skills-summary");
 	container.innerHTML = "";
 
-	for (const [category, skills] of Object.entries(categoryMap)) {
+	// Precompute category order map based on skill_groups
+	const categoryOrderMap = {};
+	let catIdx = 0;
+	for (const catName of Object.keys(skill_groups)) {
+		categoryOrderMap[catName] = catIdx++;
+	}
+
+	// Sort categories according to skill_groups
+	const sortedCategories = Object.entries(categoryMap).sort((a, b) => {
+		const aOrder = categoryOrderMap[a[0]] ?? 9999;
+		const bOrder = categoryOrderMap[b[0]] ?? 9999;
+		return aOrder - bOrder;
+	});
+
+	for (const [category, skills] of sortedCategories) {
+		// Category header
 		const h4 = document.createElement("h4");
 		h4.textContent = category;
 		container.appendChild(h4);

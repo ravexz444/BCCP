@@ -1245,7 +1245,10 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 			let avgL = r.avgL !== "-" ? parseFloat(r.avgL).toFixed(1) : "-";
 		
 			// highlight only based on rounded win%
-			let cls = (win === maxWin ? "maxwin" : "");
+			let cls = (win === maxWin ? "diff" : "");
+
+			console.log("Rounded winRates:", resultsPerSetup.map(r => Math.round(r.winRate)));
+			console.log("maxWin =", maxWin);
 		
 			let wdl = `<span class="${cls}">${win}%</span> / ${draw}% / ${loss}%`;
 			let avg = `${avgW} / ${avgL}`;

@@ -535,6 +535,7 @@ function updateSkills() {
 }
 
 // ---------------------- SETUP STORAGE ----------------------
+// All saved as Array not String
 function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
 
@@ -557,22 +558,22 @@ function saveSetup(name) {
 
 	// === Save equipment ===
 	const equipment = {};
-	for (const [type, items] of Object.entries(equipped)) {
-		if (type === "Retainer" || type === "Accessory") {
-			// save each item with index
-			(items || []).forEach((it, idx) => {
-				if (it) equipment[`${type}-${idx + 1}`] = it;
-			});
-		} else {
-			// other types store as array
-			if (Array.isArray(items)) {
-				equipment[type] = [...items];
-			} else if (typeof items === "string") {
-				equipment[type] = [items];
+		for (const [type, items] of Object.entries(equipped)) {
+			if (type === "Retainer" || type === "Accessory") {
+				(items || []).forEach((it, idx) => {
+					// Always save as array, even if single item
+					equipment[`${type}-${idx + 1}`] = it ? [it] : [];
+				});
 			} else {
-				equipment[type] = [];
+				if (Array.isArray(items)) {
+					equipment[type] = [...items];
+				} else if (typeof items === "string") {
+					equipment[type] = [items];
+				} else {
+					equipment[type] = [];
+				}
 			}
-		}
+		}		
 	}
 
 	newSetups.push({ name, collections, equipment });
@@ -635,15 +636,18 @@ function saveActiveSetup(slot) {
 	const equipment = {};
 	for (const [type, items] of Object.entries(equipped)) {
 		if (type === "Retainer" || type === "Accessory") {
-			items.forEach((item, idx) => {
-				equipment[`${type}-${idx + 1}`] = item;
+			(items || []).forEach((it, idx) => {
+				// Always save as array, even if single item
+				equipment[`${type}-${idx + 1}`] = it ? [it] : [];
 			});
-		} else if (Array.isArray(items)) {
-			equipment[type] = [...items];
-		} else if (typeof items === "string") {
-			equipment[type] = [items];
 		} else {
-			equipment[type] = [];
+			if (Array.isArray(items)) {
+				equipment[type] = [...items];
+			} else if (typeof items === "string") {
+				equipment[type] = [items];
+			} else {
+				equipment[type] = [];
+			}
 		}
 	}
 

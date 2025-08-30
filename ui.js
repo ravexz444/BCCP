@@ -226,16 +226,14 @@ function createSearchUI() {
 						skillDiv.style.display = "flex";
 						skillDiv.style.alignItems = "center";
 						skillDiv.style.gap = "2px";
-				
-						// Add image if exists
-						if (skill_images[skillName]) {
-							const img = document.createElement("img");
-							img.src = skill_images[skillName];
-							img.style.width = "20px";
-							img.style.height = "20px";
-							img.style.objectFit = "contain";
-							skillDiv.appendChild(img);
-						}
+
+						// Construct image path dynamically
+						const img = document.createElement("img");
+						img.src = `/images/${skillName} (Skill).png`; // dynamic path
+						img.style.width = "20px";
+						img.style.height = "20px";
+						img.style.objectFit = "contain";
+						skillDiv.appendChild(img);
 				
 						const textSpan = document.createElement("span");
 						textSpan.style.color = "#888";

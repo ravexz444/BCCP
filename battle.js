@@ -1182,42 +1182,40 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 }
 
 // ------------------ Battle Summary ------------------
+function buildEquipmentTable(setups) {
+	const eqTypes = ["Bait", "Weapon", "Head", "Chest", "Hands", "Feet", "Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"];
+	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
+	let rows = eqTypes.map(eq => {
+		let cols = setups.map(s => s.equipment?.[eq] || "-").map(val => `<td>${val}</td>`).join("");
+		return `<tr><td>${eq}</td>${cols}</tr>`;
+	}).join("");
+	return `<table class="eq-table">${header}${rows}</table>`;
+}
+
 // Running multiple simulations and tracking rounds
 // enemiesList: array of enemy names
-function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
+function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
+	let header = `<tr><th>Enemy</th>${setupsWithSkills.map((_, i) => `<th colspan="2">Setup ${i+1}</th>`).join("")}</tr>`;
+	let subHeader = `<tr><th></th>${setupsWithSkills.map(_ => "<th>W/D/L</th><th>AvgW/L</th>").join("")}</tr>`;
+
 	let rows = enemiesList.map(enemy => {
-		let results = { "Win": [], "Draw": [], "Loss": [] };
-		for (let i = 0; i < n; i++) {
-			let [result, round_num] = simulate_battle(enemy, player_skills, ret1, ret2, ret3);
-			results[result].push(round_num);
-		}
-		let winRate = (results["Win"].length / n * 100).toFixed(2) + "%";
-		let drawRate = (results["Draw"].length / n * 100).toFixed(2) + "%";
-		let lossRate = (results["Loss"].length / n * 100).toFixed(2) + "%";
-		let avgWin = results["Win"].length ? 
-			(results["Win"].reduce((a, b) => a + b, 0) / results["Win"].length).toFixed(2) : "-";
-		let avgLoss = results["Loss"].length ? 
-			(results["Loss"].reduce((a, b) => a + b, 0) / results["Loss"].length).toFixed(2) : "-";
-		return `<tr>
-			<td>${enemy}</td>
-			<td>${winRate}</td>
-			<td>${drawRate}</td>
-			<td>${lossRate}</td>
-			<td>${avgWin}</td>
-			<td>${avgLoss}</td>
-		</tr>`;
+		let cols = setupsWithSkills.map((setup, idx) => {
+			let { player_skills, ret1, ret2, ret3 } = setup;
+			let results = { "Win": [], "Draw": [], "Loss": [] };
+			for (let i = 0; i < n; i++) {
+				let [result, round_num] = simulate_battle(enemy, player_skills, ret1, ret2, ret3);
+				results[result].push(round_num);
+			}
+			let w = results["Win"].length, d = results["Draw"].length, l = results["Loss"].length;
+			let wl = `${(w/n*100).toFixed(0)}/${(d/n*100).toFixed(0)}/${(l/n*100).toFixed(0)}`;
+			let avgW = w ? (results["Win"].reduce((a,b)=>a+b,0)/w).toFixed(2) : "-";
+			let avgL = l ? (results["Loss"].reduce((a,b)=>a+b,0)/l).toFixed(2) : "-";
+			return `<td>${wl}</td><td>${avgW}/${avgL}</td>`;
+		}).join("");
+		return `<tr><td>${enemy}</td>${cols}</tr>`;
 	}).join("");
 
-	return `<table class="battle-summary">
-		<thead>
-			<tr>
-				<th>Enemy</th><th>Win %</th><th>Draw %</th><th>Loss %</th><th>Avg Win</th><th>Avg Loss</th>
-			</tr>
-		</thead>
-		<tbody>
-			${rows}
-		</tbody>
-	</table>`;
+	return `<table class="enemy-table">${header}${subHeader}${rows}</table>`;
 }
 
 // ------------------ Toggle button to hide/unhide ------------------
@@ -1471,35 +1469,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 		const logDiv = document.getElementById("battle-log");
 		logDiv.innerHTML = ""; // reset log
+
+		// Equipment table
+		logDiv.innerHTML += buildEquipmentTable(activeSetups);
 	
-		// --- Run battle simulations for each setup ---
-		setupsWithSkills.forEach((setup, idx) => {
-			const { player_skills, ret1, ret2, ret3 } = setup;
-			const resultText = estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
-		
-			const setupData = activeSetups[idx];
-			const equipmentList = Object.entries(setupData.equipment || {})
-				.map(([slot, item]) => `<li><b>${slot}:</b> ${item || "None"}</li>`).join("");
-			const collectionsList = (setupData.collections || []).join(", ") || "None";
-			const retainersList = [ret1, ret2, ret3].filter(r => r).join(", ") || "None";
-		
-			// Create a block for each setup
-			const block = document.createElement("div");
-			block.classList.add("battle-result");
-			block.innerHTML = `
-				<div class="setup">
-					<div class="setup-info">
-						<h3>Setup ${idx + 1}</h3>
-						<ul>${equipmentList}</ul>
-						<p><b>Collections:</b> ${collectionsList}</p>
-						<p><b>Retainers:</b> ${retainersList}</p>
-					</div>
-					<div class="setup-stats">
-						${resultText}
-					</div>
-				</div>
-			`;
-			logDiv.appendChild(block);
-		});
+		// Enemy results table
+		logDiv.innerHTML += buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n);
 	});
 });

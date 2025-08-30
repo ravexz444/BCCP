@@ -594,26 +594,55 @@ function renderSkillSummary(allSkillsWithValues) {
 		container.appendChild(h3);
 
 		const ul = document.createElement("ul");
-		for (const [skill, data] of Object.entries(skills)) {
-			const li = document.createElement("li");
-			if (data.total != null) {
-				const totalText = formatTotal(data.total, data.unit);
-				li.innerHTML = data.parts.length > 1 ?
-					`${skill} ${totalText} (${data.parts.join(", ")})` :
-					`${skill} ${totalText}`;
-			} else {
-				li.textContent = `${skill} ${data.parts.join(", ")}`;
 
-				li.textContent = `${skill} ${data.parts.join(", ")}`;
+		// Sort skills using skillOrderMap if available
+		const sortedSkills = Object.entries(skills).sort((a, b) => {
+			const aOrder = skillOrderMap[a[0]] ?? 9999;
+			const bOrder = skillOrderMap[b[0]] ?? 9999;
+			return aOrder - bOrder;
+		});
+		
+		for (const [skill, data] of sortedSkills) {
+			const li = document.createElement("li");
+
+			const skillDiv = document.createElement("div");
+			skillDiv.style.display = "flex";
+			skillDiv.style.alignItems = "center";
+			skillDiv.style.gap = "4px";
+
+			// Skill image
+			if (skill) {
+				const img = document.createElement("img");
+				img.src = `/BC-Combat-Simulation/images/${skill} (Skill).png`;
+				img.style.width = "20px";
+				img.style.height = "20px";
+				img.style.objectFit = "contain";
+
+				// Attach global tooltip
+				attachSkillTooltip(img, skill);
+
+				skillDiv.appendChild(img);
 			}
-	
-			attachSkillTooltip(li, skill);
-	
+
+			// Skill text/value
+			const textSpan = document.createElement("span");
+			textSpan.style.color = "#888";
+			textSpan.style.fontSize = "0.9em";
+
+			textSpan.textContent = data.total != null
+				? (data.parts.length > 1 
+					? `${skill} ${formatTotal(data.total, data.unit)} (${data.parts.join(", ")})` 
+					: `${skill} ${formatTotal(data.total, data.unit)}`)
+				: `${skill} ${data.parts.join(", ")}`;
+
+			skillDiv.appendChild(textSpan);
+
+			li.appendChild(skillDiv);
 			ul.appendChild(li);
 		}
+
 		container.appendChild(ul);
 	}
-				
 }
 
 // Extract skill, Update skill list ===

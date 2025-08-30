@@ -621,12 +621,26 @@ function refreshSavedSetups() {
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
 // Index -> Battle
-let setupCount = 1; // default 1
+function saveActiveSetup(slot) {
+  // Save collections
+  const collections = [];
+  for (const code of Object.keys(collectionCodes)) {
+    const cb = document.getElementById("collection-" + code);
+    if (cb && cb.checked) collections.push(code);
+  }
 
-function setSetupCount() {
-  const input = document.getElementById("setupCountInput");
-  setupCount = parseInt(input.value, 10) || 1;
-  renderSetupButtons();
+  // Save equipment
+  const equipment = {};
+  for (const [type, items] of Object.entries(equipped)) {
+    equipment[type] = Array.isArray(items) ? [...items] : [];
+  }
+
+  // Store setup into localStorage for this slot
+  localStorage.setItem(`activeSetup-${slot}`, JSON.stringify({ collections, equipment }));
+
+  // Optional: mark indicator
+  const indicator = document.getElementById(`indicator${slot}`);
+  if (indicator) indicator.textContent = "✅";
 }
 
 function renderSetupButtons() {
@@ -646,6 +660,13 @@ function renderSetupButtons() {
     container.appendChild(indicator);
     container.appendChild(document.createElement("br"));
   }
+}
+
+let setupCount = 1; // default 1
+function setSetupCount() {
+  const input = document.getElementById("setupCountInput");
+  setupCount = parseInt(input.value, 10) || 1;
+  renderSetupButtons();
 }
 
 function sendAllToBattle() {

@@ -171,6 +171,7 @@ function createSearchUI() {
 	searchBox.type = "text";
 	searchBox.id = "equipmentSearch";
 	searchBox.placeholder = "Search equipment...";
+	searchBox.classList.add("equipment-search");
 	container.appendChild(searchBox);
 
 	const resultsDiv = document.createElement("div");

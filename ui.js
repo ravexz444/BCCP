@@ -663,7 +663,7 @@ function sendAllToBattle() {
 
 // Battle -> Index
 function importFromBattle() {
-	const savedActiveSetup = localStorage.getItem("activeSetup");
+	const savedActiveSetup = localStorage.getItem("lastActiveSetup");
 	if (!savedActiveSetup) return;
 
 	const setup = JSON.parse(savedActiveSetup);

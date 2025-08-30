@@ -1182,6 +1182,20 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 }
 
 // ------------------ Battle Summary ------------------
+function normalizeEquipment(equipment) {
+	let out = {};
+	for (let k in equipment) {
+		if (k.startsWith("Accessory")) out["Accessory"] = (out["Accessory"] || []).concat(equipment[k]);
+		else if (k.startsWith("Retainer")) out["Retainer"] = (out["Retainer"] || []).concat(equipment[k]);
+		else out[k] = equipment[k];
+	}
+	// join arrays into string
+	for (let k in out) {
+		if (Array.isArray(out[k])) out[k] = out[k].join(", ");
+	}
+	return out;
+}
+
 function buildEquipmentTable(setups) {
 	const eqTypes = ["Bait", "Weapon", "Head", "Chest", "Hands", "Feet", "Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"];
 	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
@@ -1189,15 +1203,15 @@ function buildEquipmentTable(setups) {
 	let rows = eqTypes.map(eq => {
 		// normalize to string
 		let vals = setups.map(s => {
-			let v = s.equipment?.[eq];
-			if (Array.isArray(v)) v = v.join(", "); // handle arrays
-			return v || "-";
+			let eq = normalizeEquipment(s.equipment || {});
+			return eq[eqType] || "-";
 		});
 
-		let uniqueVals = new Set(vals.filter(v => v !== "-"));
-
+		let allEqual = vals.every(v => v === vals[0]);
+		let allEmpty = vals.every(v => v === "-");
+		
 		let cols = vals.map(v => {
-			let cls = (uniqueVals.size === 1 ? "" : "diff");
+			let cls = (!allEqual && !allEmpty ? "diff" : "");
 			return `<td class="${cls}">${v}</td>`;
 		}).join("");
 

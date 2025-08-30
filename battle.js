@@ -13,6 +13,16 @@ const player = "player";
 const player_race = "";
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];
 const races = ["Abominable", "Archangel", "Bestial", "Corrupted", "Demonic", "Draconic","Eldritch", "Ethereal", "Lycan", "Necro", "Righteous", "Techno", "Vampiric", "Xeno"];
+const rarityColors = {
+		"Common": "#ffffff",
+		"Uncommon": "#00bf00",
+		"Rare": "#4d79ff",
+		"Epic": "#b300ff",
+		"Boss": "#ffc126",
+		"Legendary": "#d40716",
+		"Event": "#d3ffce",
+		"default": "#808080"
+	};
 
 // ------------------ Load All Data ------------------
 async function loadAllData() {
@@ -1241,11 +1251,14 @@ function buildEquipmentTable(setups) {
 
 // Running multiple simulations and tracking rounds
 // enemiesList: array of enemy names
-function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
+function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {	
 	let header = `<tr><th>Enemy</th>${setupsWithSkills.map((_, i) => `<th colspan="2">Setup ${i+1}</th>`).join("")}</tr>`;
 	let subHeader = `<tr><th></th>${setupsWithSkills.map(_ => "<th>W / D / L</th><th>AvgW / L</th>").join("")}</tr>`;
 
 	let rows = enemiesList.map(enemy => {
+		const rarity = enemies_list[enemy]?.rarity || "default";
+		const color = rarityColors[rarity] || rarityColors["default"];
+		
 		// calculate results
 		let resultsPerSetup = setupsWithSkills.map((setup) => {
 			let { player_skills, ret1, ret2, ret3 } = setup;
@@ -1287,7 +1300,7 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 			return `<td>${wdl}</td><td>${avg}</td>`;
 		}).join("");
 
-		return `<tr><td>${enemy}</td>${cols}</tr>`;
+		return `<tr><td style="color:${color}">${enemy}</td>${cols}</tr>`;
 	}).join("");
 
 	return `<table class="enemy-table">${header}${subHeader}${rows}</table>`;

@@ -1185,10 +1185,18 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 function buildEquipmentTable(setups) {
 	const eqTypes = ["Bait", "Weapon", "Head", "Chest", "Hands", "Feet", "Power", "Emblem", "Coffin", "Accessory", "Mount", "Retainer"];
 	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
+
 	let rows = eqTypes.map(eq => {
-		let cols = setups.map(s => s.equipment?.[eq] || "-").map(val => `<td>${val}</td>`).join("");
+		let vals = setups.map(s => s.equipment?.[eq] || "-");
+		// check uniqueness
+		let uniqueVals = new Set(vals.filter(v => v !== "-"));
+		let cols = vals.map(v => {
+			let color = (uniqueVals.size === 1 ? "black" : "red");
+			return `<td style="color:${color}">${v}</td>`;
+		}).join("");
 		return `<tr><td>${eq}</td>${cols}</tr>`;
 	}).join("");
+
 	return `<table class="eq-table">${header}${rows}</table>`;
 }
 
@@ -1196,10 +1204,11 @@ function buildEquipmentTable(setups) {
 // enemiesList: array of enemy names
 function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 	let header = `<tr><th>Enemy</th>${setupsWithSkills.map((_, i) => `<th colspan="2">Setup ${i+1}</th>`).join("")}</tr>`;
-	let subHeader = `<tr><th></th>${setupsWithSkills.map(_ => "<th>W/D/L</th><th>AvgW/L</th>").join("")}</tr>`;
+	let subHeader = `<tr><th></th>${setupsWithSkills.map(_ => "<th>W / D / L</th><th>AvgW / L</th>").join("")}</tr>`;
 
 	let rows = enemiesList.map(enemy => {
-		let cols = setupsWithSkills.map((setup, idx) => {
+		// calculate winrates for all setups first
+		let resultsPerSetup = setupsWithSkills.map((setup) => {
 			let { player_skills, ret1, ret2, ret3 } = setup;
 			let results = { "Win": [], "Draw": [], "Loss": [] };
 			for (let i = 0; i < n; i++) {
@@ -1207,11 +1216,24 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 				results[result].push(round_num);
 			}
 			let w = results["Win"].length, d = results["Draw"].length, l = results["Loss"].length;
-			let wl = `${(w/n*100).toFixed(0)}/${(d/n*100).toFixed(0)}/${(l/n*100).toFixed(0)}`;
+			let winRate = w / n * 100;
+			let drawRate = d / n * 100;
+			let lossRate = l / n * 100;
 			let avgW = w ? (results["Win"].reduce((a,b)=>a+b,0)/w).toFixed(2) : "-";
 			let avgL = l ? (results["Loss"].reduce((a,b)=>a+b,0)/l).toFixed(2) : "-";
-			return `<td>${wl}</td><td>${avgW}/${avgL}</td>`;
+			return { winRate, drawRate, lossRate, avgW, avgL, w, d, l };
+		});
+
+		// find max winrate
+		let maxWin = Math.max(...resultsPerSetup.map(r => r.winRate));
+
+		let cols = resultsPerSetup.map(r => {
+			let color = (r.winRate === maxWin ? "red" : "black");
+			let wdl = `<span style="color:${color}">${r.winRate.toFixed(0)}%</span> / ${r.drawRate.toFixed(0)}% / ${r.lossRate.toFixed(0)}%`;
+			let avg = `${r.avgW} / ${r.avgL}`;
+			return `<td>${wdl}</td><td>${avg}</td>`;
 		}).join("");
+
 		return `<tr><td>${enemy}</td>${cols}</tr>`;
 	}).join("");
 

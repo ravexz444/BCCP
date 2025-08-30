@@ -652,15 +652,36 @@ function updateSkills() {
 	chosenItems.forEach(itemName => {
 		const info = equipment_list[itemName] || collection_list[itemName];
 		if (info && info.skill) {
-			// Show item skills in "skills-output"
+			// Container for this item
 			const itemDiv = document.createElement("div");
-			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
-				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
+	
+			// Item name bolded
+			const title = document.createElement("b");
+			title.textContent = itemName;
+			itemDiv.appendChild(title);
+			itemDiv.appendChild(document.createElement("br"));
+	
+			// Each skill as its own span with tooltip
+			info.skill.forEach(s => {
+				const skillName = s[0];
+				const skillValue = s[1];
+	
+				const skillSpan = document.createElement("span");
+				skillSpan.textContent = `${skillName} (${skillValue})`;
+				skillSpan.style.cursor = "help"; // show hover pointer
+	
+				// Attach tooltip
+				attachSkillTooltip(skillSpan, skillName);
+	
+				itemDiv.appendChild(skillSpan);
+				itemDiv.appendChild(document.createElement("br"));
+	
+				// Collect for summary
+				allSkillsWithValues.push([skillName, skillValue]);
+			});
+	
 			outputDiv.appendChild(itemDiv);
 			outputDiv.appendChild(document.createElement("br"));
-
-			// Collect for summary
-			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
 		}
 	});
 

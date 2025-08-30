@@ -735,12 +735,13 @@ function importFromBattle() {
 
 // ---------------------- DATA LOADING ----------------------
 async function loadAllData() {
-	const [equip, coll, codes, groups, combinables] = await Promise.all([
+	const [equip, coll, codes, groups, combinables, skillImages] = await Promise.all([
 		fetch("equipment_list.json").then(r => r.json()),
 		fetch("collection_list.json").then(r => r.json()),
 		fetch("collection_codes.json").then(r => r.json()),
 		fetch("skill_groups.json").then(r => r.json()),
-		fetch("combinable_skills.json").then(r => r.json())
+		fetch("combinable_skills.json").then(r => r.json()),
+		fetch("skill_images.json").then(r => r.json())
 	]);
 
 	equipment_list = equip;
@@ -748,6 +749,7 @@ async function loadAllData() {
 	collection_codes = codes;
 	skill_groups = groups;
 	combinable_skills = new Set(combinables);
+	skill_images = skillImages;
 }
 
 // ---------------------- DOM READY ----------------------

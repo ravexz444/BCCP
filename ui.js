@@ -287,7 +287,7 @@ function createSearchUI() {
 
 						// Tooltip
 						img.addEventListener("mouseenter", (e) => {
-							const desc = skill_desc[skillName]?.desc ?? "No description";
+							const desc = glossary[skillName]?.desc ?? "No description";
 							tooltip.innerHTML = `<b>${skillName}</b><br>${desc}`;
 							tooltip.style.display = "block";
 							tooltip.style.left = e.pageX + 10 + "px";

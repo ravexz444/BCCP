@@ -92,16 +92,6 @@ function attachSkillTooltip(element, skillName) {
 	});
 }
 
-// ---------------------- Sorted Skill ----------------------
-// Precompute skill order map from skill_groups
-const skillOrderMap = {};
-let idx = 0;
-for (const skills of Object.values(skill_groups)) {
-	for (const skillName of skills) {
-		skillOrderMap[skillName] = idx++;
-	}
-}
-
 // ---------------------- Search UI ----------------------
 // Search Builder Helper
 function parseNumber(val) {
@@ -858,7 +848,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	await loadAllData();  // ensure dropdowns exist
 	
-
+	// Precompute skill order map from skill_groups
+	const skillOrderMap = {};
+	let idx = 0;
+	for (const skills of Object.values(skill_groups)) {
+		for (const skillName of skills) {
+			skillOrderMap[skillName] = idx++;
+		}
+	}
+	
 	// Create search function
 	createSearchUI();
 

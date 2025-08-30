@@ -11,6 +11,7 @@ let collection_codes = {}; // shortCode → fullName mapping
 let skill_groups = {};     // { GroupName: [skill, ...], ... }
 let combinable_skills = new Set(); // filled from combinable_skills.json
 let savedSetups = { 1: null, 2: null, 3: null };
+let skillOrderMap = {};
 
 // ---------------------- DATA LOADING ----------------------
 async function loadAllData() {

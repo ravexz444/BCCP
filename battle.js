@@ -1188,11 +1188,11 @@ function buildEquipmentTable(setups) {
 
 	let rows = eqTypes.map(eq => {
 		let vals = setups.map(s => s.equipment?.[eq] || "-");
-		// check uniqueness
+		// check if all same
 		let uniqueVals = new Set(vals.filter(v => v !== "-"));
 		let cols = vals.map(v => {
-			let color = (uniqueVals.size === 1 ? "black" : "red");
-			return `<td style="color:${color}">${v}</td>`;
+			let cls = (uniqueVals.size === 1 ? "" : "diff");
+			return `<td class="${cls}">${v}</td>`;
 		}).join("");
 		return `<tr><td>${eq}</td>${cols}</tr>`;
 	}).join("");
@@ -1207,7 +1207,7 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 	let subHeader = `<tr><th></th>${setupsWithSkills.map(_ => "<th>W / D / L</th><th>AvgW / L</th>").join("")}</tr>`;
 
 	let rows = enemiesList.map(enemy => {
-		// calculate winrates for all setups first
+		// calculate results
 		let resultsPerSetup = setupsWithSkills.map((setup) => {
 			let { player_skills, ret1, ret2, ret3 } = setup;
 			let results = { "Win": [], "Draw": [], "Loss": [] };
@@ -1221,15 +1221,15 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 			let lossRate = l / n * 100;
 			let avgW = w ? (results["Win"].reduce((a,b)=>a+b,0)/w).toFixed(2) : "-";
 			let avgL = l ? (results["Loss"].reduce((a,b)=>a+b,0)/l).toFixed(2) : "-";
-			return { winRate, drawRate, lossRate, avgW, avgL, w, d, l };
+			return { winRate, drawRate, lossRate, avgW, avgL };
 		});
 
-		// find max winrate
+		// find max win
 		let maxWin = Math.max(...resultsPerSetup.map(r => r.winRate));
 
 		let cols = resultsPerSetup.map(r => {
-			let color = (r.winRate === maxWin ? "red" : "black");
-			let wdl = `<span style="color:${color}">${r.winRate.toFixed(0)}%</span> / ${r.drawRate.toFixed(0)}% / ${r.lossRate.toFixed(0)}%`;
+			let cls = (r.winRate === maxWin ? "maxwin" : "");
+			let wdl = `<span class="${cls}">${r.winRate.toFixed(0)}%</span> / ${r.drawRate.toFixed(0)}% / ${r.lossRate.toFixed(0)}%`;
 			let avg = `${r.avgW} / ${r.avgL}`;
 			return `<td>${wdl}</td><td>${avg}</td>`;
 		}).join("");

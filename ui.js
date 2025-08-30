@@ -211,16 +211,42 @@ function createSearchUI() {
 				btn.appendChild(title);
 				btn.appendChild(document.createElement("br"));
 	
-				// Skills
+				// Skills with images
 				if (equipment_list[name]?.skill?.length) {
-					const skills = equipment_list[name].skill
-						.map(s => `${s[0]} ${s[1]}`)
-						.join(", ");
-					const skillSpan = document.createElement("span");
-					skillSpan.style.color = "#888"; // grey
-					skillSpan.style.fontSize = "0.9em";
-					skillSpan.textContent = skills;
-					btn.appendChild(skillSpan);
+					const skillContainer = document.createElement("div");
+					skillContainer.style.display = "flex";
+					skillContainer.style.flexWrap = "wrap";
+					skillContainer.style.gap = "4px"; // small gap between skills
+				
+					for (const s of equipment_list[name].skill) {
+						const skillName = s[0];
+						const skillValue = s[1];
+				
+						const skillDiv = document.createElement("div");
+						skillDiv.style.display = "flex";
+						skillDiv.style.alignItems = "center";
+						skillDiv.style.gap = "2px";
+				
+						// Add image if exists
+						if (skill_images[skillName]) {
+							const img = document.createElement("img");
+							img.src = skill_images[skillName];
+							img.style.width = "20px";
+							img.style.height = "20px";
+							img.style.objectFit = "contain";
+							skillDiv.appendChild(img);
+						}
+				
+						const textSpan = document.createElement("span");
+						textSpan.style.color = "#888";
+						textSpan.style.fontSize = "0.9em";
+						textSpan.textContent = `${skillName} ${skillValue}`;
+						skillDiv.appendChild(textSpan);
+				
+						skillContainer.appendChild(skillDiv);
+					}
+				
+					btn.appendChild(skillContainer);
 				}
 	
 				resultsDiv.appendChild(btn);

@@ -558,23 +558,22 @@ function saveSetup(name) {
 
 	// === Save equipment ===
 	const equipment = {};
-		for (const [type, items] of Object.entries(equipped)) {
-			if (type === "Retainer" || type === "Accessory") {
-				(items || []).forEach((it, idx) => {
-					// Always save as array, even if single item
-					equipment[`${type}-${idx + 1}`] = it ? [it] : [];
-				});
+	for (const [type, items] of Object.entries(equipped)) {
+		if (type === "Retainer" || type === "Accessory") {
+			(items || []).forEach((it, idx) => {
+				// Always save as array, even if single item
+				equipment[`${type}-${idx + 1}`] = it ? [it] : [];
+			});
+		} else {
+			if (Array.isArray(items)) {
+				equipment[type] = [...items];
+			} else if (typeof items === "string") {
+				equipment[type] = [items];
 			} else {
-				if (Array.isArray(items)) {
-					equipment[type] = [...items];
-				} else if (typeof items === "string") {
-					equipment[type] = [items];
-				} else {
-					equipment[type] = [];
-				}
+				equipment[type] = [];
 			}
-		}		
-	}
+		}
+	}		
 
 	newSetups.push({ name, collections, equipment });
 	localStorage.setItem("savedSetups", JSON.stringify(newSetups));
@@ -649,7 +648,7 @@ function saveActiveSetup(slot) {
 				equipment[type] = [];
 			}
 		}
-	}
+	}	
 
 	// Store setup into localStorage
 	const setup = { collections, equipment };

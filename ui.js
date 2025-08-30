@@ -312,7 +312,7 @@ function createSearchUI() {
 
 					// Show only skill value
 					const textSpan = document.createElement("span");
-					textSpan.style.color = "#888";
+					textSpan.style.color = "#000";
 					textSpan.style.fontSize = "0.9em";
 					textSpan.textContent = skillValue;
 					skillDiv.appendChild(textSpan);
@@ -636,7 +636,7 @@ function renderSkillSummary(allSkillsWithValues) {
 
 			// Skill text/value
 			const textSpan = document.createElement("span");
-			textSpan.style.color = "#888";
+			textSpan.style.color = "#000";
 			textSpan.style.fontSize = "0.9em";
 
 			textSpan.textContent = data.total != null
@@ -730,7 +730,7 @@ function updateSkills() {
 	
 				// Skill value text
 				const textSpan = document.createElement("span");
-				textSpan.style.color = "#888";
+				textSpan.style.color = "#000";
 				textSpan.style.fontSize = "0.9em";
 				textSpan.textContent = skillValue;
 	

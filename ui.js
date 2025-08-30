@@ -188,18 +188,41 @@ function createSearchUI() {
 		const query = searchBox.value.trim();
 		resultsDiv.innerHTML = "";
 		if (!query) return;
-
+	
 		const filters = parseQuery(query);
+	
 		for (const [name, info] of Object.entries(equipmentData)) {
 			if (matchEquipment(name, info, filters)) {
-				const btn = document.createElement("button");
-				btn.textContent = `${name} (${info.type})`;
+				const btn = document.createElement("div");
+				btn.style.cursor = "pointer";
+				btn.style.marginBottom = "5px";
 				btn.addEventListener("click", () => equipItem(name, info.type));
+	
+				// Name and type
+				const title = document.createElement("span");
+				title.style.fontWeight = "bold";
+				title.style.color = "#000"; // black
+				title.textContent = `${name} (${info.type})`;
+				btn.appendChild(title);
+				btn.appendChild(document.createElement("br"));
+	
+				// Skills
+				if (equipment_list[name]?.skill?.length) {
+					const skills = equipment_list[name].skill
+						.map(s => `${s[0]} ${s[1]}`)
+						.join(", ");
+					const skillSpan = document.createElement("span");
+					skillSpan.style.color = "#888"; // grey
+					skillSpan.style.fontSize = "0.9em";
+					skillSpan.textContent = skills;
+					btn.appendChild(skillSpan);
+				}
+	
 				resultsDiv.appendChild(btn);
-				resultsDiv.appendChild(document.createElement("br"));
 			}
 		}
 	});
+		
 }
 
 // Equip by selecting result

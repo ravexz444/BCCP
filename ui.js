@@ -882,9 +882,13 @@ function renderSetupButtons() {
 
 let setupCount = 1; // default 1
 function setSetupCount() {
-  const input = document.getElementById("setupCountInput");
-  setupCount = parseInt(input.value, 10) || 1;
-  renderSetupButtons();
+	const input = document.getElementById("setupCountInput");
+  	setupCount = parseInt(input.value, 10) || 1;
+  	renderSetupButtons();
+
+	// Show the Send to Battle button
+	const sendBtn = document.getElementById("sendToBattle");
+	if (sendBtn) sendBtn.style.display = "inline-block"; // or "block"
 }
 
 function sendAllToBattle() {
@@ -940,15 +944,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// Auto-restore Active Setup
 	importFromBattle();
-
-	// Active Setup Save buttons
-	["saveSetup1", "saveSetup2", "saveSetup3"].forEach((id, idx) => {
-		const btn = document.getElementById(id);
-		if (btn) btn.addEventListener("click", () => saveActiveSetup(idx + 1));
-	});
 	
 	// Active Setup Transfer button
 	const sendBtn = document.getElementById("sendToBattle");
+	if (sendBtn) sendBtn.style.display = "none";  // hide initially
 	if (sendBtn) sendBtn.addEventListener("click", sendAllToBattle);
 	
 	// Check All / Uncheck All collections

@@ -92,6 +92,16 @@ function attachSkillTooltip(element, skillName) {
 	});
 }
 
+// ---------------------- Sorted Skill ----------------------
+// Precompute skill order map from skill_groups
+const skillOrderMap = {};
+let idx = 0;
+for (const skills of Object.values(skill_groups)) {
+	for (const skillName of skills) {
+		skillOrderMap[skillName] = idx++;
+	}
+}
+
 // ---------------------- Search UI ----------------------
 // Search Builder Helper
 function parseNumber(val) {
@@ -239,15 +249,6 @@ function createSearchUI() {
 	const equippedDiv = document.createElement("div");
 	equippedDiv.id = "equippedList";
 	container.appendChild(equippedDiv);
-
-	// Precompute skill order map from skill_groups
-	const skillOrderMap = {};
-	let idx = 0;
-	for (const skills of Object.values(skill_groups)) {
-		for (const skillName of skills) {
-			skillOrderMap[skillName] = idx++;
-		}
-	}
 	
 	searchBox.addEventListener("input", () => {
 		const query = searchBox.value.trim();

@@ -5,11 +5,11 @@ const equipmentTypes = [
 const eventRegions = ["LE", "RAA", "RDD", "R01.3","R02.3"];
 const premiumRegions = ["PS2024", "PS2025"];
 
-let equipmentData = {};
-let collectionData = {};
-let collectionCodes = {}; // shortCode → fullName mapping
-let skillGroups = {};     // { GroupName: [skill, ...], ... }
-let combinableSkills = new Set(); // filled from combinable_skills.json
+let equipment_list = {};
+let collection_list = {};
+let collection_codes = {}; // shortCode → fullName mapping
+let skill_groups = {};     // { GroupName: [skill, ...], ... }
+let combinable_skills = new Set(); // filled from combinable_skills.json
 let savedSetups = { 1: null, 2: null, 3: null };
 
 // ---------------------- Toggle Button ----------------------
@@ -191,7 +191,7 @@ function createSearchUI() {
 	
 		const filters = parseQuery(query);
 	
-		for (const [name, info] of Object.entries(equipmentData)) {
+		for (const [name, info] of Object.entries(equipment_list)) {
 			if (matchEquipment(name, info, filters)) {
 				const btn = document.createElement("div");
 				btn.style.cursor = "pointer";
@@ -393,8 +393,8 @@ function createCollectionCheckboxes() {
 		const rowDiv = document.createElement("div"); // one row
 
 		for (const code of row) {
-			if (!(code in collectionCodes)) {
-				console.warn(`Warning: ${code} not found in collectionCodes`);
+			if (!(code in collection_codes)) {
+				console.warn(`Warning: ${code} not found in collection_codes`);
 				continue;
 			}
 
@@ -457,7 +457,7 @@ function addSkill(categoryMap, category, skillName, rawValue) {
 	const entry = categoryMap[category][skillName];
 	const parsed = parseSkillValue(rawValue);
 
-	if (combinableSkills.has(skillName) &&
+	if (combinable_skills.has(skillName) &&
 		(parsed.type === "number" || parsed.type === "percent" || parsed.type === "plus")) {
 
 		const add = parsed.value;
@@ -474,7 +474,7 @@ function summarizeSkills(allSkillsWithValues) {
 
 	allSkillsWithValues.forEach(([skillName, value]) => {
 		let placed = false;
-		for (const [groupName, groupSkills] of Object.entries(skillGroups)) {
+		for (const [groupName, groupSkills] of Object.entries(skill_groups)) {
 			if (groupSkills.includes(skillName)) {
 				addSkill(categoryMap, groupName, skillName, value);
 				placed = true;
@@ -529,17 +529,17 @@ function updateSkills() {
 	});
 
 	// 2. Add checked collections
-	for (const code of Object.keys(collectionCodes)) {
+	for (const code of Object.keys(collection_codes)) {
 		const checkbox = document.getElementById("collection-" + code);
 		if (checkbox && checkbox.checked) {
-			chosenItems.push(collectionCodes[code]);
+			chosenItems.push(collection_codes[code]);
 		}
 	}
 
 	// 3. Build full skill list
 	const allSkillsWithValues = [];
 	chosenItems.forEach(itemName => {
-		const info = equipmentData[itemName] || collectionData[itemName];
+		const info = equipment_list[itemName] || collection_list[itemName];
 		if (info && info.skill) {
 			// Show item skills in "skills-output"
 			const itemDiv = document.createElement("div");
@@ -594,7 +594,7 @@ function saveSetup(name) {
 	
 	// === Save collections ===
 	const collections = [];
-	for (const code of Object.keys(collectionCodes)) {
+	for (const code of Object.keys(collection_codes)) {
 		const cb = document.getElementById("collection-" + code);
 		if (cb && cb.checked) collections.push(code); // store raw code, not display name
 	}
@@ -647,7 +647,7 @@ function refreshSavedSetups() {
 function saveActiveSetup(slot) {
   // Save collections
   const collections = [];
-  for (const code of Object.keys(collectionCodes)) {
+  for (const code of Object.keys(collection_codes)) {
     const cb = document.getElementById("collection-" + code);
     if (cb && cb.checked) collections.push(code);
   }
@@ -710,7 +710,7 @@ function importFromBattle() {
 	const setup = JSON.parse(savedActiveSetup);
 
 	// Restore collections
-	for (const code of Object.keys(collectionCodes)) {
+	for (const code of Object.keys(collection_codes)) {
 		const cb = document.getElementById("collection-" + code);
 		if (cb) cb.checked = setup.collections.includes(code);
 	}
@@ -735,11 +735,11 @@ async function loadAllData() {
 		fetch("combinable_skills.json").then(r => r.json())
 	]);
 
-	equipmentData = equip;
-	collectionData = coll;
-	collectionCodes = codes;
-	skillGroups = groups;
-	combinableSkills = new Set(combinables);
+	equipment_list = equip;
+	collection_list = coll;
+	collection_codes = codes;
+	skill_groups = groups;
+	combinable_skills = new Set(combinables);
 }
 
 // ---------------------- DOM READY ----------------------

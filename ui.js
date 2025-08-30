@@ -660,9 +660,16 @@ function updateSkills() {
 			title.textContent = itemName;
 			itemDiv.appendChild(title);
 			itemDiv.appendChild(document.createElement("br"));
+
+			// Sort skills based on skillOrderMap
+			const sortedSkills = info.skill.slice().sort((a, b) => {
+				const aOrder = skillOrderMap[a[0]] ?? 9999;
+				const bOrder = skillOrderMap[b[0]] ?? 9999;
+				return aOrder - bOrder;
+			});
 	
 			// Each skill as its own span with tooltip
-			info.skill.forEach(s => {
+			sortedSkills.forEach(s => {
 				const skillName = s[0];
 				const skillValue = s[1];
 	

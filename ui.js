@@ -201,9 +201,13 @@ function createSearchUI() {
 	
 				// Name and type
 				const title = document.createElement("span");
-				title.style.fontWeight = "bold";
 				title.style.color = "#000"; // black
-				title.textContent = `${name} (${info.type})`;
+				title.style.fontWeight = "bold"; // bold by default for main text
+				
+				// Use innerHTML to separate bold and normal parts
+				//title.textContent = `${name} (${info.type}) [${info.region}]`;
+				title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em; ">[${info.region}]</span>`;
+				
 				btn.appendChild(title);
 				btn.appendChild(document.createElement("br"));
 	

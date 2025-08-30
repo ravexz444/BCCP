@@ -204,10 +204,10 @@ function createSearchUI() {
 	equippedDiv.id = "equippedList";
 	container.appendChild(equippedDiv);
 
-	// Precompute skill order map from skill_group
+	// Precompute skill order map from skill_groups
 	const skillOrderMap = {};
 	let idx = 0;
-	for (const skills of Object.values(skill_group)) {
+	for (const skills of Object.values(skill_groups)) {
 		for (const skillName of skills) {
 			skillOrderMap[skillName] = idx++;
 		}

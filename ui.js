@@ -229,7 +229,8 @@ function createSearchUI() {
 
 						// Construct image path dynamically
 						const img = document.createElement("img");
-						img.src = `/images/${skillName} (Skill).png`; // dynamic path
+						const repoName = 'BC-Combat-Simulation';
+						img.src = `/${repoName}/images/${skillName} (Skill).png`;	
 						img.style.width = "20px";
 						img.style.height = "20px";
 						img.style.objectFit = "contain";

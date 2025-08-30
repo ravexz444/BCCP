@@ -201,13 +201,9 @@ function createSearchUI() {
 	
 				// Name and type
 				const title = document.createElement("span");
-				title.style.color = "#000"; // black
-				title.style.fontWeight = "bold"; // bold by default for main text
-				
-				// Use innerHTML to separate bold and normal parts
-				//title.textContent = `${name} (${info.type}) [${info.region}]`;
+				title.style.color = "#000"; 
+				title.style.fontWeight = "bold"; 
 				title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em; ">[${info.region}]</span>`;
-				
 				btn.appendChild(title);
 				btn.appendChild(document.createElement("br"));
 	
@@ -216,35 +212,36 @@ function createSearchUI() {
 					const skillContainer = document.createElement("div");
 					skillContainer.style.display = "flex";
 					skillContainer.style.flexWrap = "wrap";
-					skillContainer.style.gap = "4px"; // small gap between skills
-				
+					skillContainer.style.gap = "4px";
+	
 					for (const s of equipment_list[name].skill) {
 						const skillName = s[0];
 						const skillValue = s[1];
-				
+	
 						const skillDiv = document.createElement("div");
 						skillDiv.style.display = "flex";
 						skillDiv.style.alignItems = "center";
 						skillDiv.style.gap = "2px";
-
-						// Construct image path dynamically
-						const img = document.createElement("img");
-						const repoName = 'BC-Combat-Simulation';
-						img.src = `/${repoName}/images/${skillName} (Skill).png`;	
-						img.style.width = "20px";
-						img.style.height = "20px";
-						img.style.objectFit = "contain";
-						skillDiv.appendChild(img);
-				
+	
+						if (skill_images[skillName]) {
+							const img = document.createElement("img");
+							img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
+							img.style.width = "20px";
+							img.style.height = "20px";
+							img.style.objectFit = "contain";
+							img.title = skillName; // tooltip
+							skillDiv.appendChild(img);
+						}
+	
 						const textSpan = document.createElement("span");
 						textSpan.style.color = "#888";
 						textSpan.style.fontSize = "0.9em";
-						textSpan.textContent = `${skillName} ${skillValue}`;
+						textSpan.textContent = skillValue;
 						skillDiv.appendChild(textSpan);
-				
+	
 						skillContainer.appendChild(skillDiv);
 					}
-				
+	
 					btn.appendChild(skillContainer);
 				}
 	
@@ -252,7 +249,6 @@ function createSearchUI() {
 			}
 		}
 	});
-		
 }
 
 // Equip by selecting result

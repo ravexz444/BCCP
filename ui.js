@@ -534,7 +534,27 @@ function updateSkills() {
 	renderSkillSummary(allSkillsWithValues);
 }
 
-// ---------------------- SETUP STORAGE ----------------------
+// ---------------------- Retainer-1,Retainer-2,Retainer-3 -> Retainer ----------------------
+// When loading, 
+function normalizeSetup(saved) {
+	let result = {};
+
+	for (let key in saved) {
+		if (key.startsWith("Accessory")) {
+			if (!result["Accessory"]) result["Accessory"] = [];
+			if (saved[key].length > 0) result["Accessory"].push(...saved[key]);
+		} else if (key.startsWith("Retainer")) {
+			if (!result["Retainer"]) result["Retainer"] = [];
+			if (saved[key].length > 0) result["Retainer"].push(...saved[key]);
+		} else {
+			result[key] = [...saved[key]];
+		}
+	}
+
+	return result;
+}
+
+// ---------------------- PERMANENT SETUP STORAGE ----------------------
 // All saved as Array not String
 function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
@@ -557,25 +577,9 @@ function saveSetup(name) {
 	}
 
 	// === Save equipment ===
-	const equipment = {};
-	for (const [type, items] of Object.entries(equipped)) {
-		if (type === "Retainer" || type === "Accessory") {
-			(items || []).forEach((it, idx) => {
-				// Always save as array, even if single item
-				equipment[`${type}-${idx + 1}`] = it ? [it] : [];
-			});
-		} else {
-			if (Array.isArray(items)) {
-				equipment[type] = [...items];
-			} else if (typeof items === "string") {
-				equipment[type] = [items];
-			} else {
-				equipment[type] = [];
-			}
-		}
-	}		
-
-	newSetups.push({ name, collections, equipment });
+	// equipped is already { type: [items...] }
+	
+	newSetups.push({ name, collections, equipment: equipped });
 	localStorage.setItem("savedSetups", JSON.stringify(newSetups));
 	refreshSavedSetups();
 }
@@ -592,16 +596,9 @@ function loadSetup(name) {
 	});
 
 	// === Restore equipment ===
-	equipped = {}; // reset
+	equipped = {};
 	for (const [type, items] of Object.entries(setup.equipment)) {
-		// Ensure everything is stored as an array
-		if (Array.isArray(items)) {
-			equipped[type] = [...items]; 
-		} else if (typeof items === "string") {
-			equipped[type] = [items]; // wrap single string in array
-		} else {
-			equipped[type] = [];
-		}
+		equipped[type] = Array.isArray(items) ? [...items] : [];
 	}
 
 	updateEquippedList();

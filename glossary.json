@@ -1,0 +1,3142 @@
+{
+  "Questing": {
+    "index": 1,
+    "desc": "Chance to have an additional auto-hunt.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Psv CD Reset",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Timewalker": {
+    "index": 2,
+    "desc": "Reduces your hunting cooldown.",
+    "unitSymbol": " -s",
+    "statType": "Stat",
+    "cat": "Act CD -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Crit Chance": {
+    "index": 3,
+    "desc": "Increases your critical hit chance with a weapon. Critical weapon hits deal 150% damage.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Atk Wpn +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Loot Chance Modifier": {
+    "index": 4,
+    "desc": "Increases your chance to find loot. The modifier is multiplicative, not additive.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Reward +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Attraction": {
+    "index": 5,
+    "desc": "Increases your chance to encounter rarer non-boss enemies.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Encounter rate +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Summoning": {
+    "index": 6,
+    "desc": "Increases your chance to encounter bosses. Hex of Summoning is required!",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Encounter rate +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Cloning": {
+    "index": 7,
+    "desc": "Chance that enemies count twice towards your mission progress.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Reward +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Coolness": {
+    "index": 8,
+    "desc": "Increases your coolness!",
+    "unitSymbol": " !",
+    "statType": "Stat",
+    "cat": "Stat",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Investment": {
+    "index": 9,
+    "desc": "Increases your chance that your next won fight grants you +50% VGC.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Reward +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "XP-losion": {
+    "index": 10,
+    "desc": "Increases your chance that the current fight grants you +50% XP if won.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Reward +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Fireball": {
+    "index": 11,
+    "desc": "Chance to deal fire damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Plaguetouch": {
+    "index": 12,
+    "desc": "Chance to deal poison damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Powerful Strike": {
+    "index": 13,
+    "desc": "Chance to deal physical damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Focused Shot": {
+    "index": 14,
+    "desc": "Chance to deal ballistic damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Icestrike": {
+    "index": 15,
+    "desc": "Chance to deal ice damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Lightning Bolt": {
+    "index": 16,
+    "desc": "Chance to deal electric damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Shadowstrike": {
+    "index": 17,
+    "desc": "Chance to deal shadow damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Mindbolt": {
+    "index": 18,
+    "desc": "Chance to deal psychic damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Charge": {
+    "index": 19,
+    "desc": "Deals one physical attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Heal": {
+    "index": 20,
+    "desc": "Chance to restore health.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Heal Inst",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Healing Touch": {
+    "index": 21,
+    "desc": "Chance to apply a healing-over-time (HOT) effect. HOTs restore health every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Heal DoT",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Lifeleech": {
+    "index": 22,
+    "desc": "Chance to transfer health from your opponent to you.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Lifeleech",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Stun": {
+    "index": 23,
+    "desc": "Chance to stun your opponent. Stunned opponents forfeit their next base weapon attack.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Evd Wpn",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Evade": {
+    "index": 24,
+    "desc": "Chance to evade an opponent's combat proc.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Evd Proc",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Theft": {
+    "index": 25,
+    "desc": "Chance to steal VGC from your opponent.",
+    "unitSymbol": " VGC",
+    "statType": "Proc",
+    "cat": "Theft",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Flying": {
+    "index": 26,
+    "desc": "Chance to evade an opponent's base attack (= weapon attack).",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Evd Wpn",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "First Strike": {
+    "index": 27,
+    "desc": "Increases your chance to go first in combat.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Atk First",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Deathtouch": {
+    "index": 28,
+    "desc": "Chance to remove retainer from combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Kill Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Burn": {
+    "index": 29,
+    "desc": "Chance to apply a fire damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Rot": {
+    "index": 30,
+    "desc": "Chance to apply a poison damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Wound": {
+    "index": 31,
+    "desc": "Chance to apply a physical damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Trauma": {
+    "index": 32,
+    "desc": "Chance to apply a ballistic damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Frostbite": {
+    "index": 33,
+    "desc": "Chance to apply an ice damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Shock": {
+    "index": 34,
+    "desc": "Chance to apply an electric damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Fear": {
+    "index": 35,
+    "desc": "Chance to apply a psychic damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Manaburn": {
+    "index": 36,
+    "desc": "Chance to apply a mystic damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Firecurse": {
+    "index": 37,
+    "desc": "Chance to curse your opponent to suffer more fire damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Slow": {
+    "index": 38,
+    "desc": "Chance to curse your opponent to suffer more ballistic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Weaken": {
+    "index": 39,
+    "desc": "Chance to curse your opponent to suffer more physical damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Icecurse": {
+    "index": 40,
+    "desc": "Chance to curse your opponent to suffer more ice damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Shadowcurse": {
+    "index": 41,
+    "desc": "Chance to curse your opponent to suffer more shadow damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Stormcurse": {
+    "index": 42,
+    "desc": "Chance to curse your opponent to suffer more electric damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Poisoncurse": {
+    "index": 43,
+    "desc": "Chance to curse your opponent to suffer more poison damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Manacurse": {
+    "index": 44,
+    "desc": "Chance to curse your opponent to suffer more mystic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Pyromancy": {
+    "index": 45,
+    "desc": "Increases your fire damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Cruelty": {
+    "index": 46,
+    "desc": "Increases your physical damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Cryomancy": {
+    "index": 47,
+    "desc": "Increases your ice damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Necromancy": {
+    "index": 48,
+    "desc": "Increases your shadow damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Electromancy": {
+    "index": 49,
+    "desc": "Increases your electric damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Venomancy": {
+    "index": 50,
+    "desc": "Increases your poison damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "True Aim": {
+    "index": 51,
+    "desc": "Increases your ballistic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Thaumaturgy": {
+    "index": 52,
+    "desc": "Increases your mystic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Ancient Blood": {
+    "index": 53,
+    "desc": "Increases your healing.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Heal +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Necrobane": {
+    "index": 54,
+    "desc": "Increases your damage against necro enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Necro",
+    "procEventType": 1
+  },
+  "Bloodbane": {
+    "index": 55,
+    "desc": "Increases your damage against vampiric enemies.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Vampiric",
+    "procEventType": 1
+  },
+  "Wolfbane": {
+    "index": 56,
+    "desc": "Increases your damage against lycan enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Bestial",
+    "procEventType": 1
+  },
+  "Lifebane": {
+    "index": 57,
+    "desc": "Increases your damage against corrupted enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Corrupted",
+    "procEventType": 1
+  },
+  "Terrorbane": {
+    "index": 58,
+    "desc": "Increases your damage against abominable enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Abominable",
+    "procEventType": 1
+  },
+  "Wildbane": {
+    "index": 59,
+    "desc": "Increases your damage against bestial enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Lycan",
+    "procEventType": 1
+  },
+  "Demonbane": {
+    "index": 60,
+    "desc": "Increases your damage against demonic enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Demonic",
+    "procEventType": 1
+  },
+  "Dragonbane": {
+    "index": 61,
+    "desc": "Increases your damage against draconic enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Draconic",
+    "procEventType": 1
+  },
+  "Spiritbane": {
+    "index": 62,
+    "desc": "Increases your damage against ethereal enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Ethereal",
+    "procEventType": 1
+  },
+  "Techbane": {
+    "index": 63,
+    "desc": "Increases your damage against techno enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Techno",
+    "procEventType": 1
+  },
+  "Xenobane": {
+    "index": 64,
+    "desc": "Increases your damage against xeno enemies",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Xeno",
+    "procEventType": 1
+  },
+  "Necrosis": {
+    "index": 65,
+    "desc": "Decreases your opponent's healing.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Heal -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Fire Vulnerability": {
+    "index": 66,
+    "desc": "Damage taken from fire sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Ballistic Vulnerability": {
+    "index": 67,
+    "desc": "Damage taken from ballistic sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Physical Vulnerability": {
+    "index": 68,
+    "desc": "Damage taken from physical sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Ice Vulnerability": {
+    "index": 69,
+    "desc": "Damage taken from ice sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Shadow Vulnerability": {
+    "index": 70,
+    "desc": "Damage taken from shadow sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Electric Vulnerability": {
+    "index": 71,
+    "desc": "Damage taken from electric sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Poison Vulnerability": {
+    "index": 72,
+    "desc": "Damage taken from poison sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Mystic Vulnerability": {
+    "index": 73,
+    "desc": "Damage taken from mystic sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Necroward": {
+    "index": 74,
+    "desc": "Damage taken from necro enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Necro",
+    "procEventType": 1
+  },
+  "Bloodward": {
+    "index": 75,
+    "desc": "Damage taken from vampiric enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Vampiric",
+    "procEventType": 1
+  },
+  "Wolfward": {
+    "index": 76,
+    "desc": "Damage taken from lycan enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Bestial",
+    "procEventType": 1
+  },
+  "Lifeward": {
+    "index": 77,
+    "desc": "Damage taken from corrupted enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Corrupted",
+    "procEventType": 1
+  },
+  "Terrorward": {
+    "index": 78,
+    "desc": "Damage taken from abominable enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Abominable",
+    "procEventType": 1
+  },
+  "Wildward": {
+    "index": 79,
+    "desc": "Damage taken from bestial enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Lycan",
+    "procEventType": 1
+  },
+  "Demonward": {
+    "index": 80,
+    "desc": "Damage taken from demonic enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Demonic",
+    "procEventType": 1
+  },
+  "Dragonward": {
+    "index": 81,
+    "desc": "Damage taken from draconic enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Draconic",
+    "procEventType": 1
+  },
+  "Spiritward": {
+    "index": 82,
+    "desc": "Damage taken from ethereal enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Ethereal",
+    "procEventType": 1
+  },
+  "Techward": {
+    "index": 83,
+    "desc": "Damage taken from techno enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Techno",
+    "procEventType": 1
+  },
+  "Xenoward": {
+    "index": 84,
+    "desc": "Damage taken from xeno enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Xeno",
+    "procEventType": 1
+  },
+  "Fireward": {
+    "index": 85,
+    "desc": "Damage taken from fire sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Resilience": {
+    "index": 86,
+    "desc": "Damage taken from physical sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Blur": {
+    "index": 87,
+    "desc": "Damage taken from ballistic sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Iceward": {
+    "index": 88,
+    "desc": "Damage taken from ice sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Nightward": {
+    "index": 89,
+    "desc": "Damage taken from shadow sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Stormward": {
+    "index": 90,
+    "desc": "Damage taken from electric sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Poisonward": {
+    "index": 91,
+    "desc": "Damage taken from poison sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Manaward": {
+    "index": 92,
+    "desc": "Damage taken from mystic sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Toughness": {
+    "index": 93,
+    "desc": "All damage taken is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Health": {
+    "index": 94,
+    "desc": "Increases your health.",
+    "unitSymbol": "+",
+    "statType": "Stat",
+    "cat": "Heal Base",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Fire Weapon Damage": {
+    "index": 95,
+    "desc": "A weapon attack that deals fire damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Physical Weapon Damage": {
+    "index": 96,
+    "desc": "A weapon attack that deals physical damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Ballistic Weapon Damage": {
+    "index": 97,
+    "desc": "A weapon attack that deals ballistic damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Ice Weapon Damage": {
+    "index": 98,
+    "desc": "A weapon attack that deals ice damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Shadow Weapon Damage": {
+    "index": 99,
+    "desc": "A weapon attack that deals shadow damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Poison Weapon Damage": {
+    "index": 100,
+    "desc": "A weapon attack that deals poison damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Electric Weapon Damage": {
+    "index": 101,
+    "desc": "A weapon attack that deals electric damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Mystic Weapon Damage": {
+    "index": 102,
+    "desc": "A weapon attack that deals mystic damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Fire Weapon Damage": {
+    "index": 103,
+    "desc": "A retainer weapon attack that deals fire damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Physical Weapon Damage": {
+    "index": 104,
+    "desc": "A retainer weapon attack that deals physical damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Ballistic Weapon Damage": {
+    "index": 105,
+    "desc": "A retainer weapon attack that deals ballistic damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Ice Weapon Damage": {
+    "index": 106,
+    "desc": "A retainer weapon attack that deals ice damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Shadow Weapon Damage": {
+    "index": 107,
+    "desc": "A retainer weapon attack that deals shadow damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Poison Weapon Damage": {
+    "index": 108,
+    "desc": "A retainer weapon attack that deals poison damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Electric Weapon Damage": {
+    "index": 109,
+    "desc": "A retainer weapon attack that deals electric damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Mystic Weapon Damage": {
+    "index": 110,
+    "desc": "A retainer weapon attack that deals mystic damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Psychic Weapon Damage": {
+    "index": 111,
+    "desc": "A retainer weapon attack that deals psychic damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Netherbolt": {
+    "index": 112,
+    "desc": "Chance to deal mystic damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Focused Mind": {
+    "index": 113,
+    "desc": "Increases your psychic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Nerves of Steel": {
+    "index": 114,
+    "desc": "Damage taken from psychic sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Paranoia": {
+    "index": 115,
+    "desc": "Chance to curse your opponent to suffer more psychic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Psychic Vulnerability": {
+    "index": 116,
+    "desc": "Damage taken from psychic sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Soulburn": {
+    "index": 117,
+    "desc": "Chance to apply a shadow damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Psychic Weapon Damage": {
+    "index": 118,
+    "desc": "A weapon attack that deals psychic damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Barrage": {
+    "index": 119,
+    "desc": "Chance to deal massive ballistic damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Breakdown": {
+    "index": 120,
+    "desc": "Chance to deal massive psychic damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Devastate": {
+    "index": 121,
+    "desc": "Chance to deal massive physical damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Discharge": {
+    "index": 122,
+    "desc": "Chance to deal massive electric damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Envenom": {
+    "index": 123,
+    "desc": "Chance to deal massive poison damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Icestorm": {
+    "index": 124,
+    "desc": "Chance to deal massive ice damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Inferno": {
+    "index": 125,
+    "desc": "Chance to deal massive fire damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Manastorm": {
+    "index": 126,
+    "desc": "Chance to deal massive mystic damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Nightfall": {
+    "index": 127,
+    "desc": "Chance to deal massive shadow damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Dragonslayer": {
+    "index": 128,
+    "desc": "Chance to deal additional physical damage against Draconic creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Physical",
+    "affRacType": "Draconic",
+    "procEventType": 2
+  },
+  "Greater Heal": {
+    "index": 129,
+    "desc": "Chance to restore a substantial amount of health.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Heal Inst",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Blood Craze": {
+    "index": 130,
+    "desc": "Chance to immediately reset your hunting cooldown.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Act CD Reset",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Megalomania": {
+    "index": 131,
+    "desc": "Chance to not consume a Hex of Summoning after encountering a boss.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Hex Free",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Holy Weapon Damage": {
+    "index": 132,
+    "desc": "A weapon attack that deals holy damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retainer Holy Weapon Damage": {
+    "index": 133,
+    "desc": "A retainer weapon attack that deals holy damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Retribution": {
+    "index": 134,
+    "desc": "Chance to curse your opponent to suffer more holy damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Conviction": {
+    "index": 135,
+    "desc": "Increases your holy damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Holy Vulnerability": {
+    "index": 136,
+    "desc": "Damage taken from holy sources is increased.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Repent": {
+    "index": 137,
+    "desc": "Chance to apply a holy damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Judgment": {
+    "index": 138,
+    "desc": "Chance to deal holy damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Angels' Wrath": {
+    "index": 139,
+    "desc": "Chance to deal massive holy damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Gravebind": {
+    "index": 140,
+    "desc": "Chance to deal shadow damage against Necro creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Shadow",
+    "affRacType": "Necro",
+    "procEventType": 3
+  },
+  "Sunbeam": {
+    "index": 141,
+    "desc": "Chance to deal holy damage against Vampiric creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Holy",
+    "affRacType": "Vampiric",
+    "procEventType": 3
+  },
+  "Silver Strike": {
+    "index": 142,
+    "desc": "Chance to deal physical damage against Lycan creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Physical",
+    "affRacType": "Bestial",
+    "procEventType": 3
+  },
+  "Exterminate": {
+    "index": 143,
+    "desc": "Chance to deal poison damage against Abominable creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Poison",
+    "affRacType": "Abominable",
+    "procEventType": 3
+  },
+  "Psyblast": {
+    "index": 144,
+    "desc": "Chance to deal psychic damage against Corrupted creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Psychic",
+    "affRacType": "Corrupted",
+    "procEventType": 3
+  },
+  "Butchery": {
+    "index": 145,
+    "desc": "Chance to deal physical damage against Bestial creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Physical",
+    "affRacType": "Lycan",
+    "procEventType": 3
+  },
+  "Exorcise": {
+    "index": 146,
+    "desc": "Chance to deal holy damage against Demonic creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Holy",
+    "affRacType": "Demonic",
+    "procEventType": 3
+  },
+  "Banish": {
+    "index": 147,
+    "desc": "Chance to deal mystic damage against Ethereal creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Mystic",
+    "affRacType": "Ethereal",
+    "procEventType": 3
+  },
+  "Short Circuit": {
+    "index": 148,
+    "desc": "Chance to deal electric damage against Techno creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Electric",
+    "affRacType": "Techno",
+    "procEventType": 3
+  },
+  "Gamma Ray": {
+    "index": 149,
+    "desc": "Chance to deal ballistic damage against Xeno creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Ballistic",
+    "affRacType": "Xeno",
+    "procEventType": 3
+  },
+  "Curse": {
+    "index": 150,
+    "desc": "Chance to curse your opponent to suffer more damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "All",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Apocalypse": {
+    "index": 151,
+    "desc": "Chance to remove several opposing Retainers from combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Kill Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Attunement": {
+    "index": 152,
+    "desc": "Increase your proc chances.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Proc +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Dispel": {
+    "index": 153,
+    "desc": "Chance to remove in the following order: dot, curse, necrosis.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Rmv Debuff",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Call Wildcat": {
+    "index": 154,
+    "desc": "Chance that a Wildcat Retainer will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Undead Priest": {
+    "index": 155,
+    "desc": "Chance that an Undead Priest will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Darkcrawler Scout": {
+    "index": 156,
+    "desc": "Chance that a Darkcrawler Scout will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Rat Rogue": {
+    "index": 157,
+    "desc": "Chance that a Rat Rogue will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Assassin": {
+    "index": 158,
+    "desc": "Chance that an Assassin will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Deformed Mutant": {
+    "index": 159,
+    "desc": "Chance that a Deformed Mutant will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Demonic Enforcer": {
+    "index": 160,
+    "desc": "Chance that a Demonic Enforcer will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Frost Dragon Whelp": {
+    "index": 161,
+    "desc": "Chance that a Frost Dragon Whelp will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Shaitan": {
+    "index": 162,
+    "desc": "Chance that a Shaitan will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Barracuda": {
+    "index": 163,
+    "desc": "Chance that a Barracuda will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Ghost": {
+    "index": 164,
+    "desc": "Chance that a Ghost will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Battle Droid": {
+    "index": 165,
+    "desc": "Chance that a Battle Droid will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Arsenal": {
+    "index": 166,
+    "desc": "Adds an extra setup slot.",
+    "unitSymbol": "+",
+    "statType": "Stat",
+    "cat": "Stat",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Call Nightstalker": {
+    "index": 167,
+    "desc": "Chance that a Nightstalker will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Shadow Tech Enforcer": {
+    "index": 168,
+    "desc": "Chance that a Shadow Tech Enforcer join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Skeleton Knight": {
+    "index": 169,
+    "desc": "Chance that a Skeleton Knight will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Brass Basilisk": {
+    "index": 170,
+    "desc": "Chance that a Brass Basilisk will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Fledgling Vampire": {
+    "index": 171,
+    "desc": "Chance that a Fledgling Vampire will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Mistprowler": {
+    "index": 172,
+    "desc": "Chance that a Mistprowler will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Xenoblade Hunter": {
+    "index": 173,
+    "desc": "Chance that a Xenoblade Hunter will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call The Black Thorn": {
+    "index": 174,
+    "desc": "Chance that the Black Thorn will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Sufferance": {
+    "index": 175,
+    "desc": "Increases all damage taken. (Removes x from all instances of ward or damage reduction stats.)",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Vuln",
+    "dmgType": "All",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Call Killbot": {
+    "index": 176,
+    "desc": "Chance that a Killbot will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Nether Assassin": {
+    "index": 177,
+    "desc": "Chance that a Nether Assassin will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Scorchhorn Firebeast": {
+    "index": 178,
+    "desc": "Chance that a Scorchhorn Firebeast will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Crimson Revenant Blademaster": {
+    "index": 179,
+    "desc": "Chance that a Crimson Revenant Blademaster will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Curator": {
+    "index": 180,
+    "desc": "Unlocks the third accessory slot.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Stat",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Call Dreadnought Leviacornis": {
+    "index": 181,
+    "desc": "Chance that a Dreadnought Leviacornis joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Harvester of Dreams": {
+    "index": 182,
+    "desc": "Chance that a Harvester of Dreams will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Cybermoon Lycan": {
+    "index": 183,
+    "desc": "Chance that a Cybermoon Lycan will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Amazonian Archer": {
+    "index": 184,
+    "desc": "Chance that an Amazonian Archer joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Glitch Ghost": {
+    "index": 185,
+    "desc": "Chance that a Glitch Ghost will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Catacombs Sentinel": {
+    "index": 186,
+    "desc": "Chance that a Catacombs Sentinel joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Phantom Steamwalker": {
+    "index": 187,
+    "desc": "Chance that a Phantom Steamwalker will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Golem": {
+    "index": 188,
+    "desc": "Chance that a Golem joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Scarecrow Sentinel": {
+    "index": 189,
+    "desc": "Chance that a Scarecrow Sentinel joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Blizzard Beast": {
+    "index": 190,
+    "desc": "Chance that a Blizzard Beast joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Vampire Ring Announcer": {
+    "index": 191,
+    "desc": "Chance that a Vampire Ring Announcer joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Infernal Tormentor": {
+    "index": 192,
+    "desc": "Chance that an Infernal Tormentor joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Star Vampire": {
+    "index": 193,
+    "desc": "Chance that a Star Vampire joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Dominate": {
+    "index": 194,
+    "desc": "Unlocks an additional retainer slot.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Stat",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Coffin Capacity": {
+    "index": 195,
+    "desc": "The amount of available Coffin Charges.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Psv CD -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Coffin Recharge Time": {
+    "index": 196,
+    "desc": "The amount of time it takes your coffin to recharge one Coffin Charge.",
+    "unitSymbol": " Minutes",
+    "statType": "Stat",
+    "cat": "Psv CD -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Restless": {
+    "index": 197,
+    "desc": "Reduces the recharge time of your Coffin Charges.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Psv CD -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Call Cyberblade Hellion": {
+    "index": 198,
+    "desc": "Chance that a Cyberblade Hellion will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Lightbane": {
+    "index": 199,
+    "desc": "Increases your damage against righteous enemies.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "Righteous",
+    "procEventType": 1
+  },
+  "Lightward": {
+    "index": 200,
+    "desc": "Damage taken from righteous enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "All",
+    "affRacType": "Righteous",
+    "procEventType": 1
+  },
+  "Penance": {
+    "index": 201,
+    "desc": "Damage taken from holy sources is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Seduction": {
+    "index": 202,
+    "desc": "Chance to deal shadow damage against righteous creatures.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Rac",
+    "dmgType": "Shadow",
+    "affRacType": "Righteous",
+    "procEventType": 3
+  },
+  "Bloodlust": {
+    "index": 203,
+    "desc": "Chance to not consume a bait.",
+    "unitSymbol": "%",
+    "statType": "Stat",
+    "cat": "Bait Free",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Call Shadow Raven": {
+    "index": 204,
+    "desc": "Chance that a Shadow Raven will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Monastery Guard Dog": {
+    "index": 205,
+    "desc": "Chance that a Monastery Guard Dog joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Radiation Raptor": {
+    "index": 206,
+    "desc": "Chance that a Radiation Raptor joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Cursed Crewman": {
+    "index": 207,
+    "desc": "Chance that a Cursed Crewman will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Feral Bloodhound": {
+    "index": 208,
+    "desc": "Chance that a Feral Bloodhound will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Shield": {
+    "index": 209,
+    "desc": "Chance to create a shield that absorbs damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Fire Shield": {
+    "index": 210,
+    "desc": "Chance to create a shield that absorbs fire damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Ballistic Shield": {
+    "index": 211,
+    "desc": "Chance to create a shield that absorbs ballistic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Holy Shield": {
+    "index": 212,
+    "desc": "Chance to create a shield that absorbs holy damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Ice Shield": {
+    "index": 213,
+    "desc": "Chance to create a shield that absorbs ice damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Lightning Shield": {
+    "index": 214,
+    "desc": "Chance to create a shield that absorbs electric damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Mystic Shield": {
+    "index": 215,
+    "desc": "Chance to create a shield that absorbs mystic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Physical Shield": {
+    "index": 216,
+    "desc": "Chance to create a shield that absorbs physical damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Poison Shield": {
+    "index": 217,
+    "desc": "Chance to create a shield that absorbs poison damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Psychic Shield": {
+    "index": 218,
+    "desc": "Chance to create a shield that absorbs psychic damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Shadow Shield": {
+    "index": 219,
+    "desc": "Chance to create a shield that absorbs shadow damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Lunar Sentinel": {
+    "index": 220,
+    "desc": "Chance that a Lunar Sentinel will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Glow Worm of the Depth": {
+    "index": 221,
+    "desc": "Chance that a Glow Worm of the Depth will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Vampire-for-hire": {
+    "index": 222,
+    "desc": "Chance that a Vampire-for-hire joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Meteor": {
+    "index": 223,
+    "desc": "Chance to deal significant fire damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Ignite": {
+    "index": 224,
+    "desc": "Chance to apply a strong fire damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Ice Spikes": {
+    "index": 225,
+    "desc": "Chance to deal significant ice damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Hypothermia": {
+    "index": 226,
+    "desc": "Chance to apply a strong ice damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Crushing Blow": {
+    "index": 227,
+    "desc": "Chance to deal significant physical damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Flesh Wound": {
+    "index": 228,
+    "desc": "Chance to apply a strong physical damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Snipe": {
+    "index": 229,
+    "desc": "Chance to deal significant ballistic damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Pierce": {
+    "index": 230,
+    "desc": "Chance to apply a strong ballistic damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Venomous Strike": {
+    "index": 231,
+    "desc": "Chance to deal significant poison damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Sepsis": {
+    "index": 232,
+    "desc": "Chance to apply a strong poison damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Stormlash": {
+    "index": 233,
+    "desc": "Chance to deal significant electric damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Volt Corrosion": {
+    "index": 234,
+    "desc": "Chance to apply a strong electric damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Eldritch Blast": {
+    "index": 235,
+    "desc": "Chance to deal significant mystic damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Arcane Fire": {
+    "index": 236,
+    "desc": "Chance to apply a strong mystic damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Cerebral Strike": {
+    "index": 237,
+    "desc": "Chance to deal significant psychic damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Psychic Drain": {
+    "index": 238,
+    "desc": "Chance to apply a strong psychic damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Eclipse Bolt": {
+    "index": 239,
+    "desc": "Chance to deal significant shadow damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Shadow Decay": {
+    "index": 240,
+    "desc": "Chance to apply a strong shadow damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Divine Smite": {
+    "index": 241,
+    "desc": "Chance to deal significant holy damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Str",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Sacred Flame": {
+    "index": 242,
+    "desc": "Chance to apply a strong holy damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Str",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Bone Grinder": {
+    "index": 243,
+    "desc": "Chance to deal additional physical damage-over-time (DOT) against necro creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Physical",
+    "affRacType": "Necro",
+    "procEventType": 3
+  },
+  "Drakebane Venom": {
+    "index": 244,
+    "desc": "Chance to deal additional poison damage-over-time (DOT) against draconic creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Poison",
+    "affRacType": "Draconic",
+    "procEventType": 3
+  },
+  "Arcane Sunburst": {
+    "index": 245,
+    "desc": "Chance to deal additional mystic damage-over-time (DOT) against vampiric creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Mystic",
+    "affRacType": "Vampiric",
+    "procEventType": 3
+  },
+  "Silver Bullet": {
+    "index": 246,
+    "desc": "Chance to deal additional ballistic damage-over-time (DOT) against lycan creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Ballistic",
+    "affRacType": "Bestial",
+    "procEventType": 3
+  },
+  "Steel Crusher": {
+    "index": 247,
+    "desc": "Chance to deal additional physical damage-over-time (DOT) against techno creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Physical",
+    "affRacType": "Techno",
+    "procEventType": 3
+  },
+  "Bloodsport": {
+    "index": 248,
+    "desc": "Chance to deal additional ballistic damage-over-time (DOT) against bestial creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Ballistic",
+    "affRacType": "Lycan",
+    "procEventType": 3
+  },
+  "Ghostbusting": {
+    "index": 249,
+    "desc": "Chance to deal additional electric damage-over-time (DOT) against ethereal creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Electric",
+    "affRacType": "Ethereal",
+    "procEventType": 3
+  },
+  "Judgement of the Righteous": {
+    "index": 250,
+    "desc": "Chance to deal additional holy damage-over-time (DOT) against corrupted creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Holy",
+    "affRacType": "Corrupted",
+    "procEventType": 3
+  },
+  "Frozen Banishment": {
+    "index": 251,
+    "desc": "Chance to deal additional ice damage-over-time (DOT) against demonic creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Ice",
+    "affRacType": "Demonic",
+    "procEventType": 3
+  },
+  "Stellar Voltage": {
+    "index": 252,
+    "desc": "Chance to deal additional electric damage-over-time (DOT) against xeno creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Electric",
+    "affRacType": "Xeno",
+    "procEventType": 3
+  },
+  "Scorching Ray": {
+    "index": 253,
+    "desc": "Chance to deal additional fire damage-over-time (DOT) against abominable creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Fire",
+    "affRacType": "Abominable",
+    "procEventType": 3
+  },
+  "Paradigm Shift": {
+    "index": 254,
+    "desc": "Chance to deal additional psychic damage-over-time (DOT) against righteous creatures. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT Rac",
+    "dmgType": "Psychic",
+    "affRacType": "Righteous",
+    "procEventType": 3
+  },
+  "Bone Barrier": {
+    "index": 255,
+    "desc": "Chance to create a shield that only prevents damage from necro opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Necro",
+    "procEventType": 2
+  },
+  "Nocturnal Barrier": {
+    "index": 256,
+    "desc": "Chance to create a shield that only prevents damage from vampiric opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Vampiric",
+    "procEventType": 2
+  },
+  "Moonlit Barrier": {
+    "index": 257,
+    "desc": "Chance to create a shield that only prevents damage from lycan opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Bestial",
+    "procEventType": 2
+  },
+  "Cleansing Barrier": {
+    "index": 258,
+    "desc": "Chance to create a shield that only prevents damage from corrupted opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Corrupted",
+    "procEventType": 2
+  },
+  "Monster Barrier": {
+    "index": 259,
+    "desc": "Chance to create a shield that only prevents damage from abominable opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Abominable",
+    "procEventType": 2
+  },
+  "Wilderness Barrier": {
+    "index": 260,
+    "desc": "Chance to create a shield that only prevents damage from bestial opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Lycan",
+    "procEventType": 2
+  },
+  "Infernal Barrier": {
+    "index": 261,
+    "desc": "Chance to create a shield that only prevents damage from demonic opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Demonic",
+    "procEventType": 2
+  },
+  "Dragonfire Barrier": {
+    "index": 262,
+    "desc": "Chance to create a shield that only prevents damage from draconic opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Draconic",
+    "procEventType": 2
+  },
+  "Spectral Barrier": {
+    "index": 263,
+    "desc": "Chance to create a shield that only prevents damage from ethereal opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Ethereal",
+    "procEventType": 2
+  },
+  "Technomancer Barrier": {
+    "index": 264,
+    "desc": "Chance to create a shield that only prevents damage from techno opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Techno",
+    "procEventType": 2
+  },
+  "Nostromo Barrier": {
+    "index": 265,
+    "desc": "Chance to create a shield that only prevents damage from xeno opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Xeno",
+    "procEventType": 2
+  },
+  "Angel Barrier": {
+    "index": 266,
+    "desc": "Chance to create a shield that only prevents damage from righteous opponents.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "Righteous",
+    "procEventType": 2
+  },
+  "Call Lycan Zealot": {
+    "index": 267,
+    "desc": "Chance that a Lycan Zealot will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Machina Hellspawn": {
+    "index": 268,
+    "desc": "Chance that a Machina Hellspawn will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Kiss of Alithia": {
+    "index": 269,
+    "desc": "Chance to deal fatal shadow damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Death",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Kiss of Scintilla": {
+    "index": 270,
+    "desc": "Chance to deal fatal ice damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Death",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Kiss of Lilith": {
+    "index": 271,
+    "desc": "Chance to deal fatal fire damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Death",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Kiss of Xaylena": {
+    "index": 272,
+    "desc": "Chance to deal fatal mystic damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Death",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Gluttony": {
+    "index": 273,
+    "desc": "Requires additional bait for hunting.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Bait +",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Temperance": {
+    "index": 274,
+    "desc": "Requires less bait for hunting (to a minimum of 1).",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Bait -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Ballistic Charge": {
+    "index": 275,
+    "desc": "Deals one ballistic attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Ballistic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Blazing Charge": {
+    "index": 276,
+    "desc": "Deals one fire attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Mind Charge": {
+    "index": 277,
+    "desc": "Deals one psychic attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Psychic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Mystic Charge": {
+    "index": 278,
+    "desc": "Deals one mystic attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Mystic",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Ice Charge": {
+    "index": 279,
+    "desc": "Deals one ice attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Ice",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Righteous Charge": {
+    "index": 280,
+    "desc": "Deals one holy attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Holy",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Septic Charge": {
+    "index": 281,
+    "desc": "Deals one poison attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Poison",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Shadow Charge": {
+    "index": 282,
+    "desc": "Deals one shadow attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Voltaic Charge": {
+    "index": 283,
+    "desc": "Deals one electric attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Carnage": {
+    "index": 284,
+    "desc": "Increases all your damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "All",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Touch from Beyond": {
+    "index": 285,
+    "desc": "Chance that a necro enemy gains Soulburn.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Shadow",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Diableria": {
+    "index": 286,
+    "desc": "Chance that a vampiric enemy gains Lifeleech.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Lifeleech",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Regeneration": {
+    "index": 287,
+    "desc": "Chance that a lycan enemy gains Healing Touch.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Heal DoT",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Trickery": {
+    "index": 288,
+    "desc": "Chance that a corrupted enemy gains Theft.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Theft",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Thick Skin": {
+    "index": 289,
+    "desc": "Chance that an abominable enemy gains Dispel.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Rmv Debuff",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 4
+  },
+  "Infectious Bite": {
+    "index": 290,
+    "desc": "Chance that a bestial enemy gains Necrosis.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Heal -",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Horrific Visage": {
+    "index": 291,
+    "desc": "Chance that a demonic enemy gains Stun.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Evd Wpn",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Tail Swipe": {
+    "index": 292,
+    "desc": "Chance that a draconic enemy gains Powerful Strike.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Incorporal": {
+    "index": 293,
+    "desc": "Chance that an ethereal enemy or player gains Evade. ",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Evd Proc",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Overload": {
+    "index": 294,
+    "desc": "Chance that a techno enemy gains Lightning Strike.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Electric",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Abduction": {
+    "index": 295,
+    "desc": "Chance that a xeno enemy gains Deathtouch.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Kill Ret",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Divine Intervention": {
+    "index": 296,
+    "desc": "Chance that a righteous enemy gains Shield.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Def + Shld",
+    "dmgType": "All",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Purgatory": {
+    "index": 297,
+    "desc": "Chance to deal fatal fire damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Death",
+    "dmgType": "Fire",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Eldritch Convergence": {
+    "index": 298,
+    "desc": "Chance to deal chaos damage.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Eldritch Decay": {
+    "index": 299,
+    "desc": "Chance to apply a chaos damage-over-time (DOT) effect. DOTs deal damage every round.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 3
+  },
+  "Eldritchbane": {
+    "index": 300,
+    "desc": "Increases your damage against eldritch enemies.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "",
+    "affRacType": "Eldritch",
+    "procEventType": 1
+  },
+  "Eldritchward": {
+    "index": 301,
+    "desc": "Damage taken from eldritch enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "",
+    "affRacType": "Eldritch",
+    "procEventType": 1
+  },
+  "Chaos Weapon Damage": {
+    "index": 302,
+    "desc": "A weapon attack that deals chaos damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Wpn",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Retainer Chaos Weapon Damage": {
+    "index": 303,
+    "desc": "A retainer weapon attack that deals chaos damage.",
+    "unitSymbol": "0",
+    "statType": "Stat",
+    "cat": "Atk Ret",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Curse of the Old Gods": {
+    "index": 304,
+    "desc": "Chance to curse your opponent to suffer more chaos damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def - Curse",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Invocation": {
+    "index": 305,
+    "desc": "Grants you the ability to summon Epic Bosses. You can increase the chance by stacking the stat \\\"Summoning\\\".",
+    "unitSymbol": "bool",
+    "statType": "Stat",
+    "cat": "Stat",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 0
+  },
+  "Oblivion": {
+    "index": 306,
+    "desc": "Chance to deal massive chaos damage at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Chaos Charge": {
+    "index": 307,
+    "desc": "Deals one chaos attack with your mount at the beginning of combat.",
+    "unitSymbol": "0",
+    "statType": "Proc",
+    "cat": "Atk Inst Begin Charge",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Whispers of Madness": {
+    "index": 308,
+    "desc": "Increases your chaos damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "Chaos",
+    "affRacType": "",
+    "procEventType": 1
+  },
+  "Call Skeletal Netherarcher": {
+    "index": 309,
+    "desc": "Chance that a Skeletal Netherarcher will join the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Retainer",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Call Skeleton Warrior": {
+    "index": 310,
+    "desc": "Chance that a Skeleton Warrior joins the fight.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Call Retainer",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Dodge": {
+    "index": 311,
+    "desc": "Chance to dodge an opponent's base attack (= weapon attack).",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Evd Wpn",
+    "dmgType": "",
+    "affRacType": "",
+    "procEventType": 2
+  },
+  "Angelbane": {
+    "index": 312,
+    "desc": "Increases your damage against Archangel enemies.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk + Bane",
+    "dmgType": "",
+    "affRacType": "Archangel",
+    "procEventType": 1
+  },
+  "Angelward": {
+    "index": 313,
+    "desc": "Damage taken from Archangel enemies is reduced.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Def + Ward",
+    "dmgType": "",
+    "affRacType": "Archangel",
+    "procEventType": 1
+  },
+  "Go Pouncy!": {
+    "index": 314,
+    "desc": "Chance that Muffin's raptor - Pouncy deals damage-over-time (DOT) physical damage.",
+    "unitSymbol": "%",
+    "statType": "Proc",
+    "cat": "Atk DoT",
+    "dmgType": "Physical",
+    "affRacType": "",
+    "procEventType": 3
+  }
+}

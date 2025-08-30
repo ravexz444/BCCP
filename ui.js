@@ -635,7 +635,7 @@ function renderSetupButtons() {
 
   for (let i = 1; i <= setupCount; i++) {
     const saveBtn = document.createElement("button");
-    saveBtn.textContent = `Save Setup ${i}`;
+    saveBtn.textContent = `Save Battle Setup ${i}`;
     saveBtn.onclick = () => saveActiveSetup(i);
 
     const indicator = document.createElement("span");
@@ -666,37 +666,16 @@ function importFromBattle() {
 	const setup = JSON.parse(savedActiveSetup);
 
 	// Restore collections
-	if (setup.collections) {
-		for (const code of Object.keys(collectionCodes)) {
-			const cb = document.getElementById("collection-" + code);
-			if (cb) cb.checked = setup.collections.includes(code);
-		}
+	for (const code of Object.keys(collectionCodes)) {
+		const cb = document.getElementById("collection-" + code);
+		if (cb) cb.checked = setup.collections.includes(code);
 	}
 
 	// Restore equipment
 	equipped = {}; // reset
-	const tempAccessory = [];
-	const tempRetainer = [];
-
-	for (const [key, value] of Object.entries(setup.equipment)) {
-		if (key.startsWith("Accessory-")) {
-			if (value) tempAccessory.push(value);
-		} else if (key.startsWith("Retainer-")) {
-			if (value) tempRetainer.push(value);
-		} else {
-			// other equipment types stored as array
-			if (Array.isArray(value)) {
-				equipped[key] = [...value];
-			} else if (typeof value === "string") {
-				equipped[key] = [value];
-			} else {
-				equipped[key] = [];
-			}
-		}
+	for (const [type, items] of Object.entries(setup.equipment)) {
+		equipped[type] = Array.isArray(items) ? [...items] : [];
 	}
-
-	if (tempAccessory.length) equipped["Accessory"] = tempAccessory;
-	if (tempRetainer.length) equipped["Retainer"] = tempRetainer;
 
 	updateEquippedList();
 	updateSkills();

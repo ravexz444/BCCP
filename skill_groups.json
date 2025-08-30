@@ -1,29 +1,4 @@
 {
-    "Weapon Attack": [
-      "Crit Chance",
-      "Ballistic Weapon Damage",
-      "Chaos Weapon Damage",
-      "Electric Weapon Damage",
-      "Fire Weapon Damage",
-      "Holy Weapon Damage",
-      "Ice Weapon Damage",
-      "Mystic Weapon Damage",
-      "Physical Weapon Damage",
-      "Poison Weapon Damage",
-      "Psychic Weapon Damage",
-      "Shadow Weapon Damage",
-      "Retainer Ballistic Weapon Damage",
-      "Retainer Chaos Weapon Damage",
-      "Retainer Electric Weapon Damage",
-      "Retainer Fire Weapon Damage",
-      "Retainer Holy Weapon Damage",
-      "Retainer Ice Weapon Damage",
-      "Retainer Mystic Weapon Damage",
-      "Retainer Physical Weapon Damage",
-      "Retainer Poison Weapon Damage",
-      "Retainer Psychic Weapon Damage",
-      "Retainer Shadow Weapon Damage"
-    ],
     "Elemental Offence Buff": [
       "Carnage",
       "True Aim",
@@ -121,7 +96,33 @@
       "Rot",
       "Fear",
       "Soulburn",
-      "Touch from Beyond"
+      "Touch from Beyond",
+      "Go Pouncy!"
+    ],
+    "Weapon Attack": [
+      "Retainer Ballistic Weapon Damage",
+      "Retainer Chaos Weapon Damage",
+      "Retainer Electric Weapon Damage",
+      "Retainer Fire Weapon Damage",
+      "Retainer Holy Weapon Damage",
+      "Retainer Ice Weapon Damage",
+      "Retainer Mystic Weapon Damage",
+      "Retainer Physical Weapon Damage",
+      "Retainer Poison Weapon Damage",
+      "Retainer Psychic Weapon Damage",
+      "Retainer Shadow Weapon Damage",
+      "Ballistic Weapon Damage",
+      "Chaos Weapon Damage",
+      "Electric Weapon Damage",
+      "Fire Weapon Damage",
+      "Holy Weapon Damage",
+      "Ice Weapon Damage",
+      "Mystic Weapon Damage",
+      "Physical Weapon Damage",
+      "Poison Weapon Damage",
+      "Psychic Weapon Damage",
+      "Shadow Weapon Damage",
+      "Crit Chance"
     ],
     "Racial Offense Buff": [
       "Terrorbane",
@@ -341,4 +342,3 @@
       "Coolness"
     ]
 }
-

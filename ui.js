@@ -691,6 +691,12 @@ function updateSkills() {
 			itemDiv.appendChild(title);
 			itemDiv.appendChild(document.createElement("br"));
 
+			// Container for skills
+			const skillContainer = document.createElement("div");
+			skillContainer.style.display = "flex";
+			skillContainer.style.flexWrap = "wrap";
+			skillContainer.style.gap = "4px";
+	
 			// Sort skills based on skillOrderMap
 			const sortedSkills = info.skill.slice().sort((a, b) => {
 				const aOrder = skillOrderMap[a[0]] ?? 9999;
@@ -698,25 +704,48 @@ function updateSkills() {
 				return aOrder - bOrder;
 			});
 	
-			// Each skill as its own span with tooltip
+			// Each skill with image + tooltip
 			sortedSkills.forEach(s => {
 				const skillName = s[0];
 				const skillValue = s[1];
 	
-				const skillSpan = document.createElement("span");
-				skillSpan.textContent = `${skillName} (${skillValue})`;
-				skillSpan.style.cursor = "help"; // show hover pointer
+				const skillDiv = document.createElement("div");
+				skillDiv.style.display = "flex";
+				skillDiv.style.alignItems = "center";
+				skillDiv.style.gap = "2px";
 	
-				// Attach tooltip
-				attachSkillTooltip(skillSpan, skillName);
+				// Skill image
+				if (skillName) {
+					const img = document.createElement("img");
+					img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
+					img.style.width = "20px";
+					img.style.height = "20px";
+					img.style.objectFit = "contain";
 	
-				itemDiv.appendChild(skillSpan);
-				itemDiv.appendChild(document.createElement("br"));
+					// Attach global tooltip
+					attachSkillTooltip(img, skillName);
+	
+					skillDiv.appendChild(img);
+				}
+	
+				// Skill value text
+				const textSpan = document.createElement("span");
+				textSpan.style.color = "#888";
+				textSpan.style.fontSize = "0.9em";
+				textSpan.textContent = skillValue;
+	
+				// Attach tooltip to text as well
+				attachSkillTooltip(textSpan, skillName);
+	
+				skillDiv.appendChild(textSpan);
+				skillContainer.appendChild(skillDiv);
 	
 				// Collect for summary
 				allSkillsWithValues.push([skillName, skillValue]);
 			});
 	
+			itemDiv.appendChild(skillContainer);
+			itemDiv.appendChild(document.createElement("br"));
 			outputDiv.appendChild(itemDiv);
 			outputDiv.appendChild(document.createElement("br"));
 		}

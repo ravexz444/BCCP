@@ -14,7 +14,7 @@ const player_race = "";
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];
 const races = ["Abominable", "Archangel", "Bestial", "Corrupted", "Demonic", "Draconic","Eldritch", "Ethereal", "Lycan", "Necro", "Righteous", "Techno", "Vampiric", "Xeno"];
 const rarityColors = {
-		"Common": "#ffffff",
+		"Common": "#000000", // Usually white but black in here due white background
 		"Uncommon": "#00bf00",
 		"Rare": "#4d79ff",
 		"Epic": "#b300ff",

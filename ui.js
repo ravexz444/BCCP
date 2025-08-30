@@ -230,7 +230,7 @@ function createSearchUI() {
 						// Add image if exists
 						if (skill_images[skillName]) {
 							const img = document.createElement("img");
-							img.src = encodeURI(skill_images[skillName]); // <--- encode the URL
+							img.src = skill_images[skillName];
 							img.style.width = "20px";
 							img.style.height = "20px";
 							img.style.objectFit = "contain";

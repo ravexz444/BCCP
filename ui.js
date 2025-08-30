@@ -12,6 +12,25 @@ let skill_groups = {};     // { GroupName: [skill, ...], ... }
 let combinable_skills = new Set(); // filled from combinable_skills.json
 let savedSetups = { 1: null, 2: null, 3: null };
 
+// ---------------------- DATA LOADING ----------------------
+async function loadAllData() {
+	const [equip, coll, codes, groups, combinables, glos] = await Promise.all([
+		fetch("equipment_list.json").then(r => r.json()),
+		fetch("collection_list.json").then(r => r.json()),
+		fetch("collection_codes.json").then(r => r.json()),
+		fetch("skill_groups.json").then(r => r.json()),
+		fetch("combinable_skills.json").then(r => r.json()),
+		fetch("glossary.json").then(r => r.json())
+	]);
+
+	equipment_list = equip;
+	collection_list = coll;
+	collection_codes = codes;
+	skill_groups = groups;
+	combinable_skills = new Set(combinables);
+	glossary = glos;
+}
+
 // ---------------------- Toggle Button ----------------------
 function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
 	const btn = document.getElementById(buttonId);
@@ -806,24 +825,7 @@ function importFromBattle() {
 	updateSkills();
 }
 
-// ---------------------- DATA LOADING ----------------------
-async function loadAllData() {
-	const [equip, coll, codes, groups, combinables, glos] = await Promise.all([
-		fetch("equipment_list.json").then(r => r.json()),
-		fetch("collection_list.json").then(r => r.json()),
-		fetch("collection_codes.json").then(r => r.json()),
-		fetch("skill_groups.json").then(r => r.json()),
-		fetch("combinable_skills.json").then(r => r.json()),
-		fetch("glossary.json").then(r => r.json())
-	]);
 
-	equipment_list = equip;
-	collection_list = coll;
-	collection_codes = codes;
-	skill_groups = groups;
-	combinable_skills = new Set(combinables);
-	glossary = glos;
-}
 
 // ---------------------- DOM READY ----------------------
 document.addEventListener("DOMContentLoaded", async () => {

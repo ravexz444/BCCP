@@ -185,68 +185,84 @@ function createSearchUI() {
 	equippedDiv.id = "equippedList";
 	container.appendChild(equippedDiv);
 
+	// Precompute skill order map from skill_group
+	const skillOrderMap = {};
+	let idx = 0;
+	for (const skills of Object.values(skill_group)) {
+		for (const skillName of skills) {
+			skillOrderMap[skillName] = idx++;
+		}
+	}
+	// Skills not in skill_group will be last (order 9999)
 	searchBox.addEventListener("input", () => {
 		const query = searchBox.value.trim();
 		resultsDiv.innerHTML = "";
 		if (!query) return;
-	
+
 		const filters = parseQuery(query);
-	
+
 		for (const [name, info] of Object.entries(equipment_list)) {
-			if (matchEquipment(name, info, filters)) {
-				const btn = document.createElement("div");
-				btn.style.cursor = "pointer";
-				btn.style.marginBottom = "5px";
-				btn.addEventListener("click", () => equipItem(name, info.type));
-	
-				// Name and type
-				const title = document.createElement("span");
-				title.style.color = "#000"; 
-				title.style.fontWeight = "bold"; 
-				title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em; ">[${info.region}]</span>`;
-				btn.appendChild(title);
-				btn.appendChild(document.createElement("br"));
-	
-				// Skills with images
-				if (equipment_list[name]?.skill?.length) {
-					const skillContainer = document.createElement("div");
-					skillContainer.style.display = "flex";
-					skillContainer.style.flexWrap = "wrap";
-					skillContainer.style.gap = "4px";
-	
-					for (const s of equipment_list[name].skill) {
-						const skillName = s[0];
-						const skillValue = s[1];
-	
-						const skillDiv = document.createElement("div");
-						skillDiv.style.display = "flex";
-						skillDiv.style.alignItems = "center";
-						skillDiv.style.gap = "2px";
-	
-						if (skill_images[skillName]) {
-							const img = document.createElement("img");
-							img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
-							img.style.width = "20px";
-							img.style.height = "20px";
-							img.style.objectFit = "contain";
-							img.title = skillName; // tooltip
-							skillDiv.appendChild(img);
-						}
-	
-						const textSpan = document.createElement("span");
-						textSpan.style.color = "#888";
-						textSpan.style.fontSize = "0.9em";
-						textSpan.textContent = skillValue;
-						skillDiv.appendChild(textSpan);
-	
-						skillContainer.appendChild(skillDiv);
+			if (!matchEquipment(name, info, filters)) continue;
+
+			const btn = document.createElement("div");
+			btn.style.cursor = "pointer";
+			btn.style.marginBottom = "5px";
+			btn.addEventListener("click", () => equipItem(name, info.type));
+
+			// Name and type
+			const title = document.createElement("span");
+			title.style.color = "#000";
+			title.style.fontWeight = "bold";
+			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">[${info.region}]</span>`;
+			btn.appendChild(title);
+			btn.appendChild(document.createElement("br"));
+
+			// Skills with images, sorted according to skill_group
+			if (equipment_list[name]?.skill?.length) {
+				const skillContainer = document.createElement("div");
+				skillContainer.style.display = "flex";
+				skillContainer.style.flexWrap = "wrap";
+				skillContainer.style.gap = "4px";
+
+				// Sort skills based on skillOrderMap
+				const sortedSkills = info.skill.slice().sort((a, b) => {
+					const aOrder = skillOrderMap[a[0]] ?? 9999;
+					const bOrder = skillOrderMap[b[0]] ?? 9999;
+					return aOrder - bOrder;
+				});
+
+				for (const s of sortedSkills) {
+					const skillName = s[0];
+					const skillValue = s[1];
+
+					const skillDiv = document.createElement("div");
+					skillDiv.style.display = "flex";
+					skillDiv.style.alignItems = "center";
+					skillDiv.style.gap = "2px";
+
+					if (skill_images[skillName]) {
+						const img = document.createElement("img");
+						img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
+						img.style.width = "20px";
+						img.style.height = "20px";
+						img.style.objectFit = "contain";
+						img.title = skillName; // tooltip on hover
+						skillDiv.appendChild(img);
 					}
-	
-					btn.appendChild(skillContainer);
+
+					const textSpan = document.createElement("span");
+					textSpan.style.color = "#888";
+					textSpan.style.fontSize = "0.9em";
+					textSpan.textContent = skillValue;
+					skillDiv.appendChild(textSpan);
+
+					skillContainer.appendChild(skillDiv);
 				}
-	
-				resultsDiv.appendChild(btn);
+
+				btn.appendChild(skillContainer);
 			}
+
+			resultsDiv.appendChild(btn);
 		}
 	});
 }

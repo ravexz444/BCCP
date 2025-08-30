@@ -70,7 +70,7 @@ function preserveLastSetup() {
 
 	// keep at least one (the last one)
 	if (last) {
-		localStorage.setItem("activeSetup-1", last);
+		localStorage.setItem("lastActiveSetup", last);
 	}
 }
 

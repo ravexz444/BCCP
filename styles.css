@@ -15,21 +15,6 @@
 	color: red; font-weight: bold; 
 }
 
-/* Battle log in battle.html */
-.log-box {
-	white-space: pre-line;
-	border: 1px solid #cc0000;
-	padding: 10px;
-	max-height: 300px;
-	overflow-y: auto;
-	background-color: #fffafa;
-}
-
-.battle-result {
-	border-bottom: 1px solid #ccc;
-	padding: 8px 0;
-}
-
 .setup {
 	display: grid;
 	grid-template-columns: 1fr 250px; /* left flexible, right fixed */
@@ -40,20 +25,6 @@
 	padding: 1rem;
 	margin-bottom: 1rem;
 	background: #fafafa;
-}
-
-.setup-info {
-	font-size: 0.9rem;
-}
-
-.setup-stats {
-	text-align: right;
-	white-space: pre-line; /* preserve line breaks */
-	font-family: monospace;
-	background: #fff;
-	padding: 0.5rem;
-	border-radius: 4px;
-	box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
 }
 
 .eq-table td.diff {

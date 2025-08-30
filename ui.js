@@ -29,6 +29,15 @@ async function loadAllData() {
 	skill_groups = groups;
 	combinable_skills = new Set(combinables);
 	glossary = glos;
+
+	// Precompute skill order map from skill_groups
+	skillOrderMap = {};
+	let idx = 0;
+	for (const skills of Object.values(skill_groups)) {
+		for (const skillName of skills) {
+			skillOrderMap[skillName] = idx++;
+		}
+	}
 }
 
 // ---------------------- Toggle Button ----------------------
@@ -876,15 +885,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	setupSearchHelp();
 	
 	await loadAllData();  // ensure dropdowns exist
-	
-	// Precompute skill order map from skill_groups
-	const skillOrderMap = {};
-	let idx = 0;
-	for (const skills of Object.values(skill_groups)) {
-		for (const skillName of skills) {
-			skillOrderMap[skillName] = idx++;
-		}
-	}
 	
 	// Create search function
 	createSearchUI();

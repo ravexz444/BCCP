@@ -1220,7 +1220,7 @@ function buildEquipmentTable(setups) {
 		// normalize equipment for each setup
 		let vals = setups.map(s => {
 			let eqObj = s.equipment || {};
-			let val = eqObj[eqType];
+			let val = eqObj[eq];
 			if (!val || val.length === 0) return "-"; // skip if empty
 			return Array.isArray(val) ? val.join(", ") : val;
 		});

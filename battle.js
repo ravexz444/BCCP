@@ -1185,33 +1185,39 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 // Running multiple simulations and tracking rounds
 // enemiesList: array of enemy names
 function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
-	let summary = [];
-
-	for (let enemy of enemiesList) {
+	let rows = enemiesList.map(enemy => {
 		let results = { "Win": [], "Draw": [], "Loss": [] };
-
 		for (let i = 0; i < n; i++) {
 			let [result, round_num] = simulate_battle(enemy, player_skills, ret1, ret2, ret3);
 			results[result].push(round_num);
 		}
+		let winRate = (results["Win"].length / n * 100).toFixed(2) + "%";
+		let drawRate = (results["Draw"].length / n * 100).toFixed(2) + "%";
+		let lossRate = (results["Loss"].length / n * 100).toFixed(2) + "%";
+		let avgWin = results["Win"].length ? 
+			(results["Win"].reduce((a, b) => a + b, 0) / results["Win"].length).toFixed(2) : "-";
+		let avgLoss = results["Loss"].length ? 
+			(results["Loss"].reduce((a, b) => a + b, 0) / results["Loss"].length).toFixed(2) : "-";
+		return `<tr>
+			<td>${enemy}</td>
+			<td>${winRate}</td>
+			<td>${drawRate}</td>
+			<td>${lossRate}</td>
+			<td>${avgWin}</td>
+			<td>${avgLoss}</td>
+		</tr>`;
+	}).join("");
 
-		summary.push(""); // Blank line
-		summary.push(`Enemy: ${enemy}`);
-		summary.push(`Win Rate: ${(results["Win"].length / n * 100).toFixed(2)}% (${results["Win"].length})`);
-		summary.push(`Draw Rate: ${(results["Draw"].length / n * 100).toFixed(2)}% (${results["Draw"].length})`);
-		summary.push(`Loss Rate: ${(results["Loss"].length / n * 100).toFixed(2)}% (${results["Loss"].length})`);
-
-		if (results["Win"].length > 0) {
-			let avgWin = results["Win"].reduce((a, b) => a + b, 0) / results["Win"].length;
-			summary.push(`Average Win Round: ${avgWin.toFixed(2)}`);
-		}
-		if (results["Loss"].length > 0) {
-			let avgLoss = results["Loss"].reduce((a, b) => a + b, 0) / results["Loss"].length;
-			summary.push(`Average Loss Round: ${avgLoss.toFixed(2)}`);
-		}
-	}
-
-	return summary.join("\n");
+	return `<table class="battle-summary">
+		<thead>
+			<tr>
+				<th>Enemy</th><th>Win %</th><th>Draw %</th><th>Loss %</th><th>Avg Win</th><th>Avg Loss</th>
+			</tr>
+		</thead>
+		<tbody>
+			${rows}
+		</tbody>
+	</table>`;
 }
 
 // ------------------ Toggle button to hide/unhide ------------------
@@ -1489,7 +1495,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 						<p><b>Retainers:</b> ${retainersList}</p>
 					</div>
 					<div class="setup-stats">
-						<pre>${resultText}</pre>
+						${resultText}
 					</div>
 				</div>
 			`;

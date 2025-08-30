@@ -623,51 +623,42 @@ function refreshSavedSetups() {
 }
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
-function saveActiveSetup(slot) {
-	// Save collections
-	const collections = [];
-	for (const code of Object.keys(collectionCodes)) {
-		const cb = document.getElementById("collection-" + code);
-		if (cb && cb.checked) collections.push(code);
-	}
+// Index -> Battle
+let setupCount = 1; // default 1
 
-	// Save equipment
-	const equipment = {};
-	for (const [type, items] of Object.entries(equipped)) {
-		if (type === "Retainer" || type === "Accessory") {
-			(items || []).forEach((it, idx) => {
-				// Always save as array, even if single item
-				equipment[`${type}-${idx + 1}`] = it ? [it] : [];
-			});
-		} else {
-			if (Array.isArray(items)) {
-				equipment[type] = [...items];
-			} else if (typeof items === "string") {
-				equipment[type] = [items];
-			} else {
-				equipment[type] = [];
-			}
-		}
-	}	
+function setSetupCount() {
+  const input = document.getElementById("setupCountInput");
+  setupCount = parseInt(input.value, 10) || 1;
+  renderSetupButtons();
+}
 
-	// Store setup into localStorage
-	const setup = { collections, equipment };
-	localStorage.setItem(`activeSetup-${slot}`, JSON.stringify(setup));
+function renderSetupButtons() {
+  const container = document.getElementById("setupButtons");
+  container.innerHTML = "";
 
-	// ✅ indicator
-	const indicator = document.getElementById(`indicator${slot}`);
-	if (indicator) indicator.textContent = "✅";
+  for (let i = 1; i <= setupCount; i++) {
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = `Save Setup ${i}`;
+    saveBtn.onclick = () => saveActiveSetup(i);
+
+    const indicator = document.createElement("span");
+    indicator.id = `indicator${i}`;
+    indicator.style.marginLeft = "5px";
+
+    container.appendChild(saveBtn);
+    container.appendChild(indicator);
+    container.appendChild(document.createElement("br"));
+  }
 }
 
 function sendAllToBattle() {
-	const setupsToSend = {};
-	for (let i = 1; i <= 3; i++) {
-		const data = localStorage.getItem(`activeSetup-${i}`);
-		if (data) setupsToSend[i] = JSON.parse(data);
-	}
-	localStorage.setItem("setupsWithSkills", JSON.stringify(setupsToSend));
-
-	window.location.href = "battle.html";
+  const setups = [];
+  for (let i = 1; i <= setupCount; i++) {
+    const raw = localStorage.getItem(`activeSetup-${i}`);
+    if (raw) setups.push(JSON.parse(raw));
+  }
+  localStorage.setItem("setupsWithSkills", JSON.stringify(setups));
+  window.location.href = "battle.html";
 }
 
 // Battle -> Index

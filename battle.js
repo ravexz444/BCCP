@@ -1231,14 +1231,25 @@ function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {
 			return { winRate, drawRate, lossRate, avgW, avgL };
 		});
 
-		// find max win
-		let maxWin = Math.max(...resultsPerSetup.map(r => r.winRate));
-
+		// find max win (rounded for fair comparison)
+		let maxWin = Math.max(...resultsPerSetup.map(r => Math.round(r.winRate)));
+		
 		let cols = resultsPerSetup.map(r => {
-		    let cls = (Math.abs(r.winRate - maxWin) < 0.0001 ? "maxwin" : "");
-		    let wdl = `<span class="${cls}">${r.winRate.toFixed(0)}%</span> / ${r.drawRate.toFixed(0)}% / ${r.lossRate.toFixed(0)}%`;
-		    let avg = `${r.avgW} / ${r.avgL}`;
-		    return `<td>${wdl}</td><td>${avg}</td>`;
+			// round values for display
+			let win = Math.round(r.winRate);
+			let draw = Math.round(r.drawRate);
+			let loss = Math.round(r.lossRate);
+		
+			// one decimal for avg
+			let avgW = r.avgW !== "-" ? parseFloat(r.avgW).toFixed(1) : "-";
+			let avgL = r.avgL !== "-" ? parseFloat(r.avgL).toFixed(1) : "-";
+		
+			// highlight only based on rounded win%
+			let cls = (win === maxWin ? "maxwin" : "");
+		
+			let wdl = `<span class="${cls}">${win}%</span> / ${draw}% / ${loss}%`;
+			let avg = `${avgW} / ${avgL}`;
+			return `<td>${wdl}</td><td>${avg}</td>`;
 		}).join("");
 
 		return `<tr><td>${enemy}</td>${cols}</tr>`;

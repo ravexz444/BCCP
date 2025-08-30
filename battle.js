@@ -1201,10 +1201,12 @@ function buildEquipmentTable(setups) {
 	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
 
 	let rows = eqTypes.map(eq => {
-		// normalize to string
+		// normalize equipment for each setup
 		let vals = setups.map(s => {
-			let eq = normalizeEquipment(s.equipment || {});
-			return eq[eqType] || "-";
+			let eqObj = normalizeEquipment(s.equipment || {});
+			// eqObj[eqType] is always an array (after normalization)
+			if (!eqObj[eqType] || eqObj[eqType].length === 0) return "-";
+			return eqObj[eqType].join(", ");
 		});
 
 		let allEqual = vals.every(v => v === vals[0]);

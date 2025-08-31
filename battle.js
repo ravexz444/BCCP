@@ -34,7 +34,8 @@ async function loadAllData() {
 		dict, 
 		enemies, 
 		retainers,
-		grim
+		grim,
+		itemdb
 	] = await Promise.all([
 		fetch("equipment_list.json").then(r => r.json()),
 		fetch("collection_list.json").then(r => r.json()),
@@ -43,7 +44,8 @@ async function loadAllData() {
 		fetch("skills_dictionary.json").then(r => r.json()),
 		fetch("enemies_list.json").then(r => r.json()),
 		fetch("retainers_list.json").then(r => r.json()),
-		fetch("grimoire.json").then(r => r.json())
+		fetch("grimoire.json").then(r => r.json()),
+		fetch("item_database.json").then(r => r.json())
 	]);
 
 	equipment_list = equip;
@@ -54,6 +56,7 @@ async function loadAllData() {
 	enemies_list = enemies;
 	retainers_list = retainers;
 	grimoire = grim;
+	item_database = itemdb;
 
 	// Build enemy selectors right after loading
 	buildEnemySelectors();

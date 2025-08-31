@@ -84,6 +84,232 @@ function preserveLastSetup() {
 	}
 }
 
+// -------------------- ENEMY UI ------------------------
+// Search Builder Helper
+function parseNumber(val) {
+	val = val.replace(/,/g, "").toUpperCase().trim();
+	let mult = 1;
+	if (val.endsWith("K")) {
+		mult = 1000;
+		val = val.slice(0, -1);
+	} else if (val.endsWith("M")) {
+		mult = 1000000;
+		val = val.slice(0, -1);
+	}
+	return parseFloat(val) * mult;
+}
+
+function compareValue(op, a, b) {
+	switch (op) {
+		case "<": return a < b;
+		case ">": return a > b;
+		case "<=": return a <= b;
+		case ">=": return a >= b;
+		default: return a === b;
+	}
+}
+
+function parseQuery(query) {
+	const filters = [];
+	// split by semicolon first
+	const fieldClauses = query.split(";").map(s => s.trim()).filter(Boolean);
+
+	for (const clause of fieldClauses) {
+		// field:val1,val2,val3
+		const [fieldRaw, valuesRaw] = clause.split(":");
+		if (!valuesRaw) continue;
+		const field = fieldRaw.toLowerCase().trim();
+		const values = valuesRaw.split(",").map(v => v.trim()).filter(Boolean);
+
+		for (const val of values) {
+			const neg = val.startsWith("-");
+			let value = val.replace(/^-/, "").replace(/^"|"$/g, "");
+			filters.push({ field, value, neg });
+		}
+	}
+	return filters;
+}
+
+// region filter logic
+function matchesRegion(itemRegion, filters) {
+	if (!Array.isArray(filters)) filters = [filters];
+
+	for (const filter of filters) {
+		const valRaw = filter.value.toLowerCase();
+		const neg = filter.neg;
+
+		// Special keywords
+		if (["event","premium"].includes(valRaw)) {
+			const inList = (valRaw === "event" ? eventRegions : premiumRegions).includes(itemRegion);
+			if ((neg && inList) || (!neg && !inList)) return false;
+			continue;
+		}
+
+		// Numeric comparison: <R07, >=R03, etc
+		const m = valRaw.match(/^(<|>|<=|>=)?r(\d+)/i);
+		if (m) {
+			const op = m[1] || "=";
+			const num = parseInt(m[2], 10);
+			const itemNum = parseInt(itemRegion.match(/^R(\d+)/)?.[1] || 0, 10);
+			if ((neg && compareValue(op, itemNum, num)) || (!neg && !compareValue(op, itemNum, num))) return false;
+			continue;
+		}
+
+		// Exact / partial match
+		const starts = itemRegion.toLowerCase().startsWith(valRaw);
+		if ((neg && starts) || (!neg && !starts)) return false;
+	}
+
+	return true;
+}
+
+// Enemy Matcher
+function matchEnemy(name, info, filters) {
+	for (const f of filters) {
+		const v = f.value.toLowerCase();
+		let matched = false;
+
+		if (f.field === "xp") {
+			const m = v.match(/^(<=|>=|<|>)?(.+)$/);
+			if (!m) continue;
+			const op = m[1] || "=";
+			const num = parseNumber(m[2]);
+			matched = compareValue(op, info.xp, num);
+		}
+		else if (f.field === "region") {
+			matched = matchesRegion(info.region, [f]);
+		}
+		else if (f.field === "skill") {
+			matched = info.skill && info.skill.some(s => s.toLowerCase().includes(v));
+			if (f.neg) matched = !matched;
+		}
+		else if (f.field === "ret") {
+			// Combine ret1, ret2, ret3 into one array
+			const rets = [info.ret1, info.ret2, info.ret3].filter(Boolean).map(r => r.toLowerCase());
+			matched = rets.some(r => r.includes(v));
+			if (f.neg) matched = !matched;
+		}
+		else if (["race", "rarity"].includes(f.field)) {
+			const fieldVal = (info[f.field] || "").toLowerCase();
+			matched = fieldVal.includes(v);
+			if (f.neg) matched = !matched;
+		}
+		else if (f.field === "name") {
+			const nameVal = name.toLowerCase();
+			matched = nameVal.includes(v);
+			if (f.neg) matched = !matched;
+		}
+
+		if (!matched) return false; // failed a filter
+	}
+	return true;
+}
+
+let selectedEnemies = [];
+
+// Enemy Search UI
+function createEnemySearchUI() {
+	const container = document.getElementById("manualEnemySelector");
+	
+	const searchBox = document.createElement("input");
+	searchBox.type = "text";
+	searchBox.id = "enemySearch";
+	searchBox.placeholder = "Search enemies...";
+	searchBox.classList.add("enemy-search");
+	container.appendChild(searchBox);
+
+	const resultsDiv = document.createElement("div");
+	resultsDiv.id = "enemySearchResults";
+	resultsDiv.style.border = "1px solid #ccc";
+	resultsDiv.style.maxHeight = "200px";
+	resultsDiv.style.overflowY = "auto";
+	container.appendChild(resultsDiv);
+
+	const chosenDiv = document.createElement("div");
+	chosenDiv.id = "chosenEnemies";
+	container.appendChild(chosenDiv);
+
+	searchBox.addEventListener("input", () => {
+		const query = searchBox.value.trim();
+		resultsDiv.innerHTML = "";
+		if (!query) return;
+
+		const filters = parseQuery(query);
+
+		for (const [name, info] of Object.entries(enemies_list)) {
+			if (!matchEnemy(name, info, filters)) continue;
+
+			const btn = document.createElement("div");
+			btn.style.cursor = "pointer";
+			btn.style.marginBottom = "5px";
+			btn.textContent = `${name} (${info.race}) [${info.region}] [XP: ${info.xp}] [Rarity: ${info.rarity}]`;
+
+			btn.addEventListener("click", () => {
+				if (!selectedEnemies.includes(name)) {
+					selectedEnemies.push(name);
+
+					// show chosen enemy below
+					const chip = document.createElement("span");
+					chip.textContent = name;
+					chip.style.marginRight = "8px";
+					chip.style.padding = "2px 5px";
+					chip.style.border = "1px solid #aaa";
+					chip.style.borderRadius = "5px";
+					chosenDiv.appendChild(chip);
+				}
+				searchBox.value = "";
+				resultsDiv.innerHTML = "";
+			});
+
+			resultsDiv.appendChild(btn);
+		}
+	});
+}
+
+const searchBox = document.getElementById("itemSearch");
+const resultsList = document.getElementById("searchResults");
+
+// Assuming you have all items in a single object or array
+// Example: item_database = { "Simple Knife": {...}, "FN V2000 Faith": {...} }
+const allItems = Object.keys(item_database);
+
+searchBox.addEventListener("input", () => {
+	const query = searchBox.value.toLowerCase();
+	resultsList.innerHTML = "";
+
+	if (query.length < 2) return; // wait until 2+ characters
+
+	const matches = allItems.filter(item =>
+		item.toLowerCase().includes(query)
+	);
+
+	matches.forEach(name => {
+		const li = document.createElement("li");
+		li.textContent = name;
+		li.classList.add("result-item");
+		li.addEventListener("click", () => {
+			// Handle selection (replace dropdown behavior here)
+			searchBox.value = name;
+			resultsList.innerHTML = "";
+
+			const info = item_database[name];
+			if (info) {
+				title.innerHTML = `
+					${name} (${info.type}) 
+					<span style="font-weight: normal; font-size: 0.9em;">
+						[${info.region}] 
+						[Src: ${info.source === "Drop" 
+							? `<a href="${baseWiki}${item_database[info.srcdet]?.link.replace(/ /g,'_')}" target="_blank">${info.srcdet}</a>` 
+							: info.source}] 
+						[<a href="${baseWiki}${info.link.replace(/ /g,'_')}" target="_blank">Wiki Link</a>]
+					</span>
+				`;
+			}
+		});
+		resultsList.appendChild(li);
+	});
+});
+
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {
 	const container = document.getElementById("manualEnemySelector");
@@ -94,23 +320,8 @@ function buildEnemySelectors() {
 	manualHeading.textContent = "Manual Selector";
 	container.appendChild(manualHeading);
 	
-	// --- Manual 10 selects ---
-	for (let i = 0; i < 10; i++) {
-		const select = document.createElement("select");
-		select.id = `enemy${i + 1}`;
-		select.classList.add("enemy-select");
-		select.innerHTML = `<option value="">-- Select Enemy --</option>`;
-
-		Object.keys(enemies_list).forEach(name => {
-			const opt = document.createElement("option");
-			opt.value = name;
-			opt.textContent = name;
-			select.appendChild(opt);
-		});
-
-		container.appendChild(select);
-		container.appendChild(document.createElement("br"));
-	}
+	// --- Manual - Search UI ---
+	createEnemySearchUI();
 
 	// Heading - Batch
 	const batchHeading = document.createElement("h3");
@@ -192,6 +403,7 @@ function getEnemiesForRegion(region, type = "all") {
 	return enemies;
 }
 
+// --------------------------- SETUP SKILL --------------------------------------
 // === Search skill for all equipments and collections ===
 function init_setup(setup) {
 	let player_skills = [];
@@ -1554,9 +1766,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const n = parseInt(document.getElementById("simulations").value, 10) || 1;
 	
 		// Collect enemies
-		// --- Manual 10 enemies ---
-		const selectors = document.querySelectorAll(".enemy-select");
-		const selectedEnemies = Array.from(selectors).map(sel => sel.value).filter(v => v !== "");
+		// --- Manual enemies from search ---
+		// already in selectedEnemies
 		// --- Batch-selected enemies ---
 		const batchGroup = document.getElementById("batchEnemyGroup").value;
 		const batchRegion = document.getElementById("batchEnemyRegion").value;

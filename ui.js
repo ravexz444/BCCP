@@ -281,7 +281,7 @@ function createSearchUI() {
 			      ? `<a href="${baseWiki}${item_database[info.srcdet]?.link.replace(/ /g, '_')}" target="_blank">${info.srcdet}</a>`
 			      : info.source
 			  }] 
-			  [Link: <a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Wiki Link</a>]
+			  [<a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Wiki Link</a>]
 			</span>`;
 
 			btn.appendChild(title);

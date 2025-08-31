@@ -286,7 +286,45 @@ function createEnemySearchUI() {
 	});
 }
 
+// Help Info for Search System
+function enemySetupSearchHelp() {
+	const searchHelpDiv = document.getElementById("enemy-search-help");
+	if (!searchHelpDiv) return;
 
+	// Fill the help info
+	searchHelpDiv.innerHTML = `
+
+		<p>Template</p>
+  		<ul style="font-size:13px; line-height:1.4;">
+			<li><strong>field</strong>:value1,value2,-value3; <strong>field2</strong>:valueA,-valueB</li>
+	  		<li><strong>;</strong> separates different fields</li>
+			<li><strong>,</strong> separates multiple values for the same field</li>
+			<li><strong>- at the beginning of a value</strong> means exclude/negate</li>
+			<li><strong>Values with spaces</strong> better use "quotes"</li>
+  		</ul>
+		<p>Example</p>
+  		<ul style="font-size:13px; line-height:1.4;">
+			<li>region:R02 / &lt;R05 / Event / Premium / &lt;R05,-Event</li>
+			<li>xp:&lt;1.2M / &gt;=500K</li>
+			<li>name:Key / -Pearl / "Bone Crossbow"</li>
+			<li>skill:Charge,-Shadow / "Loot Chance Modifier"</li>
+			<li>mat:Sanguine Pearl / -Phoenix Flame / Golden Skull, -Fel Wood</li>
+			<li>type:Weapon, rarity:-Common, race:Undead, source:Drop, rarity:Epic</li>
+			<li>region:R8; mat:Phoenix Flame</li>
+   			<li>xp:&lt;1M; region:-Event, -Premium</li> 
+	  		<li>region:&lt;R3; name:-Key</li> 
+		</ul>
+	`;
+
+	// Initialize toggle button
+	setupToggle(
+		"toggleEnemySearchHelpBtn",   // button ID
+		"enemy-search-help",           // content div ID
+		"Show Enemy Search Help ▲",     // button text when hidden
+		"Hide Enemy Search Help ▼",     // button text when shown
+		true                      // initially visible
+	);
+}
 
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {
@@ -1687,6 +1725,8 @@ function highlightDifferences(activeSetups, setupsWithSkills) {
 document.addEventListener("DOMContentLoaded", async () => {
 	// Setup toggles
 	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", false);
+
+	enemySetupSearchHelp()
 
 	await loadAllData();
 

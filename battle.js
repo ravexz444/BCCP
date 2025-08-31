@@ -251,13 +251,31 @@ function createEnemySearchUI() {
 				if (!selectedEnemies.includes(name)) {
 					selectedEnemies.push(name);
 
-					// show chosen enemy below
+					// show chosen enemy below with ❌ remove button
 					const chip = document.createElement("span");
-					chip.textContent = name;
+					chip.style.display = "inline-flex";
+					chip.style.alignItems = "center";
 					chip.style.marginRight = "8px";
 					chip.style.padding = "2px 5px";
 					chip.style.border = "1px solid #aaa";
 					chip.style.borderRadius = "5px";
+
+					const text = document.createElement("span");
+					text.textContent = name;
+
+					const removeBtn = document.createElement("button");
+					removeBtn.textContent = "❌";
+					removeBtn.style.marginLeft = "5px";
+					removeBtn.style.cursor = "pointer";
+					removeBtn.addEventListener("click", () => {
+						// remove from array
+						selectedEnemies = selectedEnemies.filter(e => e !== name);
+						// remove chip from UI
+						chip.remove();
+					});
+
+					chip.appendChild(text);
+					chip.appendChild(removeBtn);
 					chosenDiv.appendChild(chip);
 				}
 				searchBox.value = "";
@@ -268,46 +286,6 @@ function createEnemySearchUI() {
 		}
 	});
 }
-
-const searchBox = document.getElementById("itemSearch");
-const resultsList = document.getElementById("searchResults");
-
-searchBox.addEventListener("input", () => {
-	const query = searchBox.value.toLowerCase();
-	resultsList.innerHTML = "";
-
-	if (query.length < 2) return; // wait until 2+ characters
-
-	const matches = allItems.filter(item =>
-		item.toLowerCase().includes(query)
-	);
-
-	matches.forEach(name => {
-		const li = document.createElement("li");
-		li.textContent = name;
-		li.classList.add("result-item");
-		li.addEventListener("click", () => {
-			// Handle selection (replace dropdown behavior here)
-			searchBox.value = name;
-			resultsList.innerHTML = "";
-
-			const info = item_database[name];
-			if (info) {
-				title.innerHTML = `
-					${name} (${info.type}) 
-					<span style="font-weight: normal; font-size: 0.9em;">
-						[${info.region}] 
-						[Src: ${info.source === "Drop" 
-							? `<a href="${baseWiki}${item_database[info.srcdet]?.link.replace(/ /g,'_')}" target="_blank">${info.srcdet}</a>` 
-							: info.source}] 
-						[<a href="${baseWiki}${info.link.replace(/ /g,'_')}" target="_blank">Wiki Link</a>]
-					</span>
-				`;
-			}
-		});
-		resultsList.appendChild(li);
-	});
-});
 
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {

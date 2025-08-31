@@ -933,6 +933,12 @@ function importFromBattle() {
 		equipped[type] = Array.isArray(items) ? [...items] : [];
 	}
 
+	// clear activeSetup (if remained)
+	for (let i = 1; ; i++) {
+		if (!localStorage.getItem(`activeSetup-${i}`)) break;
+		localStorage.removeItem(`activeSetup-${i}`);
+	}
+	
 	updateEquippedList();
 	updateSkills();
 }

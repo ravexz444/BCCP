@@ -269,10 +269,15 @@ function createSearchUI() {
 			btn.addEventListener("click", () => equipItem(name, info.type));
 
 			// Name and type
+			const baseWiki = "https://the-bloodlore-chronicles.fandom.com/wiki/";
 			const title = document.createElement("span");
 			title.style.color = "#000";
 			title.style.fontWeight = "bold";
-			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">[${info.region}] [Src: ${info.src === "Drop" ? info.srcdet : info.src}] [Link: ${item_database[name]?.link || ""}]</span>`;
+			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">
+			  [${info.region}] 
+			  [Src: ${info.source === "Drop" ? info.srcdet : info.src}] 
+			  [<a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Link</a>]
+			</span>`;
 			btn.appendChild(title);
 			btn.appendChild(document.createElement("br"));
 

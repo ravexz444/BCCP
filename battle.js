@@ -245,7 +245,17 @@ function createEnemySearchUI() {
 			const btn = document.createElement("div");
 			btn.style.cursor = "pointer";
 			btn.style.marginBottom = "5px";
-			btn.textContent = `${name} (${info.race}) [${info.region}] [XP: ${info.xp}] [Rarity: ${info.rarity}]`;
+
+			// use innerHTML instead of textContent
+			const baseWiki = "https://the-bloodlore-chronicles.fandom.com/wiki/";
+			btn.innerHTML = `
+				${name} (${info.rarity}) 
+				<span style="font-weight: normal; font-size: 0.9em;">
+					[${info.region}] 
+					[Race: ${info.race}] 
+					[<a href="${baseWiki}${item_database[name]?.link.replace(/ /g,'_')}" target="_blank">Wiki Link</a>]
+				</span>
+			`;
 
 			btn.addEventListener("click", () => {
 				if (!selectedEnemies.includes(name)) {

@@ -270,7 +270,7 @@ function createSearchUI() {
 			const title = document.createElement("span");
 			title.style.color = "#000";
 			title.style.fontWeight = "bold";
-			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">[${info.region}]</span>`;
+			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">[${info.region}] [Src: ${info.src === "Drop" ? info.srcdet : info.src}] [Link: item_database(name.link)</span>`;
 			btn.appendChild(title);
 			btn.appendChild(document.createElement("br"));
 

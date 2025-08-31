@@ -5,7 +5,44 @@
 	gap: 6px 16px;
 }
 
+/* Search Bar */
+.equipment-search {
+	width: 400px; /* or 100% for full width */
+	padding: 5px;
+	font-size: 14px;
+}
+
 /* Reusable hidden class */
 .hidden {
 	display: none !important;
+}
+
+/* Give red color for different items between setups */
+.diff { 
+	color: red; font-weight: bold; 
+}
+
+.log-box { 
+	white-space: pre-line; 
+	border: 1px solid #cc0000; 
+	padding: 10px; 
+	/* max-height: 300px; */
+	overflow-y: auto; 
+	background-color: #fffafa; 
+}
+
+.setup {
+	display: grid;
+	grid-template-columns: 1fr 250px; /* left flexible, right fixed */
+	gap: 1rem;
+	align-items: start;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 1rem;
+	margin-bottom: 1rem;
+	background: #fafafa;
+}
+
+td {
+	padding: 4px 10px; /* top/bottom = 4px, left/right = 10px */
 }

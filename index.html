@@ -41,7 +41,13 @@
 	<button id="deleteSetupBtn">Delete</button>
 
 	<br><br>
-	<button id="goBattleBtn">Go to Battle</button>
+	<h2>Battle Preparation</h2>
+	<label for="setupCountInput">How many setups to compare?</label>
+	<input type="number" id="setupCountInput" value="1" min="1" max="5">
+	<button onclick="setSetupCount()">Confirm</button>
+	
+	<div id="setupButtons"></div>
+	<button id="sendToBattle">Send to Battle</button>
 	
 	<!-- Load your JS logic -->
 	<script src="ui.js"></script>

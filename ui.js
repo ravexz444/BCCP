@@ -5,11 +5,44 @@ const equipmentTypes = [
 const eventRegions = ["LE", "RAA", "RDD", "R01.3","R02.3"];
 const premiumRegions = ["PS2024", "PS2025"];
 
-let equipmentData = {};
-let collectionData = {};
-let collectionCodes = {}; // shortCode → fullName mapping
-let skillGroups = {};     // { GroupName: [skill, ...], ... }
-let combinableSkills = new Set(); // filled from combinable_skills.json
+let equipment_list = {};
+let collection_list = {};
+let collection_codes = {}; // shortCode → fullName mapping
+let skill_groups = {};     // { GroupName: [skill, ...], ... }
+let combinable_skills = new Set(); // filled from combinable_skills.json
+let savedSetups = { 1: null, 2: null, 3: null };
+let skillOrderMap = {};
+let categoryOrderMap = {};
+
+// ---------------------- DATA LOADING ----------------------
+async function loadAllData() {
+	const [equip, coll, codes, groups, combinables, glos, itemdb] = await Promise.all([
+		fetch("equipment_list.json").then(r => r.json()),
+		fetch("collection_list.json").then(r => r.json()),
+		fetch("collection_codes.json").then(r => r.json()),
+		fetch("skill_groups.json").then(r => r.json()),
+		fetch("combinable_skills.json").then(r => r.json()),
+		fetch("glossary.json").then(r => r.json()),
+		fetch("item_database.json").then(r => r.json())
+	]);
+
+	equipment_list = equip;
+	collection_list = coll;
+	collection_codes = codes;
+	skill_groups = groups;
+	combinable_skills = new Set(combinables);
+	glossary = glos;
+	item_database = itemdb;
+
+	// Precompute skill order map from skill_groups
+	skillOrderMap = {};
+	let idx = 0;
+	for (const skills of Object.values(skill_groups)) {
+		for (const skillName of skills) {
+			skillOrderMap[skillName] = idx++;
+		}
+	}
+}
 
 // ---------------------- Toggle Button ----------------------
 function setupToggle(buttonId, targetId, showText, hideText, startHidden = false) {
@@ -33,6 +66,42 @@ function setupToggle(buttonId, targetId, showText, hideText, startHidden = false
 		} else {
 			btn.textContent = hideText;
 		}
+	});
+}
+
+// ---------------------- Global Skill Tooltip ----------------------
+const skillTooltip = document.createElement("div");
+skillTooltip.id = "skill-tooltip";
+skillTooltip.style.position = "absolute";
+skillTooltip.style.backgroundColor = "#222";
+skillTooltip.style.color = "#fff";
+skillTooltip.style.padding = "6px";
+skillTooltip.style.borderRadius = "4px";
+skillTooltip.style.fontSize = "0.9em";
+skillTooltip.style.lineHeight = "1.2em";
+skillTooltip.style.whiteSpace = "pre-line";
+skillTooltip.style.pointerEvents = "none";
+skillTooltip.style.display = "none";
+skillTooltip.style.zIndex = 999;
+document.body.appendChild(skillTooltip);
+
+window.addEventListener("scroll", () => skillTooltip.style.display = "none");
+
+// Reusable function to attach skill tooltip to an element
+function attachSkillTooltip(element, skillName) {
+	element.addEventListener("mouseenter", (e) => {
+		const desc = glossary[skillName]?.desc ?? "No description";
+		skillTooltip.innerHTML = `<b>${skillName}</b><br>${desc}`;
+		skillTooltip.style.display = "block";
+		skillTooltip.style.left = e.pageX + 10 + "px";
+		skillTooltip.style.top = e.pageY + 10 + "px";
+	});
+	element.addEventListener("mousemove", (e) => {
+		skillTooltip.style.left = e.pageX + 10 + "px";
+		skillTooltip.style.top = e.pageY + 10 + "px";
+	});
+	element.addEventListener("mouseleave", () => {
+		skillTooltip.style.display = "none";
 	});
 }
 
@@ -170,6 +239,7 @@ function createSearchUI() {
 	searchBox.type = "text";
 	searchBox.id = "equipmentSearch";
 	searchBox.placeholder = "Search equipment...";
+	searchBox.classList.add("equipment-search");
 	container.appendChild(searchBox);
 
 	const resultsDiv = document.createElement("div");
@@ -182,21 +252,92 @@ function createSearchUI() {
 	const equippedDiv = document.createElement("div");
 	equippedDiv.id = "equippedList";
 	container.appendChild(equippedDiv);
-
+	
 	searchBox.addEventListener("input", () => {
 		const query = searchBox.value.trim();
 		resultsDiv.innerHTML = "";
 		if (!query) return;
 
 		const filters = parseQuery(query);
-		for (const [name, info] of Object.entries(equipmentData)) {
-			if (matchEquipment(name, info, filters)) {
-				const btn = document.createElement("button");
-				btn.textContent = `${name} (${info.type})`;
-				btn.addEventListener("click", () => equipItem(name, info.type));
-				resultsDiv.appendChild(btn);
-				resultsDiv.appendChild(document.createElement("br"));
+
+		for (const [name, info] of Object.entries(equipment_list)) {
+			if (!matchEquipment(name, info, filters)) continue;
+
+			const btn = document.createElement("div");
+			btn.style.cursor = "pointer";
+			btn.style.marginBottom = "5px";
+			btn.addEventListener("click", () => equipItem(name, info.type));
+
+			// Name and type
+			const baseWiki = "https://the-bloodlore-chronicles.fandom.com/wiki/";
+			const title = document.createElement("span");
+			title.style.color = "#000";
+			title.style.fontWeight = "bold";
+			
+			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">
+			  [${info.region}] 
+			  [Src: ${
+			    info.source === "Drop"
+			      ? `<a href="${baseWiki}${item_database[info.srcdet]?.link.replace(/ /g, '_')}" target="_blank">${info.srcdet}</a>`
+			      : info.source
+			  }] 
+			  [Link: <a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Wiki Link</a>]
+			</span>`;
+
+			btn.appendChild(title);
+			btn.appendChild(document.createElement("br"));
+
+			// Skills with images, sorted according to skill_group
+			if (equipment_list[name]?.skill?.length) {
+				const skillContainer = document.createElement("div");
+				skillContainer.style.display = "flex";
+				skillContainer.style.flexWrap = "wrap";
+				skillContainer.style.gap = "4px";
+
+				// Sort skills based on skillOrderMap
+				const sortedSkills = info.skill.slice().sort((a, b) => {
+					const aOrder = skillOrderMap[a[0]] ?? 9999;
+					const bOrder = skillOrderMap[b[0]] ?? 9999;
+					return aOrder - bOrder;
+				});
+
+				for (const s of sortedSkills) {
+					const skillName = s[0];
+					const skillValue = s[1];
+
+					const skillDiv = document.createElement("div");
+					skillDiv.style.display = "flex";
+					skillDiv.style.alignItems = "center";
+					skillDiv.style.gap = "2px";
+
+					// Image
+					if (skillName) {
+						const img = document.createElement("img");
+						img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
+						img.style.width = "20px";
+						img.style.height = "20px";
+						img.style.objectFit = "contain";
+
+						// Attach global tooltip
+						attachSkillTooltip(img, skillName);
+
+						skillDiv.appendChild(img);
+					}
+
+					// Show only skill value
+					const textSpan = document.createElement("span");
+					textSpan.style.color = "#000";
+					textSpan.style.fontSize = "0.9em";
+					textSpan.textContent = skillValue;
+					skillDiv.appendChild(textSpan);
+
+					skillContainer.appendChild(skillDiv);
+				}
+
+				btn.appendChild(skillContainer);
 			}
+
+			resultsDiv.appendChild(btn);
 		}
 	});
 }
@@ -369,8 +510,8 @@ function createCollectionCheckboxes() {
 		const rowDiv = document.createElement("div"); // one row
 
 		for (const code of row) {
-			if (!(code in collectionCodes)) {
-				console.warn(`Warning: ${code} not found in collectionCodes`);
+			if (!(code in collection_codes)) {
+				console.warn(`Warning: ${code} not found in collection_codes`);
 				continue;
 			}
 
@@ -386,6 +527,9 @@ function createCollectionCheckboxes() {
 			const label = document.createElement("label");
 			label.htmlFor = checkbox.id;
 			label.textContent = code;
+
+			// Add tooltip (hover text)
+			label.title = collection_codes[code];
 
 			div.appendChild(checkbox);
 			div.appendChild(label);
@@ -433,7 +577,7 @@ function addSkill(categoryMap, category, skillName, rawValue) {
 	const entry = categoryMap[category][skillName];
 	const parsed = parseSkillValue(rawValue);
 
-	if (combinableSkills.has(skillName) &&
+	if (combinable_skills.has(skillName) &&
 		(parsed.type === "number" || parsed.type === "percent" || parsed.type === "plus")) {
 
 		const add = parsed.value;
@@ -450,7 +594,7 @@ function summarizeSkills(allSkillsWithValues) {
 
 	allSkillsWithValues.forEach(([skillName, value]) => {
 		let placed = false;
-		for (const [groupName, groupSkills] of Object.entries(skillGroups)) {
+		for (const [groupName, groupSkills] of Object.entries(skill_groups)) {
 			if (groupSkills.includes(skillName)) {
 				addSkill(categoryMap, groupName, skillName, value);
 				placed = true;
@@ -464,28 +608,79 @@ function summarizeSkills(allSkillsWithValues) {
 }
 
 function renderSkillSummary(allSkillsWithValues) {
+	// Summarize skills into categories
 	const categoryMap = summarizeSkills(allSkillsWithValues);
 	const container = document.getElementById("skills-summary");
 	container.innerHTML = "";
 
-	for (const [category, skills] of Object.entries(categoryMap)) {
-		const h3 = document.createElement("h3");
-		h3.textContent = category;
-		container.appendChild(h3);
+	// Precompute category order map based on skill_groups
+	const categoryOrderMap = {};
+	let catIdx = 0;
+	for (const catName of Object.keys(skill_groups)) {
+		categoryOrderMap[catName] = catIdx++;
+	}
+
+	// Sort categories according to skill_groups
+	const sortedCategories = Object.entries(categoryMap).sort((a, b) => {
+		const aOrder = categoryOrderMap[a[0]] ?? 9999;
+		const bOrder = categoryOrderMap[b[0]] ?? 9999;
+		return aOrder - bOrder;
+	});
+
+	for (const [category, skills] of sortedCategories) {
+		// Category header
+		const h4 = document.createElement("h4");
+		h4.textContent = category;
+		container.appendChild(h4);
 
 		const ul = document.createElement("ul");
-		for (const [skill, data] of Object.entries(skills)) {
+
+		// Sort skills using skillOrderMap if available
+		const sortedSkills = Object.entries(skills).sort((a, b) => {
+			const aOrder = skillOrderMap[a[0]] ?? 9999;
+			const bOrder = skillOrderMap[b[0]] ?? 9999;
+			return aOrder - bOrder;
+		});
+		
+		for (const [skill, data] of sortedSkills) {
 			const li = document.createElement("li");
-			if (data.total != null) {
-				const totalText = formatTotal(data.total, data.unit);
-				li.innerHTML = data.parts.length > 1 ?
-					`${skill} ${totalText} (${data.parts.join(", ")})` :
-					`${skill} ${totalText}`;
-			} else {
-				li.textContent = `${skill} ${data.parts.join(", ")}`;
+
+			const skillDiv = document.createElement("div");
+			skillDiv.style.display = "flex";
+			skillDiv.style.alignItems = "center";
+			skillDiv.style.gap = "4px";
+
+			// Skill image
+			if (skill) {
+				const img = document.createElement("img");
+				img.src = `/BC-Combat-Simulation/images/${skill} (Skill).png`;
+				img.style.width = "20px";
+				img.style.height = "20px";
+				img.style.objectFit = "contain";
+
+				// Attach global tooltip
+				attachSkillTooltip(img, skill);
+
+				skillDiv.appendChild(img);
 			}
+
+			// Skill text/value
+			const textSpan = document.createElement("span");
+			textSpan.style.color = "#000";
+			textSpan.style.fontSize = "0.9em";
+
+			textSpan.textContent = data.total != null
+				? (data.parts.length > 1 
+					? ` ${formatTotal(data.total, data.unit)} (${data.parts.join(", ")})` 
+					: ` ${formatTotal(data.total, data.unit)}`)
+				: ` ${data.parts.join(", ")}`;
+
+			skillDiv.appendChild(textSpan);
+
+			li.appendChild(skillDiv);
 			ul.appendChild(li);
 		}
+
 		container.appendChild(ul);
 	}
 }
@@ -505,27 +700,84 @@ function updateSkills() {
 	});
 
 	// 2. Add checked collections
-	for (const code of Object.keys(collectionCodes)) {
+	for (const code of Object.keys(collection_codes)) {
 		const checkbox = document.getElementById("collection-" + code);
 		if (checkbox && checkbox.checked) {
-			chosenItems.push(collectionCodes[code]);
+			chosenItems.push(collection_codes[code]);
 		}
 	}
 
 	// 3. Build full skill list
 	const allSkillsWithValues = [];
 	chosenItems.forEach(itemName => {
-		const info = equipmentData[itemName] || collectionData[itemName];
+		const info = equipment_list[itemName] || collection_list[itemName];
 		if (info && info.skill) {
-			// Show item skills in "skills-output"
+			// Container for this item
 			const itemDiv = document.createElement("div");
-			itemDiv.innerHTML = `<b>${itemName}</b><br>` +
-				info.skill.map(s => `- ${s[0]} (${s[1]})`).join("<br>");
+	
+			// Item name bolded
+			const title = document.createElement("b");
+			title.textContent = itemName;
+			itemDiv.appendChild(title);
+			itemDiv.appendChild(document.createElement("br"));
+
+			// Container for skills
+			const skillContainer = document.createElement("div");
+			skillContainer.style.display = "flex";
+			skillContainer.style.flexWrap = "wrap";
+			skillContainer.style.gap = "4px";
+	
+			// Sort skills based on skillOrderMap
+			const sortedSkills = info.skill.slice().sort((a, b) => {
+				const aOrder = skillOrderMap[a[0]] ?? 9999;
+				const bOrder = skillOrderMap[b[0]] ?? 9999;
+				return aOrder - bOrder;
+			});
+	
+			// Each skill with image + tooltip
+			sortedSkills.forEach(s => {
+				const skillName = s[0];
+				const skillValue = s[1];
+	
+				const skillDiv = document.createElement("div");
+				skillDiv.style.display = "flex";
+				skillDiv.style.alignItems = "center";
+				skillDiv.style.gap = "2px";
+	
+				// Skill image
+				if (skillName) {
+					const img = document.createElement("img");
+					img.src = `/BC-Combat-Simulation/images/${skillName} (Skill).png`;
+					img.style.width = "20px";
+					img.style.height = "20px";
+					img.style.objectFit = "contain";
+	
+					// Attach global tooltip
+					attachSkillTooltip(img, skillName);
+	
+					skillDiv.appendChild(img);
+				}
+	
+				// Skill value text
+				const textSpan = document.createElement("span");
+				textSpan.style.color = "#000";
+				textSpan.style.fontSize = "0.9em";
+				textSpan.textContent = skillValue;
+	
+				// Attach tooltip to text as well
+				attachSkillTooltip(textSpan, skillName);
+	
+				skillDiv.appendChild(textSpan);
+				skillContainer.appendChild(skillDiv);
+	
+				// Collect for summary
+				allSkillsWithValues.push([skillName, skillValue]);
+			});
+	
+			itemDiv.appendChild(skillContainer);
+			itemDiv.appendChild(document.createElement("br"));
 			outputDiv.appendChild(itemDiv);
 			outputDiv.appendChild(document.createElement("br"));
-
-			// Collect for summary
-			info.skill.forEach(s => allSkillsWithValues.push([s[0], s[1]]));
 		}
 	});
 
@@ -533,7 +785,8 @@ function updateSkills() {
 	renderSkillSummary(allSkillsWithValues);
 }
 
-// ---------------------- SETUP STORAGE ----------------------
+// ---------------------- PERMANENT SETUP STORAGE ----------------------
+// All saved as Array not String
 function saveSetup(name) {
 	const setups = JSON.parse(localStorage.getItem("savedSetups") || "[]")
 
@@ -549,32 +802,15 @@ function saveSetup(name) {
 	
 	// === Save collections ===
 	const collections = [];
-	for (const code of Object.keys(collectionCodes)) {
+	for (const code of Object.keys(collection_codes)) {
 		const cb = document.getElementById("collection-" + code);
 		if (cb && cb.checked) collections.push(code); // store raw code, not display name
 	}
 
 	// === Save equipment ===
-	const equipment = {};
-	for (const [type, items] of Object.entries(equipped)) {
-		if (type === "Retainer" || type === "Accessory") {
-			// save each item with index
-			(items || []).forEach((it, idx) => {
-				if (it) equipment[`${type}-${idx + 1}`] = it;
-			});
-		} else {
-			// other types store as array
-			if (Array.isArray(items)) {
-				equipment[type] = [...items];
-			} else if (typeof items === "string") {
-				equipment[type] = [items];
-			} else {
-				equipment[type] = [];
-			}
-		}
-	}
-
-	newSetups.push({ name, collections, equipment });
+	// equipped is already { type: [items...] }
+	
+	newSetups.push({ name, collections, equipment: equipped });
 	localStorage.setItem("savedSetups", JSON.stringify(newSetups));
 	refreshSavedSetups();
 }
@@ -591,16 +827,9 @@ function loadSetup(name) {
 	});
 
 	// === Restore equipment ===
-	equipped = {}; // reset
+	equipped = {};
 	for (const [type, items] of Object.entries(setup.equipment)) {
-		// Ensure everything is stored as an array
-		if (Array.isArray(items)) {
-			equipped[type] = [...items]; 
-		} else if (typeof items === "string") {
-			equipped[type] = [items]; // wrap single string in array
-		} else {
-			equipped[type] = [];
-		}
+		equipped[type] = Array.isArray(items) ? [...items] : [];
 	}
 
 	updateEquippedList();
@@ -622,96 +851,93 @@ function refreshSavedSetups() {
 }
 
 // ---------------------- ACTIVE SETUP MANAGEMENT ----------------------
-function exportToBattle() {
-	// Save collections
-	const collections = [];
-	for (const code of Object.keys(collectionCodes)) {
-		const cb = document.getElementById("collection-" + code);
-		if (cb && cb.checked) collections.push(code);
-	}
+// Index -> Battle
+function saveActiveSetup(slot) {
+  // Save collections
+  const collections = [];
+  for (const code of Object.keys(collection_codes)) {
+    const cb = document.getElementById("collection-" + code);
+    if (cb && cb.checked) collections.push(code);
+  }
 
-	// Save equipment
-	const equipment = {};
+  // Save equipment
+  const equipment = {};
+  for (const [type, items] of Object.entries(equipped)) {
+    equipment[type] = Array.isArray(items) ? [...items] : [];
+  }
 
-	for (const [type, items] of Object.entries(equipped)) {
-		if (type === "Retainer" || type === "Accessory") {
-			// Use indexed keys to preserve order
-			items.forEach((item, idx) => {
-				equipment[`${type}-${idx + 1}`] = item;
-			});
-		} else if (Array.isArray(items)) {
-			equipment[type] = [...items];
-		} else if (typeof items === "string") {
-			equipment[type] = [items];
-		} else {
-			equipment[type] = [];
-		}
-	}
+  // Store setup into localStorage for this slot
+  localStorage.setItem(`activeSetup-${slot}`, JSON.stringify({ collections, equipment }));
 
-	localStorage.setItem("activeSetup", JSON.stringify({ collections, equipment }));
-	window.location.href = "battle.html";
+  // Optional: mark indicator
+  const indicator = document.getElementById(`indicator${slot}`);
+  if (indicator) indicator.textContent = "✅";
+}
+
+function renderSetupButtons() {
+  const container = document.getElementById("setupButtons");
+  container.innerHTML = "";
+
+  for (let i = 1; i <= setupCount; i++) {
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = `Save Battle Setup ${i}`;
+    saveBtn.onclick = () => saveActiveSetup(i);
+
+    const indicator = document.createElement("span");
+    indicator.id = `indicator${i}`;
+    indicator.style.marginLeft = "5px";
+
+    container.appendChild(saveBtn);
+    container.appendChild(indicator);
+    container.appendChild(document.createElement("br"));
+  }
+}
+
+let setupCount = 1; // default 1
+function setSetupCount() {
+	const input = document.getElementById("setupCountInput");
+  	setupCount = parseInt(input.value, 10) || 1;
+  	renderSetupButtons();
+
+	// Show the Send to Battle button
+	const sendBtn = document.getElementById("sendToBattle");
+	if (sendBtn) sendBtn.style.display = "inline-block"; // or "block"
+}
+
+function sendAllToBattle() {
+  const setups = [];
+  for (let i = 1; i <= setupCount; i++) {
+    const raw = localStorage.getItem(`activeSetup-${i}`);
+    if (raw) setups.push(JSON.parse(raw));
+  }
+  localStorage.setItem("setupsWithSkills", JSON.stringify(setups));
+  window.location.href = "battle.html";
 }
 
 // Battle -> Index
 function importFromBattle() {
-	const savedActiveSetup = localStorage.getItem("activeSetup");
+	const savedActiveSetup = localStorage.getItem("lastActiveSetup");
 	if (!savedActiveSetup) return;
 
 	const setup = JSON.parse(savedActiveSetup);
 
 	// Restore collections
-	if (setup.collections) {
-		for (const code of Object.keys(collectionCodes)) {
-			const cb = document.getElementById("collection-" + code);
-			if (cb) cb.checked = setup.collections.includes(code);
-		}
+	for (const code of Object.keys(collection_codes)) {
+		const cb = document.getElementById("collection-" + code);
+		if (cb) cb.checked = setup.collections.includes(code);
 	}
 
 	// Restore equipment
 	equipped = {}; // reset
-	const tempAccessory = [];
-	const tempRetainer = [];
-
-	for (const [key, value] of Object.entries(setup.equipment)) {
-		if (key.startsWith("Accessory-")) {
-			if (value) tempAccessory.push(value);
-		} else if (key.startsWith("Retainer-")) {
-			if (value) tempRetainer.push(value);
-		} else {
-			// other equipment types stored as array
-			if (Array.isArray(value)) {
-				equipped[key] = [...value];
-			} else if (typeof value === "string") {
-				equipped[key] = [value];
-			} else {
-				equipped[key] = [];
-			}
-		}
+	for (const [type, items] of Object.entries(setup.equipment)) {
+		equipped[type] = Array.isArray(items) ? [...items] : [];
 	}
-
-	if (tempAccessory.length) equipped["Accessory"] = tempAccessory;
-	if (tempRetainer.length) equipped["Retainer"] = tempRetainer;
 
 	updateEquippedList();
 	updateSkills();
 }
 
-// ---------------------- DATA LOADING ----------------------
-async function loadAllData() {
-	const [equip, coll, codes, groups, combinables] = await Promise.all([
-		fetch("equipment_list.json").then(r => r.json()),
-		fetch("collection_list.json").then(r => r.json()),
-		fetch("collection_codes.json").then(r => r.json()),
-		fetch("skill_groups.json").then(r => r.json()),
-		fetch("combinable_skills.json").then(r => r.json())
-	]);
 
-	equipmentData = equip;
-	collectionData = coll;
-	collectionCodes = codes;
-	skillGroups = groups;
-	combinableSkills = new Set(combinables);
-}
 
 // ---------------------- DOM READY ----------------------
 document.addEventListener("DOMContentLoaded", async () => {
@@ -724,7 +950,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	await loadAllData();  // ensure dropdowns exist
 	
-
 	// Create search function
 	createSearchUI();
 
@@ -732,11 +957,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// Auto-restore Active Setup
 	importFromBattle();
-
-	// Go to Battle button + Export Active Setup
-	const goBtn = document.getElementById("goBattleBtn");
-	if (goBtn) goBtn.addEventListener("click", exportToBattle);
-
+	
+	// Active Setup Transfer button
+	const sendBtn = document.getElementById("sendToBattle");
+	if (sendBtn) sendBtn.style.display = "none";  // hide initially
+	if (sendBtn) sendBtn.addEventListener("click", sendAllToBattle);
+	
 	// Check All / Uncheck All collections
 	const checkAllBtn = document.getElementById("checkAllCollections");
 	if (checkAllBtn) checkAllBtn.addEventListener("click", () => {

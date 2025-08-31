@@ -13,6 +13,16 @@ const player = "player";
 const player_race = "";
 const elements = ["Ballistic", "Chaos", "Electric", "Fire", "Holy", "Ice", "Mystic", "Physical", "Poison", "Psychic", "Shadow", "All"];
 const races = ["Abominable", "Archangel", "Bestial", "Corrupted", "Demonic", "Draconic","Eldritch", "Ethereal", "Lycan", "Necro", "Righteous", "Techno", "Vampiric", "Xeno"];
+const rarityColors = {
+		"Common": "#000000", // Usually white but black in here due white background
+		"Uncommon": "#00bf00",
+		"Rare": "#4d79ff",
+		"Epic": "#b300ff",
+		"Boss": "#ffc126",
+		"Legendary": "#d40716",
+		"Event": "#d3ffce",
+		"default": "#808080"
+	};
 
 // ------------------ Load All Data ------------------
 async function loadAllData() {
@@ -49,7 +59,31 @@ async function loadAllData() {
 	buildEnemySelectors();
 }
 
-// ------------------ List of Functions ------------------
+// === Return to Index.html, preserve last activeSetup ===
+function preserveLastSetup() {
+	const setups = [];
+	let last = null;
+
+	// collect all active setups
+	for (let i = 1; ; i++) {
+		const raw = localStorage.getItem(`activeSetup-${i}`);
+		if (!raw) break; // stop when no more
+		last = raw;
+		setups.push(raw);
+	}
+
+	// clear them all
+	for (let i = 1; ; i++) {
+		if (!localStorage.getItem(`activeSetup-${i}`)) break;
+		localStorage.removeItem(`activeSetup-${i}`);
+	}
+
+	// keep at least one (the last one)
+	if (last) {
+		localStorage.setItem("lastActiveSetup", last);
+	}
+}
+
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {
 	const container = document.getElementById("manualEnemySelector");
@@ -181,10 +215,10 @@ function init_setup(setup) {
 	}
 
 	// --- Retainers ---
-	const eq = setup.equipment || {};
-	const ret1 = eq["Retainer-1"] || "";
-	const ret2 = eq["Retainer-2"] || "";
-	const ret3 = eq["Retainer-3"] || "";
+	const retainers = setup.equipment?.Retainer || [];
+	const ret1 = retainers[0] || "";
+	const ret2 = retainers[1] || "";
+	const ret3 = retainers[2] || "";
 	
 	return { player_skills, ret1, ret2, ret3 };
 }
@@ -1182,39 +1216,94 @@ function simulate_battle(enemy, player_skills, player_ret1, player_ret2, player_
 }
 
 // ------------------ Battle Summary ------------------
+function buildEquipmentTable(setups) {
+	const eqTypes = [
+		"Coin", "Bait", "Hex",
+		"Weapon", "Head", "Chest", "Hands", "Feet",
+		"Power", "Emblem", "Coffin",
+		"Accessory", "Mount", "Retainer"
+	];
+	
+	let header = `<tr><th>Eq</th>${setups.map((_, i) => `<th>Setup ${i+1}</th>`).join("")}</tr>`;
+
+	let rows = eqTypes.map(eq => {
+		// normalize equipment for each setup
+		let vals = setups.map(s => {
+			let eqObj = s.equipment || {};
+			let val = eqObj[eq];
+			if (!val || val.length === 0) return "-"; // skip if empty
+			return Array.isArray(val) ? val.join(", ") : val;
+		});
+
+		let allEqual = vals.every(v => v === vals[0]);
+		let allEmpty = vals.every(v => v === "-");
+		
+		let cols = vals.map(v => {
+			let cls = (!allEqual && !allEmpty ? "diff" : "");
+			return `<td class="${cls}">${v}</td>`;
+		}).join("");
+
+		return `<tr><td>${eq}</td>${cols}</tr>`;
+	}).join("");
+
+	return `<table class="eq-table">${header}${rows}</table>`;
+}
+
 // Running multiple simulations and tracking rounds
 // enemiesList: array of enemy names
-function estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList) {
-	let summary = [];
+function buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n) {	
+	let header = `<tr><th>Enemy</th>${setupsWithSkills.map((_, i) => `<th colspan="2">Setup ${i+1}</th>`).join("")}</tr>`;
+	let subHeader = `<tr><th></th>${setupsWithSkills.map(_ => "<th>W / D / L</th><th>AvgW / L</th>").join("")}</tr>`;
 
-	for (let enemy of enemiesList) {
-		let results = { "Win": [], "Draw": [], "Loss": [] };
+	let rows = enemiesList.map(enemy => {
+		const rarity = enemies_list[enemy]?.rarity || "default";
+		const color = rarityColors[rarity] || rarityColors["default"];
+		
+		// calculate results
+		let resultsPerSetup = setupsWithSkills.map((setup) => {
+			let { player_skills, ret1, ret2, ret3 } = setup;
+			let results = { "Win": [], "Draw": [], "Loss": [] };
+			for (let i = 0; i < n; i++) {
+				let [result, round_num] = simulate_battle(enemy, player_skills, ret1, ret2, ret3);
+				results[result].push(round_num);
+			}
+			let w = results["Win"].length, d = results["Draw"].length, l = results["Loss"].length;
+			let winRate = w / n * 100;
+			let drawRate = d / n * 100;
+			let lossRate = l / n * 100;
+			let avgW = w ? (results["Win"].reduce((a,b)=>a+b,0)/w).toFixed(2) : "-";
+			let avgL = l ? (results["Loss"].reduce((a,b)=>a+b,0)/l).toFixed(2) : "-";
+			return { winRate, drawRate, lossRate, avgW, avgL };
+		});
 
-		for (let i = 0; i < n; i++) {
-			let [result, round_num] = simulate_battle(enemy, player_skills, ret1, ret2, ret3);
-			results[result].push(round_num);
-		}
+		// find max win (rounded for fair comparison)
+		let maxWin = Math.max(...resultsPerSetup.map(r => Math.round(r.winRate)));
+		
+		let cols = resultsPerSetup.map(r => {
+			// round values for display
+			let win = Math.round(r.winRate);
+			let draw = Math.round(r.drawRate);
+			let loss = Math.round(r.lossRate);
+		
+			// one decimal for avg
+			let avgW = r.avgW !== "-" ? parseFloat(r.avgW).toFixed(1) : "-";
+			let avgL = r.avgL !== "-" ? parseFloat(r.avgL).toFixed(1) : "-";
+		
+			// highlight only based on rounded win%
+			let cls = (win === maxWin ? "diff" : "");
 
-		summary.push(""); // Blank line
-		summary.push(`Enemy: ${enemy}`);
-		summary.push(`Win Rate: ${(results["Win"].length / n * 100).toFixed(2)}% (${results["Win"].length})`);
-		summary.push(`Draw Rate: ${(results["Draw"].length / n * 100).toFixed(2)}% (${results["Draw"].length})`);
-		summary.push(`Loss Rate: ${(results["Loss"].length / n * 100).toFixed(2)}% (${results["Loss"].length})`);
+			console.log("Rounded winRates:", resultsPerSetup.map(r => Math.round(r.winRate)));
+			console.log("maxWin =", maxWin);
+		
+			let wdl = `<span class="${cls}">${win}%</span> / ${draw}% / ${loss}%`;
+			let avg = `${avgW} / ${avgL}`;
+			return `<td>${wdl}</td><td>${avg}</td>`;
+		}).join("");
 
-		if (results["Win"].length > 0) {
-			let avgWin = results["Win"].reduce((a, b) => a + b, 0) / results["Win"].length;
-			summary.push(`Average Win Round: ${avgWin.toFixed(2)}`);
-		}
-		if (results["Loss"].length > 0) {
-			let avgLoss = results["Loss"].reduce((a, b) => a + b, 0) / results["Loss"].length;
-			summary.push(`Average Loss Round: ${avgLoss.toFixed(2)}`);
-		}
-	}
+		return `<tr><td style="color:${color}">${enemy}</td>${cols}</tr>`;
+	}).join("");
 
-	// Print summary and update logDiv
-	console.log(summary.join("\n"));
-	const logDiv = document.getElementById("battle-log");
-	logDiv.innerText = summary.join("\n");
+	return `<table class="enemy-table">${header}${subHeader}${rows}</table>`;
 }
 
 // ------------------ Toggle button to hide/unhide ------------------
@@ -1311,39 +1400,133 @@ function refreshSavedBattles() {
 	if (battles.length > 0) select.value = battles[0].name;
 }
 
+// ------------------ Load up all active setups ------------------
+function loadActiveSetups() {
+	const setups = [];
+	let i = 1;
+
+	while (true) {
+		const setupRaw = localStorage.getItem(`activeSetup-${i}`);
+		if (!setupRaw) break; // stop if no more setups
+		try {
+			const setup = JSON.parse(setupRaw);
+			setups.push(setup);
+		} catch (e) {
+			console.warn(`Failed to parse activeSetup-${i}`, e);
+		}
+		i++;
+	}
+
+	return setups;
+}
+
+// ------------------ Render Setup Log ------------------
+function renderSetupLog(activeSetups, setupsWithSkills) {
+	const container = document.getElementById("setup-log");
+
+	container.innerHTML = setupsWithSkills.map((s, i) => {
+		const { player_skills, ret1, ret2, ret3 } = s;
+
+		const equipmentList = Object.entries(activeSetups[i].equipment || {})
+	    .map(([slot, item]) =>
+	        `<li data-slot="${slot}">${slot}: ${item?.[0] || "None"}</li>`
+	    ).join("");
+
+		const collectionsList = (activeSetups[i].collections || []).join(", ") || "None";
+		
+		// Retainers: combine all from array (ret1-3 fallback for display)
+		const retainersArray = activeSetups[i].equipment?.Retainer || [];
+		const retainersList = retainersArray.length > 0 ? retainersArray.join(", ") : "None";
+
+		return `
+			<div class="setup-block" data-idx="${i}">
+				<p><b>Setup ${i + 1}:</b></p>
+				<ul class="equipment-list">${equipmentList}</ul>
+				<p class="collection"><b>Collections:</b> ${collectionsList}</p>
+				<p class="retainers"><b>Retainers:</b> ${retainersList}</p>
+
+				<div class="skills hidden">
+					<h3>Skills:</h3>
+					<ul>
+						${player_skills.map(sk => `<li>${sk[0]} [${sk[1]}, ${sk[2]}]</li>`).join("")}
+					</ul>
+				</div>
+				<button class="toggleSkillBtn" data-idx="${i}">Show Skills</button>
+			</div>
+		`;
+	}).join("<hr>");
+
+	highlightDifferences(activeSetups, setupsWithSkills);
+}
+
+// ------------------ Highlight Differences ------------------
+function highlightDifferences(activeSetups, setupsWithSkills) {
+    if (activeSetups.length < 2) return; // only highlight if 2+ setups
+
+    // --- Equipment slot-by-slot ---
+    const allSlots = new Set();
+    activeSetups.forEach(s => Object.keys(s.equipment || {}).forEach(slot => allSlots.add(slot)));
+
+    allSlots.forEach(slot => {
+        const values = activeSetups.map(s => (s.equipment?.[slot]?.[0] || ""));
+        const allSame = values.every(v => v === values[0]);
+        if (!allSame) {
+            document.querySelectorAll(`.equipment-list li[data-slot="${slot}"]`)
+                .forEach(el => el.classList.add("diff"));
+        }
+    });
+
+    // --- Collections ---
+    const collectionsStrings = activeSetups.map(s => (s.collections || []).join(","));
+    const collSame = collectionsStrings.every(v => v === collectionsStrings[0]);
+    if (!collSame) {
+        document.querySelectorAll(".collection").forEach(el => el.classList.add("diff"));
+    }
+
+    // --- Retainers ---
+    const retainersStrings = setupsWithSkills.map(s =>
+        [s.ret1, s.ret2, s.ret3].filter(r => r).join(",")
+    );
+    const retSame = retainersStrings.every(v => v === retainersStrings[0]);
+    if (!retSame) {
+        document.querySelectorAll(".retainers").forEach(el => el.classList.add("diff"));
+    }
+}
+
 // ------------------ Main ------------------
 document.addEventListener("DOMContentLoaded", async () => {
 	// Setup toggles
-	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", true);
-	
+	setupToggle("toggleSetupBtn", "setup-log", "Show Setup ▲", "Hide Setup ▼", false);
+
 	await loadAllData();
 
 	// Build enemy selectors (manual + batch)
 	buildEnemySelectors();
 
-	const setup = JSON.parse(localStorage.getItem("activeSetup")) || {};
-	const { player_skills, ret1, ret2, ret3 } = init_setup(setup);
+	const activeSetups = loadActiveSetups(); // array of setups
+	const setupsWithSkills = activeSetups.map(setup => init_setup(setup));
 
-	// Show chosen setup in log
-	const logDiv = document.getElementById("setup-log");
-	logDiv.innerHTML = `
-		<p><b>Equipment:</b></p>
-		<ul>
-			${Object.entries(setup.equipment || {})
-				.map(([slot, item]) => `<li>${slot}: ${item || "None"}</li>`)
-				.join("")}
-		</ul>
-		<p><b>Collections:</b> ${setup.collections?.join(", ") || "None"}</p>
-	    <p><b>Retainers:</b> ${
-			[ret1, ret2, ret3].filter(r => r).join(", ") || "None"
-	    }</p>
-  
-  		<h3>Skills:</h3>
-		<ul>${player_skills.map(s => `<li>${s[0]} [${s[1]}, ${s[2]}]</li>`).join("")}</ul>
-	`;
+	// Render setup log (with hidden skills + diff highlight)
+	renderSetupLog(activeSetups, setupsWithSkills);
+
+	// Skill toggle handler
+	document.addEventListener("click", e => {
+		if (e.target.classList.contains("toggleSkillBtn")) {
+			const idx = e.target.dataset.idx;
+			const skillsDiv = document.querySelector(`.setup-block[data-idx="${idx}"] .skills`);
+			if (skillsDiv.classList.contains("hidden")) {
+				skillsDiv.classList.remove("hidden");
+				e.target.textContent = "Hide Skills";
+			} else {
+				skillsDiv.classList.add("hidden");
+				e.target.textContent = "Show Skills";
+			}
+		}
+	});
 
 	// Button to go back to index.html
 	document.getElementById("setupBtn").addEventListener("click", () => {
+		preserveLastSetup();
 		window.location.href = "index.html";
 	});
 
@@ -1365,38 +1548,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 	});
 	
 	refreshSavedBattles();
-	
+
+	// Battle Simulation
 	document.getElementById("battleBtn").addEventListener("click", () => {
 		const n = parseInt(document.getElementById("simulations").value, 10) || 1;
-
+	
+		// Collect enemies
 		// --- Manual 10 enemies ---
 		const selectors = document.querySelectorAll(".enemy-select");
-		const selectedEnemies = Array.from(selectors)
-			.map(sel => sel.value)
-			.filter(v => v !== "");
-
+		const selectedEnemies = Array.from(selectors).map(sel => sel.value).filter(v => v !== "");
 		// --- Batch-selected enemies ---
 		const batchGroup = document.getElementById("batchEnemyGroup").value;
 		const batchRegion = document.getElementById("batchEnemyRegion").value;
 		const batchEnemies = getEnemiesForRegion(batchRegion, batchGroup);
-
 		// --- Combine both lists (unique) ---
 		const enemiesList = [...new Set([...selectedEnemies, ...batchEnemies])];
-		console.log("MEnemies List:", selectedEnemies);
-		console.log("BEnemies List:", batchEnemies);
-		console.log("Enemies List:", enemiesList);
-
+	
 		if (enemiesList.length === 0) {
 			alert("Please select at least one enemy.");
 			return;
 		}
+	
+		const logDiv = document.getElementById("battle-log");
+		logDiv.innerHTML = ""; // reset log
 
-		logDiv.innerText = ""; // reset log
-
-		// --- Run battle simulations ---
-		console.log("P Sk:", player_skills);
-		console.log("P Rets:", ret1, ret2, ret3);
-		console.log("N:", n);
-		estimate_winrate(player_skills, ret1, ret2, ret3, n, enemiesList);
+		// Equipment table
+		logDiv.innerHTML += buildEquipmentTable(activeSetups);
+	
+		// Enemy results table
+		logDiv.innerHTML += buildEnemyTable(setupsWithSkills, activeSetups, enemiesList, n);
 	});
 });

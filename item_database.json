@@ -10229,7 +10229,7 @@
     "desc": "Power",
     "link": "R1 Equipment Stat#Grave Touch"
   },
-  "Vendetta Necros": {
+  "Vendetta: Necros": {
     "index": 1024,
     "name": "Vendetta: Necros",
     "region": "R01",
@@ -10249,7 +10249,7 @@
     "desc": "Power",
     "link": "R2 Equipment Stat#Revitalization"
   },
-  "Vendetta Lycans": {
+  "Vendetta: Lycans": {
     "index": 1026,
     "name": "Vendetta: Lycans",
     "region": "R02",
@@ -10269,7 +10269,7 @@
     "desc": "Power",
     "link": "R3 Equipment Stat#Command Vermin"
   },
-  "Vendetta Abominations": {
+  "Vendetta: Abominations": {
     "index": 1028,
     "name": "Vendetta: Abominations",
     "region": "R03",
@@ -10289,7 +10289,7 @@
     "desc": "Power",
     "link": "R4 Equipment Stat#Sniper Shot"
   },
-  "Vendetta Corrupted": {
+  "Vendetta: Corrupted": {
     "index": 1030,
     "name": "Vendetta: Corrupted",
     "region": "R04",
@@ -10319,7 +10319,7 @@
     "desc": "Power",
     "link": "R5 Equipment Stat#Forbidden Experiments"
   },
-  "Vendetta Dragons": {
+  "Vendetta: Dragons": {
     "index": 1033,
     "name": "Vendetta: Dragons",
     "region": "R05",
@@ -10359,7 +10359,7 @@
     "desc": "Power",
     "link": "R6 Equipment Stat#Immolation"
   },
-  "Vendetta Demons": {
+  "Vendetta: Demons": {
     "index": 1037,
     "name": "Vendetta: Demons",
     "region": "R06",
@@ -10379,7 +10379,7 @@
     "desc": "Power",
     "link": "R7 Equipment Stat#Ice Prison"
   },
-  "Vendetta Beasts": {
+  "Vendetta: Beasts": {
     "index": 1039,
     "name": "Vendetta: Beasts",
     "region": "R07",
@@ -10389,7 +10389,7 @@
     "desc": "Power",
     "link": "R7 Equipment Stat#Vendetta Beasts"
   },
-  "Vendetta Lycans II": {
+  "Vendetta: Lycans II": {
     "index": 1040,
     "name": "Vendetta: Lycans II",
     "region": "R07",
@@ -10399,7 +10399,7 @@
     "desc": "Power",
     "link": "R7 Equipment Stat#Vendetta Lycans II"
   },
-  "Vendetta Necros II": {
+  "Vendetta: Necros II": {
     "index": 1041,
     "name": "Vendetta: Necros II",
     "region": "R07",
@@ -10419,7 +10419,7 @@
     "desc": "Power",
     "link": "R8 Equipment Stat#Cyclone"
   },
-  "Vendetta Corrupted II": {
+  "Vendetta: Corrupted II": {
     "index": 1043,
     "name": "Vendetta: Corrupted II",
     "region": "R08",
@@ -10429,7 +10429,7 @@
     "desc": "Power",
     "link": "R8 Equipment Stat#Vendetta Corrupted II"
   },
-  "Vendetta Xenos": {
+  "Vendetta: Xenos": {
     "index": 1044,
     "name": "Vendetta: Xenos",
     "region": "R08",
@@ -10449,7 +10449,7 @@
     "desc": "Power",
     "link": "R9 Equipment Stat#Piranha Swarm"
   },
-  "Vendetta Abominations II": {
+  "Vendetta: Abominations II": {
     "index": 1046,
     "name": "Vendetta: Abominations II",
     "region": "R09",
@@ -10459,7 +10459,7 @@
     "desc": "Power",
     "link": "R9 Equipment Stat#Vendetta Abominations II"
   },
-  "Vendetta Spirits": {
+  "Vendetta: Spirits": {
     "index": 1047,
     "name": "Vendetta: Spirits",
     "region": "R09",
@@ -10489,7 +10489,7 @@
     "desc": "Power",
     "link": "R10 Equipment Stat#Magic Missile"
   },
-  "Vendetta Dragons II": {
+  "Vendetta: Dragons II": {
     "index": 1050,
     "name": "Vendetta: Dragons II",
     "region": "R10",
@@ -10499,7 +10499,7 @@
     "desc": "Power",
     "link": "R10 Equipment Stat#Vendetta Dragons II"
   },
-  "Vendetta Vampires": {
+  "Vendetta: Vampires": {
     "index": 1051,
     "name": "Vendetta: Vampires",
     "region": "R10",
@@ -10509,7 +10509,7 @@
     "desc": "Power",
     "link": "R10 Equipment Stat#Vendetta Vampires"
   },
-  "Vendetta Archangels": {
+  "Vendetta: Archangels": {
     "index": 1052,
     "name": "Vendetta: Archangels",
     "region": "RAA",
@@ -10519,7 +10519,7 @@
     "desc": "Power",
     "link": "AA Equipment Stat#Vendetta Archangels"
   },
-  "Vendetta Eldritch": {
+  "Vendetta: Eldritch": {
     "index": 1053,
     "name": "Vendetta: Eldritch",
     "region": "RDD",
@@ -11989,7 +11989,7 @@
     "desc": "10 Scrolls to bind",
     "link": "R10 Equipment Stat#Raveena Nightwhisper"
   },
-  "Scroll of Binding - Blood Knight": {
+  "Scroll of Binding -  Blood Knight": {
     "index": 1200,
     "name": "Scroll of Binding -  Blood Knight",
     "region": "R10",
@@ -16279,9 +16279,9 @@
     "desc": "Weapon",
     "link": "PS2025 Equipment Stat#Dimensional Blade"
   },
-  "Lucky Gun Crimson Dawn": {
+  "Lucky Gun \"Crimson Dawn\"": {
     "index": 1629,
-    "name": "Lucky Gun \\\"Crimson Dawn\\\"",
+    "name": "Lucky Gun \"Crimson Dawn\"",
     "region": "PS2025",
     "img": "Lucky Gun Crimson Dawn (Weapon).png",
     "rarity": "Epic",
@@ -16629,9 +16629,9 @@
     "desc": "Weapon",
     "link": "R2 Equipment Stat#Heartseeker"
   },
-  "Lucky Gun Ace of Spades": {
+  "Lucky Gun \"Ace of Spades\"": {
     "index": 1664,
-    "name": "Lucky Gun \\\"Ace of Spades\\\"",
+    "name": "Lucky Gun \"Ace of Spades\"",
     "region": "R02",
     "img": "Lucky Gun Ace of Spades (Weapon).png",
     "rarity": "Rare",
@@ -16809,9 +16809,9 @@
     "desc": "Weapon",
     "link": "R3 Equipment Stat#Bilespitter"
   },
-  "Crossbow Stingray": {
+  "Crossbow \"Stingray\"": {
     "index": 1682,
-    "name": "Crossbow \\\"Stingray\\\"",
+    "name": "Crossbow \"Stingray\"",
     "region": "R03",
     "img": "Crossbow Stingray (Weapon).png",
     "rarity": "Uncommon",
@@ -16849,9 +16849,9 @@
     "desc": "Weapon",
     "link": "R3 Equipment Stat#Gorgon's Kiss"
   },
-  "Modified Assault Rifle Predator": {
+  "Modified Assault Rifle \"Predator\"": {
     "index": 1686,
-    "name": "Modified Assault Rifle \\\"Predator\\\"",
+    "name": "Modified Assault Rifle \"Predator\"",
     "region": "R03",
     "img": "Modified Assault Rifle Predator (Weapon).png",
     "rarity": "Uncommon",
@@ -16919,9 +16919,9 @@
     "desc": "Weapon",
     "link": "R3 Equipment Stat#Trenchclub"
   },
-  "Delilah": {
+  "\"Delilah\"": {
     "index": 1693,
-    "name": "\\\"Delilah\\\"",
+    "name": "\"Delilah\"",
     "region": "R04",
     "img": "Delilah (Weapon).png",
     "rarity": "Rare",
@@ -16949,9 +16949,9 @@
     "desc": "Weapon",
     "link": "R4 Equipment Stat#Firefighter Axe"
   },
-  "Holy Gun Purgatory": {
+  "Holy Gun \"Purgatory\"": {
     "index": 1696,
-    "name": "Holy Gun \\\"Purgatory\\\"",
+    "name": "Holy Gun \"Purgatory\"",
     "region": "R04",
     "img": "Holy Gun Purgatory (Weapon).png",
     "rarity": "Rare",
@@ -16999,9 +16999,9 @@
     "desc": "Weapon",
     "link": "R4 Equipment Stat#Rising Sun Daisho"
   },
-  "Sniper Rifle Interception": {
+  "Sniper Rifle \"Interception\"": {
     "index": 1701,
-    "name": "Sniper Rifle \\\"Interception\\\"",
+    "name": "Sniper Rifle \"Interception\"",
     "region": "R04",
     "img": "Sniper Rifle Interception (Weapon).png",
     "rarity": "Uncommon",
@@ -17079,9 +17079,9 @@
     "desc": "Weapon",
     "link": "R5 Equipment Stat#Flamethrower"
   },
-  "FN V2000 Faith": {
+  "FN V2000 \"Faith\"": {
     "index": 1709,
-    "name": "FN V2000 \\\"Faith\\\"",
+    "name": "FN V2000 \"Faith\"",
     "region": "R05",
     "img": "FN V2000 Faith (Weapon).png",
     "rarity": "Rare",
@@ -17169,9 +17169,9 @@
     "desc": "Weapon",
     "link": "R5 Equipment Stat#Roy's Razor"
   },
-  "Sniper Rifle Sudden Death": {
+  "Sniper Rifle \"Sudden Death\"": {
     "index": 1718,
-    "name": "Sniper Rifle \\\"Sudden Death\\\"",
+    "name": "Sniper Rifle \"Sudden Death\"",
     "region": "R05",
     "img": "Sniper Rifle Sudden Death (Weapon).png",
     "rarity": "Rare",

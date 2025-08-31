@@ -275,7 +275,7 @@ function createSearchUI() {
 			title.style.fontWeight = "bold";
 			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">
 			  [${info.region}] 
-			  [Src: ${info.source === "Drop" ? info.srcdet : info.src}] 
+			  [Src: ${info.source === "Drop" ? info.srcdet : info.source}] 
 			  [<a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Wiki Link</a>]
 			</span>`;
 			btn.appendChild(title);

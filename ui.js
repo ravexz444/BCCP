@@ -273,11 +273,17 @@ function createSearchUI() {
 			const title = document.createElement("span");
 			title.style.color = "#000";
 			title.style.fontWeight = "bold";
+			
 			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">
 			  [${info.region}] 
-			  [Src: ${info.source === "Drop" ? info.srcdet : info.source}] 
-			  [<a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Wiki Link</a>]
+			  [Src: ${
+			    info.source === "Drop"
+			      ? `<a href="${baseWiki}${item_database[info.srcdet]?.link.replace(/ /g, '_')}" target="_blank">${info.srcdet}</a>`
+			      : info.source
+			  }] 
+			  [Link: <a href="${baseWiki}${item_database[name]?.link.replace(/ /g, '_')}" target="_blank">Wiki Link</a>]
 			</span>`;
+
 			btn.appendChild(title);
 			btn.appendChild(document.createElement("br"));
 

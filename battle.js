@@ -305,14 +305,11 @@ function enemySetupSearchHelp() {
 		<p>Example</p>
   		<ul style="font-size:13px; line-height:1.4;">
 			<li>region:R02 / &lt;R05 / Event / Premium / &lt;R05,-Event</li>
-			<li>xp:&lt;1.2M / &gt;=500K</li>
-			<li>name:Key / -Pearl / "Bone Crossbow"</li>
-			<li>skill:Charge,-Shadow / "Loot Chance Modifier"</li>
-			<li>mat:Sanguine Pearl / -Phoenix Flame / Golden Skull, -Fel Wood</li>
-			<li>type:Weapon, rarity:-Common, race:Undead, source:Drop, rarity:Epic</li>
-			<li>region:R8; mat:Phoenix Flame</li>
-   			<li>xp:&lt;1M; region:-Event, -Premium</li> 
-	  		<li>region:&lt;R3; name:-Key</li> 
+			<li>xp:&lt;300 / &gt;=1K</li>
+			<li>name:Skeleton / -Jack</li>
+			<li>skill:Deathtouch</li>
+			<li>rarity:Epic, race:Bestial, ret:Rat</li>
+			<li>region:R8; rarity:Rare</li>
 		</ul>
 	`;
 

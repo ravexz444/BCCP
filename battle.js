@@ -272,10 +272,6 @@ function createEnemySearchUI() {
 const searchBox = document.getElementById("itemSearch");
 const resultsList = document.getElementById("searchResults");
 
-// Assuming you have all items in a single object or array
-// Example: item_database = { "Simple Knife": {...}, "FN V2000 Faith": {...} }
-const allItems = Object.keys(item_database);
-
 searchBox.addEventListener("input", () => {
 	const query = searchBox.value.toLowerCase();
 	resultsList.innerHTML = "";

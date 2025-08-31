@@ -278,7 +278,6 @@ function createEnemySearchUI() {
 					chip.appendChild(removeBtn);
 					chosenDiv.appendChild(chip);
 				}
-				searchBox.value = "";
 				resultsDiv.innerHTML = "";
 			});
 
@@ -286,6 +285,8 @@ function createEnemySearchUI() {
 		}
 	});
 }
+
+
 
 // === Prepare enemies list in droplist ===
 function buildEnemySelectors() {

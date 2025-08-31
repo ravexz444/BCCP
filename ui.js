@@ -16,13 +16,14 @@ let categoryOrderMap = {};
 
 // ---------------------- DATA LOADING ----------------------
 async function loadAllData() {
-	const [equip, coll, codes, groups, combinables, glos] = await Promise.all([
+	const [equip, coll, codes, groups, combinables, glos, itemdb] = await Promise.all([
 		fetch("equipment_list.json").then(r => r.json()),
 		fetch("collection_list.json").then(r => r.json()),
 		fetch("collection_codes.json").then(r => r.json()),
 		fetch("skill_groups.json").then(r => r.json()),
 		fetch("combinable_skills.json").then(r => r.json()),
-		fetch("glossary.json").then(r => r.json())
+		fetch("glossary.json").then(r => r.json()),
+		fetch("item_database.json").then(r => r.json())
 	]);
 
 	equipment_list = equip;
@@ -31,6 +32,7 @@ async function loadAllData() {
 	skill_groups = groups;
 	combinable_skills = new Set(combinables);
 	glossary = glos;
+	item_database = itemdb;
 
 	// Precompute skill order map from skill_groups
 	skillOrderMap = {};
@@ -270,7 +272,7 @@ function createSearchUI() {
 			const title = document.createElement("span");
 			title.style.color = "#000";
 			title.style.fontWeight = "bold";
-			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">[${info.region}] [Src: ${info.src === "Drop" ? info.srcdet : info.src}] [Link: item_database(name.link)</span>`;
+			title.innerHTML = `${name} (${info.type}) <span style="font-weight: normal; font-size: 0.9em;">[${info.region}] [Src: ${info.src === "Drop" ? info.srcdet : info.src}] [Link: ${item_database[name]?.link || ""}]</span>`;
 			btn.appendChild(title);
 			btn.appendChild(document.createElement("br"));
 
